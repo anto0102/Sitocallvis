@@ -165,32 +165,41 @@ body {
   color: #fff;
 }
 
-/* ✅ Aggiunta per titolo stagione attiva */
-.stagione-attiva {
+/* ✅ Titolo stagione */
+#titolo-stagione {
   color: #e50914;
   font-size: 22px;
-  margin-bottom: 16px;
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 10px;
   text-align: center;
 }
 
-/* ✅ Wrapper episodi per layout responsive */
-.episodi-wrapper {
+/* ✅ Episodi in orizzontale */
+#episodi-carosello .carousel-wrapper {
   display: flex;
-  flex-wrap: wrap;
+  overflow-x: auto;
   gap: 16px;
-  justify-content: center;
-  margin-top: 10px;
+  padding: 10px;
+  scroll-snap-type: x mandatory;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
-/* ✅ Trailer mancante */
+#episodi-carosello .carousel-wrapper .card {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+
+/* ✅ Player più grande */
+.box-player.grande .iframe-container {
+  padding-bottom: 75%;
+}
+
+/* ✅ Messaggio trailer mancante */
 .messaggio {
   font-style: italic;
   color: #bbb;
   text-align: center;
   margin-top: 10px;
 }
-
-/* ✅ Player più grande */
-.box-player.grande .iframe-container {
-  padding-bottom: 65%;
-                         }
