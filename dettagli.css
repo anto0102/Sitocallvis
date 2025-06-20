@@ -89,7 +89,7 @@ body {
   display: flex;
   flex-direction: row;
   gap: 20px;
-  padding-top: 10px; /* Spazio per evitare che il titolo copra gli episodi */
+  padding-top: 90px; /* FIX: spazio per evitare sovrapposizione con titolo sticky */
 }
 
 .episodio-card {
