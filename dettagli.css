@@ -118,8 +118,13 @@ body {
 
 .episodio-card p {
   margin: 5px 0;
-  font-size: 0.9em;
+  font-size: 0.85em;
   color: white;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;     /* massimo 3 righe */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .episodio-card strong {
