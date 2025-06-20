@@ -3,151 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Scopri Film e Serie TV</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      background-color: #111;
-      color: #fff;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      background-color: #000;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-
-    header h1 {
-      font-size: 1.5rem;
-    }
-
-    .search-box {
-      display: flex;
-      align-items: center;
-    }
-
-    .search-box input {
-      padding: 0.5rem;
-      border-radius: 5px 0 0 5px;
-      border: none;
-      font-size: 1rem;
-      width: 200px;
-    }
-
-    .search-box button {
-      padding: 0.5rem 1rem;
-      border: none;
-      background-color: #e50914;
-      color: white;
-      border-radius: 0 5px 5px 0;
-      cursor: pointer;
-    }
-
-    .section {
-      padding: 2rem;
-    }
-
-    .section h2 {
-      margin-bottom: 1rem;
-      border-left: 4px solid #e50914;
-      padding-left: 0.5rem;
-    }
-
-    .carousel {
-      display: flex;
-      overflow-x: auto;
-      gap: 1rem;
-      scrollbar-width: none;
-    }
-
-    .carousel::-webkit-scrollbar {
-      display: none;
-    }
-
-    .card {
-      min-width: 150px;
-      background-color: #222;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-    }
-
-    .card img {
-      width: 100%;
-      height: auto;
-    }
-
-    .card-content {
-      padding: 0.5rem;
-    }
-
-    .card-content h3 {
-      font-size: 1rem;
-      margin: 0.3rem 0;
-    }
-
-    .rating {
-      color: gold;
-      font-size: 0.9rem;
-    }
-  </style>
+  <title>Cinema Discovery</title>
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="script.js"></script>
 </head>
 <body>
-
   <header>
-    <h1>🎬 Scopri</h1>
-    <div class="search-box">
-      <input type="text" placeholder="Cerca un film o serie...">
-      <button>Cerca</button>
-    </div>
+    <div class="logo">🎬 Cinema Discovery</div>
+    <form id="searchForm">
+      <input type="text" id="searchInput" placeholder="Cerca un film o serie..." />
+      <button type="submit">Cerca</button>
+    </form>
   </header>
 
-  <div class="section">
-    <h2>Consigliati</h2>
-    <div class="carousel">
-      <div class="card">
-        <img src="https://image.tmdb.org/t/p/w300/7IJ7F8tWBGQHN3FA1F3K8qdeuJZ.jpg" alt="Final Destination">
-        <div class="card-content">
-          <h3>Final Destination</h3>
-          <div class="rating">⭐ 7.2</div>
-        </div>
-      </div>
-      <div class="card">
-        <img src="https://image.tmdb.org/t/p/w300/mrDKM1YVn1vZRjN8EACvlTSTv7N.jpg" alt="Operazione Vendetta">
-        <div class="card-content">
-          <h3>Operazione Vendetta</h3>
-          <div class="rating">⭐ 6.9</div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <main>
+    <section class="section">
+      <h2>⭐ Consigliati</h2>
+      <div class="card-container" id="recommended"></div>
+    </section>
 
-  <div class="section">
-    <h2>Titoli del momento</h2>
-    <div class="carousel">
-      <div class="card">
-        <img src="https://image.tmdb.org/t/p/w300/7IJ7F8tWBGQHN3FA1F3K8qdeuJZ.jpg" alt="Final Destination">
-        <div class="card-content">
-          <h3>Final Destination</h3>
-          <div class="rating">⭐ 7.2</div>
-        </div>
-      </div>
-      <div class="card">
-        <img src="https://image.tmdb.org/t/p/w300/eWVwKPb7slr04rfhYHj6V6F9lh7.jpg" alt="28 Giorni Dopo">
-        <div class="card-content">
-          <h3>28 Giorni Dopo</h3>
-          <div class="rating">⭐ 7.6</div>
-        </div>
-      </div>
-    </div>
-  </div>
+    <section class="section">
+      <h2>🔥 Titoli del momento</h2>
+      <div class="card-container" id="trending"></div>
+    </section>
+  </main>
 
+  <footer>
+    © 2025 - Progetto di cinema by anxyy 🍿
+  </footer>
 </body>
 </html>
