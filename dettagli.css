@@ -1,160 +1,148 @@
-/* Stile base per la pagina dettagli */
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #0f0f0f;
-  color: #ffffff;
+  background-color: #0d0d0d;
+  color: #f0f0f0;
 }
 
-/* Banner in alto */
+main {
+  padding: 20px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.contenitore-dettagli {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding-top: 20px;
+}
+
+.dettagli-card {
+  display: flex;
+  flex-direction: column;
+  background-color: #1c1c1c;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  padding: 20px;
+}
+
+.dettagli-card img {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 12px;
+  margin: 0 auto;
+}
+
+.dettagli-card .info {
+  padding: 20px 10px 0;
+  text-align: center;
+}
+
+.dettagli-card h2 {
+  margin-bottom: 10px;
+  font-size: 26px;
+  color: #ff4757;
+}
+
+.dettagli-card p {
+  margin: 6px 0;
+  font-size: 16px;
+}
+
+.dettagli-card p strong {
+  color: #ccc;
+}
+
+.box-trailer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+iframe {
+  border: none;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 700px;
+  height: 400px;
+}
+
+/* Header stile homepage */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #1a1a1a;
+  background-color: #121212;
+  color: white;
   padding: 15px 20px;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+  flex-wrap: wrap;
+  border-bottom: 1px solid #333;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .header h1 {
-  font-size: 1.4rem;
-  color: #ffffff;
+  font-size: 24px;
   margin: 0;
+  color: white;
+}
+
+.torna-home {
+  text-decoration: none;
+  color: #ff4757;
+  font-weight: bold;
+  background-color: #2a2a2a;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.torna-home:hover {
+  background-color: #ff4757;
+  color: white;
 }
 
 .search-bar {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
 }
 
 .search-bar input {
-  padding: 8px 12px;
+  padding: 8px 16px;
   border-radius: 20px;
   border: none;
   outline: none;
+  background-color: #f0f0f0;
+  color: #333;
   width: 200px;
-  transition: 0.3s;
-}
-
-.search-bar input:focus {
-  width: 250px;
-  background-color: #2c2c2c;
-  color: white;
 }
 
 .search-bar button {
-  padding: 8px 12px;
-  border-radius: 20px;
-  border: none;
-  cursor: pointer;
   background-color: #ff4757;
+  border: none;
+  border-radius: 50%;
+  padding: 8px;
+  cursor: pointer;
+  font-size: 16px;
   color: white;
   transition: background-color 0.3s;
 }
 
 .search-bar button:hover {
-  background-color: #ff6b81;
+  background-color: #e84146;
 }
 
-/* Contenitore principale */
-.contenitore-dettagli {
-  max-width: 1200px;
-  margin: 30px auto;
-  padding: 20px;
-}
-
-/* Card dettagliata */
-.dettagli-card {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 30px;
-  background-color: #1c1c1c;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-  transition: transform 0.3s;
-}
-
-.dettagli-card:hover {
-  transform: scale(1.01);
-}
-
-.dettagli-card img {
-  max-width: 300px;
-  border-radius: 10px;
-  object-fit: cover;
-}
-
-.dettagli-card .info {
-  flex: 1;
-  min-width: 250px;
-}
-
-.dettagli-card .info h2 {
-  margin-top: 0;
-  font-size: 2rem;
-  color: #ff4757;
-}
-
-.dettagli-card .info p {
-  margin: 10px 0;
-  line-height: 1.5;
-  color: #ccc;
-}
-
-/* Trailer */
-.box-trailer {
-  margin-top: 30px;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(255, 71, 87, 0.4);
-}
-
-.box-trailer iframe {
-  width: 100%;
-  height: 400px;
-  border: none;
-}
-
-/* Messaggio errore o vuoto */
 .messaggio {
-  background-color: #ff6b6b;
-  color: white;
-  padding: 15px;
-  border-radius: 8px;
   text-align: center;
-  font-weight: bold;
-  margin-top: 30px;
-}
-
-/* Responsive */
-@media screen and (max-width: 768px) {
-  .dettagli-card {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .dettagli-card img {
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .dettagli-card .info {
-    text-align: center;
-  }
-
-  .box-trailer iframe {
-    height: 250px;
-  }
-
-  .search-bar input {
-    width: 150px;
-  }
-
-  .search-bar input:focus {
-    width: 200px;
-  }
+  font-size: 18px;
+  color: #999;
+  margin-top: 50px;
 }
