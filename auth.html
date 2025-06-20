@@ -3,179 +3,84 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login / Registrazione</title>
-  <style>
-    body {
-      background-color: #111;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    .auth-container {
-      background-color: #1e1e1e;
-      padding: 30px;
-      border-radius: 10px;
-      width: 100%;
-      max-width: 400px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    }
-
-    h2 {
-      margin-bottom: 20px;
-      text-align: center;
-      color: #00adee;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: none;
-      border-radius: 5px;
-      font-size: 1em;
-    }
-
-    button {
-      width: 100%;
-      padding: 10px;
-      background-color: #00adee;
-      color: #fff;
-      border: none;
-      font-size: 1em;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .toggle {
-      margin-top: 15px;
-      text-align: center;
-      cursor: pointer;
-      color: #ccc;
-      font-size: 0.9em;
-    }
-
-    .toggle:hover {
-      color: #00adee;
-    }
-
-    #message {
-      margin-top: 15px;
-      text-align: center;
-      font-size: 0.9em;
-    }
-
-    .hidden {
-      display: none;
-    }
-  </style>
+  <title>Accedi o Registrati</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="auth-container">
-    <h2 id="form-title">Accedi</h2>
+    <h2>🎟️ Cinema Discovery - Accesso</h2>
 
-    <input type="email" id="email" placeholder="Email" required />
-    <input type="password" id="password" placeholder="Password" required />
-    <input type="password" id="confirm-password" class="hidden" placeholder="Ripeti password" />
+    <form id="auth-form">
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="text" id="username" placeholder="Username" required />
+      <input type="number" id="age" placeholder="Età" required min="1" />
+      <input type="password" id="password" placeholder="Password" required />
+      <input type="password" id="confirm-password" placeholder="Conferma Password" required />
 
-    <input type="text" id="username" class="hidden" placeholder="Scegli un username" />
-    <input type="number" id="age" class="hidden" placeholder="Età" min="0" />
+      <button type="submit">Registrati / Accedi</button>
+    </form>
 
-    <button id="auth-button">Login</button>
-    <div class="toggle" id="toggle-mode">Non hai un account? Registrati</div>
-
-    <div id="message"></div>
+    <p style="margin-top: 10px;">
+      <a href="#" id="forgot-password">🔐 Ho dimenticato la mia password</a>
+    </p>
   </div>
 
   <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js'
 
-    const supabase = createClient(
-      'https://eymlncdzidfgfeuhkirr.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5bWxuY2R6aWRmZ2ZldWhraXJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA0NTA3MzQsImV4cCI6MjA2NjAyNjczNH0.E3r8Pe_ZztM7GtWXvloHgL6--49Do_sOV2jvZfWrUc0'
-    );
+    const supabaseUrl = 'https://eymlncdzidfgfeuhkirr.supabase.co'
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5bWxuY2R6aWRmZ2ZldWhraXJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA0NTA3MzQsImV4cCI6MjA2NjAyNjczNH0.E3r8Pe_ZztM7GtWXvloHgL6--49Do_sOV2jvZfWrUc0'
+    const supabase = createClient(supabaseUrl, supabaseKey)
 
-    let isLogin = true;
+    const form = document.getElementById('auth-form')
+    const forgotLink = document.getElementById('forgot-password')
 
-    const emailEl = document.getElementById('email');
-    const passwordEl = document.getElementById('password');
-    const confirmPasswordEl = document.getElementById('confirm-password');
-    const usernameEl = document.getElementById('username');
-    const ageEl = document.getElementById('age');
-    const button = document.getElementById('auth-button');
-    const toggle = document.getElementById('toggle-mode');
-    const title = document.getElementById('form-title');
-    const message = document.getElementById('message');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault()
 
-    toggle.addEventListener('click', () => {
-      isLogin = !isLogin;
-      title.textContent = isLogin ? 'Accedi' : 'Registrati';
-      button.textContent = isLogin ? 'Login' : 'Registrati';
-      toggle.textContent = isLogin
-        ? 'Non hai un account? Registrati'
-        : 'Hai già un account? Accedi';
+      const email = document.getElementById('email').value
+      const username = document.getElementById('username').value
+      const age = document.getElementById('age').value
+      const password = document.getElementById('password').value
+      const confirmPassword = document.getElementById('confirm-password').value
 
-      // Mostra/nascondi campi
-      confirmPasswordEl.classList.toggle('hidden', isLogin);
-      usernameEl.classList.toggle('hidden', isLogin);
-      ageEl.classList.toggle('hidden', isLogin);
-      message.textContent = '';
-    });
-
-    button.addEventListener('click', async () => {
-      const email = emailEl.value.trim();
-      const password = passwordEl.value.trim();
-
-      if (!email || !password) {
-        message.textContent = 'Compila email e password.';
-        return;
+      if (password !== confirmPassword) {
+        alert('Le password non coincidono.')
+        return
       }
 
-      if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) {
-          message.textContent = 'Errore: ' + error.message;
-        } else {
-          message.textContent = 'Accesso riuscito! 🔓';
-          setTimeout(() => window.location.href = 'index.html', 1000);
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            username,
+            age
+          }
         }
+      })
+
+      if (error) {
+        alert('Errore: ' + error.message)
       } else {
-        const confirmPassword = confirmPasswordEl.value.trim();
-        const username = usernameEl.value.trim();
-        const age = parseInt(ageEl.value.trim());
-
-        if (!confirmPassword || !username || isNaN(age)) {
-          message.textContent = 'Compila tutti i campi.';
-          return;
-        }
-
-        if (password !== confirmPassword) {
-          message.textContent = 'Le password non coincidono.';
-          return;
-        }
-
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: {
-              username,
-              age,
-            },
-          },
-        });
-
-        if (error) {
-          message.textContent = 'Errore: ' + error.message;
-        } else {
-          message.textContent = 'Registrazione completata! ✨ Controlla l’email.';
-        }
+        alert('Controlla la tua email per confermare la registrazione.')
       }
-    });
+    })
+
+    forgotLink.addEventListener('click', async () => {
+      const email = prompt('Inserisci la tua email per resettare la password:')
+      if (!email) return
+
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + '/reset-password.html'
+      })
+
+      if (error) {
+        alert('Errore: ' + error.message)
+      } else {
+        alert('Controlla la tua email per cambiare la password.')
+      }
+    })
   </script>
 </body>
 </html>
