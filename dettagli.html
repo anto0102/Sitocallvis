@@ -9,95 +9,13 @@
 <body>
   <div class="container">
     <a href="index.html" class="home-button">🔙 Torna alla Home</a>
-    
     <div id="contenitore">
       <div id="dettagli" class="dettagli-card"></div>
       <div id="trailer" class="box-trailer"></div>
+      <div id="episodi"></div>
+      <div id="player-container"></div>
     </div>
   </div>
-
-  <script>
-    const dettagli = document.getElementById("dettagli");
-    const trailerBox = document.getElementById("trailer");
-    const API_KEY = "2d082597ab951b3a9596ca23e71413a8"; // Inserisci la tua API key TMDB
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get("id");
-    const tipo = urlParams.get("type");
-
-    if (!id || !tipo) {
-      dettagli.innerHTML = "<p class='messaggio'>ID o tipo mancanti.</p>";
-      throw new Error("Parametro mancante");
-    }
-
-    async function caricaDettagli() {
-      try {
-        const res = await fetch(`https://api.themoviedb.org/3/${tipo}/${id}?api_key=${API_KEY}&language=it-IT`);
-        const data = await res.json();
-
-        const titolo = data.title || data.name;
-        const descrizione = data.overview || "Nessuna descrizione disponibile.";
-        const img = data.poster_path 
-          ? `https://image.tmdb.org/t/p/w500${data.poster_path}`
-          : "https://via.placeholder.com/300x450?text=No+Image";
-        const dataUscita = data.release_date || data.first_air_date || "Data non disponibile";
-        const voto = data.vote_average ? `${data.vote_average}/10` : "N/A";
-        const generi = data.genres?.map(g => g.name).join(", ") || "Non disponibili";
-
-        dettagli.innerHTML = `
-          <img src="${img}" alt="${titolo}">
-          <div class="info">
-            <h2>${titolo}</h2>
-            <p><strong>Data di uscita:</strong> ${dataUscita}</p>
-            <p><strong>Generi:</strong> ${generi}</p>
-            <p><strong>Voto:</strong> ${voto}</p>
-            <p><strong>Descrizione:</strong> ${descrizione}</p>
-          </div>
-        `;
-
-        await caricaTrailer();
-        aggiungiPlayerVixSrc(id, tipo);
-
-      } catch (error) {
-        dettagli.innerHTML = "<p class='messaggio'>Errore nel caricamento dei dettagli.</p>";
-        console.error(error);
-      }
-    }
-
-    async function caricaTrailer() {
-      try {
-        const res = await fetch(`https://api.themoviedb.org/3/${tipo}/${id}/videos?api_key=${API_KEY}&language=it-IT`);
-        const data = await res.json();
-
-        const trailer = data.results.find(video => video.type === "Trailer" && video.site === "YouTube");
-        if (trailer) {
-          trailerBox.innerHTML = `
-            <h2>🎬 Trailer</h2>
-            <div class="iframe-container">
-              <iframe src="https://www.youtube.com/embed/${trailer.key}" allowfullscreen></iframe>
-            </div>
-          `;
-        } else {
-          trailerBox.innerHTML = "<p class='messaggio'>Nessun trailer disponibile.</p>";
-        }
-      } catch (error) {
-        console.error("Errore nel caricamento del trailer", error);
-      }
-    }
-
-    function aggiungiPlayerVixSrc(id, tipo) {
-      const playerBox = document.createElement("div");
-      playerBox.classList.add("box-player");
-      playerBox.innerHTML = `
-        <h2>🎥 Guarda ora</h2>
-        <div class="iframe-container">
-          <iframe src="https://vixsrc.to/${tipo}/${id}" allowfullscreen></iframe>
-        </div>
-      `;
-      trailerBox.insertAdjacentElement("afterend", playerBox);
-    }
-
-    caricaDettagli();
-  </script>
+  <script src="dettagli.js"></script>
 </body>
 </html>
