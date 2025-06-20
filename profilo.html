@@ -3,103 +3,51 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Il mio Profilo</title>
+  <title>Profilo</title>
+  <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
   <style>
     body {
-      background-color: #111;
+      background: #111;
       color: white;
-      font-family: Arial, sans-serif;
+      font-family: sans-serif;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
+      padding: 2rem;
     }
-
-    .profile-container {
-      background-color: #1e1e1e;
-      padding: 30px;
-      border-radius: 10px;
-      max-width: 400px;
-      width: 100%;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-      text-align: center;
-    }
-
-    h2 {
-      color: #00adee;
-      margin-bottom: 20px;
-    }
-
-    .profile-data {
-      text-align: left;
-      margin-bottom: 20px;
-    }
-
-    .profile-data p {
-      margin: 10px 0;
-      font-size: 1em;
-    }
-
+    h1 { margin-bottom: 1rem; }
     button {
-      background-color: #00adee;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-size: 1em;
+      margin-top: 2rem;
+      padding: 0.5rem 1rem;
+      font-size: 16px;
       cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #008dbd;
     }
   </style>
 </head>
 <body>
-  <div class="profile-container">
-    <h2>👤 Il mio Profilo</h2>
-    <div class="profile-data" id="profile-info">
-      Caricamento dati...
-    </div>
-    <button id="logout">🔓 Esci</button>
-  </div>
+  <h1>👤 Il tuo profilo</h1>
+  <div id="user-profile"></div>
+  <button onclick="logout()">Esci</button>
 
-  <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
-    const supabase = createClient(
-      'https://eymlncdzidfgfeuhkirr.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5bWxuY2R6aWRmZ2ZldWhraXJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA0NTA3MzQsImV4cCI6MjA2NjAyNjczNH0.E3r8Pe_ZztM7GtWXvloHgL6--49Do_sOV2jvZfWrUc0'
-    );
-
-    const profileInfo = document.getElementById('profile-info');
-    const logoutBtn = document.getElementById('logout');
-
-    async function loadProfile() {
-      const { data: { user }, error } = await supabase.auth.getUser();
-      if (error || !user) {
-        profileInfo.textContent = "Nessun utente loggato.";
-        return;
-      }
-
-      const { email, user_metadata } = user;
-      const username = user_metadata?.username || "Non impostato";
-      const age = user_metadata?.age || "Non specificata";
-
-      profileInfo.innerHTML = `
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Username:</strong> ${username}</p>
-        <p><strong>Età:</strong> ${age}</p>
-      `;
-    }
-
-    logoutBtn.addEventListener('click', async () => {
-      await supabase.auth.signOut();
-      window.location.href = 'auth.html';
+  <script>
+    Clerk.configure({
+      publishableKey: "pk_test_b23saWdpbmctaWVyWxhLTc1LmNsZXJrLmFjY291bnRzLmRldiQ"
     });
 
-    loadProfile();
+    window.Clerk.load().then(async () => {
+      await Clerk.mountUserProfile("#user-profile", {
+        appearance: {
+          elements: {
+            card: { backgroundColor: "#222", color: "#fff" }
+          }
+        }
+      });
+    });
+
+    async function logout() {
+      await Clerk.signOut();
+      window.location.href = "index.html";
+    }
   </script>
 </body>
 </html>
