@@ -5,76 +5,26 @@ body {
   color: #fff;
 }
 
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #000;
-  padding: 15px 20px;
-  flex-wrap: wrap;
+.container {
+  padding: 20px;
+  max-width: 1000px;
+  margin: auto;
 }
 
-header h1 {
-  color: #e50914;
-  font-size: 20px;
-  margin: 0 10px;
-  flex: 1;
-  text-align: center;
-}
-
-.home-link {
+.home-button {
+  display: inline-block;
+  background: linear-gradient(135deg, #e50914, #b20710);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 30px;
   text-decoration: none;
-}
-
-.home-link button {
-  background-color: #e50914;
-  border: none;
-  padding: 8px 12px;
-  color: white;
   font-weight: bold;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  margin-bottom: 30px;
+  transition: background 0.3s ease;
 }
 
-.home-link button:hover {
-  background-color: #b20710;
-}
-
-.search-bar {
-  display: flex;
-  align-items: center;
-  background-color: #222;
-  padding: 5px;
-  border-radius: 25px;
-  margin-top: 10px;
-}
-
-.search-bar input {
-  border: none;
-  outline: none;
-  background: transparent;
-  color: #fff;
-  padding: 8px 12px;
-  font-size: 14px;
-  width: 140px;
-}
-
-.search-bar button {
-  background: linear-gradient(to right, #e50914, #ff6f61);
-  border: none;
-  color: white;
-  border-radius: 50%;
-  padding: 8px;
-  cursor: pointer;
-  margin-left: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-main {
-  padding: 30px 15px;
+.home-button:hover {
+  background: linear-gradient(135deg, #ff1b1b, #c31111);
 }
 
 #contenitore {
@@ -83,14 +33,14 @@ main {
   align-items: center;
 }
 
-/* Card dettagli – senza effetto rosso */
+/* Card dettagli */
 .dettagli-card {
   background-color: #1c1c1c;
-  border-radius: 10px;
+  border-radius: 20px;
   overflow: hidden;
-  max-width: 600px;
+  max-width: 800px;
   width: 100%;
-  margin-bottom: 30px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.4);
 }
 
 .dettagli-card img {
@@ -100,48 +50,59 @@ main {
 }
 
 .dettagli-card .info {
-  padding: 20px;
+  padding: 25px;
 }
 
 .dettagli-card h2 {
   margin-top: 0;
   color: #e50914;
+  font-size: 26px;
 }
 
 .dettagli-card p {
-  margin: 8px 0;
-  font-size: 15px;
+  margin: 10px 0;
+  font-size: 16px;
+  line-height: 1.5;
 }
 
 .dettagli-card strong {
-  color: #fff;
+  color: #e50914;
 }
 
-/* Trailer YouTube – con effetto rosso sfumato */
+/* Trailer */
 .box-trailer {
-  margin: 20px auto;
-  max-width: 600px;
-  border-radius: 10px;
-  overflow: hidden;
-  background-color: #111;
-  box-shadow: 0 0 20px rgba(229, 9, 20, 0.2);
-  transition: box-shadow 0.3s ease;
+  margin: 30px auto;
+  max-width: 800px;
+  background: #1c1c1c;
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 0 25px rgba(229, 9, 20, 0.3);
 }
 
-.box-trailer:hover {
-  box-shadow: 0 0 25px rgba(229, 9, 20, 0.35);
+.box-trailer h2 {
+  color: #ff4f4f;
+  margin-bottom: 20px;
 }
 
-.box-trailer iframe {
+.iframe-container {
+  position: relative;
   width: 100%;
-  height: 340px;
-  display: block;
+  padding-bottom: 56.25%;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+}
+
+.iframe-container iframe {
+  position: absolute;
+  width: 100%;
+  height: 100%;
   border: none;
 }
 
-/* Messaggio di errore */
 .messaggio {
-  color: #aaa;
+  color: #ccc;
   font-size: 18px;
   margin-top: 50px;
   text-align: center;
