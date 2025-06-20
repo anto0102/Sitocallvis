@@ -2,34 +2,35 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Cinema Discovery</title>
-  <link rel="stylesheet" href="style.css" />
-  <script defer src="script.js"></script>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
   <header>
-    <div class="logo">🎬 Cinema Discovery</div>
-    <form id="searchForm">
-      <input type="text" id="searchInput" placeholder="Cerca un film o serie..." />
-      <button type="submit">Cerca</button>
-    </form>
+    <h1>🎬 Cinema Discovery</h1>
+    <div id="search-bar">
+      <input id="search-input" type="text" placeholder="Cerca un film o serie..."/>
+      <button id="search-button">Cerca</button>
+    </div>
   </header>
 
-  <main>
-    <section class="section">
+  <main id="contenuto">
+    <section class="sezione">
       <h2>⭐ Consigliati</h2>
-      <div class="card-container" id="recommended"></div>
+      <div id="consigliati" class="scroll-container"></div>
     </section>
 
-    <section class="section">
+    <section class="sezione">
       <h2>🔥 Titoli del momento</h2>
-      <div class="card-container" id="trending"></div>
+      <div id="tendenze" class="scroll-container"></div>
     </section>
   </main>
 
   <footer>
     © 2025 - Progetto di cinema by anxyy 🍿
   </footer>
+
+  <script src="index.js"></script>
 </body>
 </html>
