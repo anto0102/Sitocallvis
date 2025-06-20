@@ -70,7 +70,7 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
 
   const response = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=it-IT&sort_by=popularity.desc`);
   const data = await response.json();
-  const results = data.results || [];
+const results = (data.results || []).sort((a, b) => b.popularity - a.popularity);
 
   const main = document.getElementById('main-content');
   main.innerHTML = `<section><h2>🔍 Risultati per "${query}"</h2><div class="movie-container" id="search-results"></div></section>`;
