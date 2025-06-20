@@ -1,78 +1,50 @@
-// Estrai l'ID dalla URL
-const urlParams = new URLSearchParams(window.location.search);
-const id = urlParams.get("id");
-const tipo = urlParams.get("tipo"); // "movie" o "tv"
+const form = document.querySelector("form");
+const input = document.querySelector("input");
+const risultati = document.getElementById("risultati");
+const API_KEY = "2d082597ab951b3a9596ca23e71413a8"; // <-- Sostituiscilo con la tua vera chiave
 
-const API_KEY = "2d082597ab951b3a9596ca23e71413a8"; // Sostituisci con la tua vera API Key
-const contenitore = document.getElementById("contenitore");
+form.addEventListener("submit", function (e) {
+  e.preventDefault();
+  const query = input.value.trim();
 
-// Recupera i dettagli dal TMDb
-async function getDettagli() {
-  try {
-    const risposta = await fetch(`https://api.themoviedb.org/3/${tipo}/${id}?api_key=${API_KEY}&language=it-IT`);
-    const dati = await risposta.json();
-
-    // Crea HTML dettagli
-    const dettagli = document.createElement("div");
-    dettagli.classList.add("box-dettagli");
-    dettagli.innerHTML = `
-      <h2 style="color:red">${dati.name || dati.title}</h2>
-      <p><strong>Tipo:</strong> ${tipo === "movie" ? "Film" : "Serie TV"}</p>
-      <p><strong>Data uscita:</strong> ${dati.release_date || dati.first_air_date}</p>
-      <p><strong>Durata:</strong> ${tipo === "movie" ? dati.runtime + " min" : dati.number_of_episodes + " episodi"}</p>
-      <p><strong>Genere:</strong> ${dati.genres.map(g => g.name).join(", ")}</p>
-      <p><strong>Punteggio:</strong> ⭐ ${dati.vote_average}</p>
-      <p><strong>Trama:</strong> ${dati.overview}</p>
-    `;
-    contenitore.appendChild(dettagli);
-
-    // Carica trailer YouTube
-    caricaTrailer();
-
-    // Carica video player da vixsrc
-    caricaPlayerVix(tipo, id);
-
-  } catch (errore) {
-    console.error("Errore nel recupero dettagli:", errore);
+  if (query) {
+    cercaFilmOSerie(query);
   }
-}
+});
 
-async function caricaTrailer() {
+async function cercaFilmOSerie(query) {
+  risultati.innerHTML = ""; // Pulisce i risultati precedenti
+
   try {
-    const risposta = await fetch(`https://api.themoviedb.org/3/${tipo}/${id}/videos?api_key=${API_KEY}&language=it-IT`);
+    const risposta = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&language=it-IT&query=${encodeURIComponent(query)}`);
     const dati = await risposta.json();
-    const trailer = dati.results.find(video => video.type === "Trailer" && video.site === "YouTube");
 
-    if (trailer) {
-      const boxTrailer = document.createElement("div");
-      boxTrailer.className = "box-trailer";
-      boxTrailer.innerHTML = `
-        <iframe width="100%" height="400" src="https://www.youtube.com/embed/${trailer.key}" 
-          title="Trailer" frameborder="0" allowfullscreen loading="lazy"></iframe>
-      `;
-      contenitore.appendChild(boxTrailer);
+    if (dati.results.length === 0) {
+      risultati.innerHTML = "<p>Nessun risultato trovato.</p>";
+      return;
     }
+
+    dati.results.forEach(item => {
+      // Filtra solo movie o serie TV (ignora persone e altro)
+      if (item.media_type === "movie" || item.media_type === "tv") {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const titolo = item.title || item.name;
+        const imgPath = item.poster_path 
+          ? `https://image.tmdb.org/t/p/w500${item.poster_path}` 
+          : "https://via.placeholder.com/300x450?text=No+Image";
+
+        card.innerHTML = `
+          <img src="${imgPath}" alt="${titolo}">
+          <h3>${titolo}</h3>
+          <a href="dettagli.html?id=${item.id}&tipo=${item.media_type}">Dettagli</a>
+        `;
+        risultati.appendChild(card);
+      }
+    });
   } catch (errore) {
-    console.warn("Trailer non disponibile:", errore);
+    console.error("Errore durante la ricerca:", errore);
+    risultati.innerHTML = "<p>Errore durante la ricerca.</p>";
   }
 }
-
-function caricaPlayerVix(tipo, id) {
-  const playerContainer = document.createElement('div');
-  playerContainer.className = 'box-trailer';
-
-  const iframe = document.createElement('iframe');
-  iframe.src = `https://vixsrc.to/embed/${tipo}/${id}`;
-  iframe.width = '100%';
-  iframe.height = '400';
-  iframe.allowFullscreen = true;
-  iframe.loading = 'lazy';
-  iframe.referrerPolicy = 'no-referrer';
-  iframe.style.border = 'none';
-
-  playerContainer.appendChild(iframe);
-  contenitore.appendChild(playerContainer);
-}
-
-// Avvia il caricamento
-getDettagli();
