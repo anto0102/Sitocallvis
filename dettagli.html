@@ -26,32 +26,25 @@
       max-width: 800px;
       margin: auto;
     }
-    h1, h2, p {
-      margin: 1rem 0;
-    }
-    a {
-      color: red;
-      text-decoration: underline;
-    }
   </style>
 </head>
 <body>
   <div class="container">
-    <a href="index.html">&larr; Torna alla Home</a>
+    <a href="index.html" style="color: red;">&larr; Torna alla Home</a>
     <div id="dettagli"></div>
   </div>
 
   <script>
     const dettagli = document.getElementById("dettagli");
-    const API_KEY = "2d082597ab951b3a9596ca23e71413a8"; // <-- Cambia con la tua vera TMDB API key
+    const API_KEY = "INSERISCI_LA_TUA_API_KEY";
 
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get("id");
-    const tipo = urlParams.get("tipo");
+    const tipo = urlParams.get("type");
 
     if (!id || !tipo) {
       dettagli.innerHTML = "<p>ID o tipo mancanti.</p>";
-      throw new Error("Parametro mancante nell'URL");
+      throw new Error("Parametro mancante");
     }
 
     async function caricaDettagli() {
