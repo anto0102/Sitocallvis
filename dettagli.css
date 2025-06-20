@@ -92,17 +92,14 @@ body {
   padding-top: 90px; /* FIX: spazio per evitare sovrapposizione con titolo sticky */
 }
 
-.episodio-card p {
-  margin: 5px 0;
-  font-size: 0.85em;
-  color: white;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3; /* Limita a 3 righe */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.2em; /* Altezza riga */
-  max-height: 3.6em;   /* 1.2em * 3 righe */
+.episodio-card {
+  width: 200px;
+  flex-shrink: 0;
+  background-color: #222;
+  padding: 10px;
+  border-radius: 10px;
+  box-sizing: border-box;
+  transition: transform 0.2s;
 }
 
 .episodio-card:hover {
@@ -111,10 +108,10 @@ body {
 
 .episodio-card img {
   width: 100%;
+  height: 120px;
+  object-fit: cover;
   border-radius: 8px;
   margin-bottom: 10px;
-  height: auto;
-  object-fit: cover;
 }
 
 .episodio-card p {
@@ -126,6 +123,8 @@ body {
   -webkit-line-clamp: 3; /* mostra fino a 3 righe */
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.2em;
+  max-height: 3.6em;
 }
 
 .episodio-card strong {
