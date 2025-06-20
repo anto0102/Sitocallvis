@@ -1,49 +1,64 @@
 <script>
-  // ✅ TMDB API Key - INSERISCI LA TUA QUI:
-  const apiKey = "2d082597ab951b3a9596ca23e71413a8";
+  document.addEventListener("DOMContentLoaded", () => {
+    // ✅ TMDB API Key - INSERISCI LA TUA QUI:
+    const apiKey = "2d082597ab951b3a9596ca23e71413a8";
 
-  const consigliatiContainer = document.getElementById("consigliati");
+    const consigliatiContainer = document.getElementById("consigliati");
 
-  async function fetchRandomPopularMovies() {
-    let allMovies = [];
-
-    // Carica da 3 pagine casuali
-    for (let i = 0; i < 3; i++) {
-      const page = Math.floor(Math.random() * 20) + 1;
-      try {
-        const res = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=it-IT&page=${page}`);
-        const data = await res.json();
-        if (data.results) {
-          allMovies = allMovies.concat(data.results);
-        }
-      } catch (error) {
-        console.error("Errore nel caricamento film:", error);
-      }
+    if (!consigliatiContainer) {
+      console.error("Elemento con ID 'consigliati' non trovato nel DOM.");
+      return;
     }
 
-    // Mischia i film
-    const shuffled = allMovies.sort(() => 0.5 - Math.random());
-    const selected = shuffled.slice(0, 10); // Mostra 10 film casuali
+    async function fetchRandomPopularMovies() {
+      let allMovies = [];
 
-    consigliatiContainer.innerHTML = "";
+      // Carica da 3 pagine casuali
+      for (let i = 0; i < 3; i++) {
+        const page = Math.floor(Math.random() * 20) + 1;
+        try {
+          const res = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=it-IT&page=${page}`);
+          const data = await res.json();
 
-    selected.forEach((movie) => {
-      const title = movie.title || "Senza titolo";
-      const poster = movie.poster_path
-        ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-        : "fallback.jpg";
+          if (data.results) {
+            allMovies = allMovies.concat(data.results);
+          } else {
+            console.warn("Nessun risultato nella risposta:", data);
+          }
+        } catch (error) {
+          console.error("Errore nel caricamento film:", error);
+        }
+      }
 
-      const card = document.createElement("div");
-      card.className = "movie-card";
-      card.innerHTML = `
-        <a href="dettagli.html?id=${movie.id}">
-          <img src="${poster}" alt="${title}" />
-          <h3>${title}</h3>
-        </a>
-      `;
-      consigliatiContainer.appendChild(card);
-    });
-  }
+      if (allMovies.length === 0) {
+        consigliatiContainer.innerHTML = "<p>Nessun film trovato.</p>";
+        return;
+      }
 
-  fetchRandomPopularMovies();
+      // Mischia e seleziona 10 film
+      const shuffled = allMovies.sort(() => 0.5 - Math.random());
+      const selected = shuffled.slice(0, 10);
+
+      consigliatiContainer.innerHTML = "";
+
+      selected.forEach((movie) => {
+        const title = movie.title || "Senza titolo";
+        const poster = movie.poster_path
+          ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+          : "fallback.jpg";
+
+        const card = document.createElement("div");
+        card.className = "movie-card";
+        card.innerHTML = `
+          <a href="dettagli.html?id=${movie.id}">
+            <img src="${poster}" alt="${title}" />
+            <h3>${title}</h3>
+          </a>
+        `;
+        consigliatiContainer.appendChild(card);
+      });
+    }
+
+    fetchRandomPopularMovies();
+  });
 </script>
