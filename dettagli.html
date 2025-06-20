@@ -2,27 +2,100 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dettagli</title>
-  <link rel="stylesheet" href="dettagli.css" />
+  <style>
+    body {
+      background-color: #111;
+      color: #eee;
+      font-family: Arial, sans-serif;
+      padding: 1rem;
+    }
+    img {
+      max-width: 100%;
+      border-radius: 10px;
+    }
+    iframe {
+      width: 100%;
+      max-width: 640px;
+      height: 360px;
+      border: none;
+      margin-top: 1rem;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+    }
+    h1, h2, p {
+      margin: 1rem 0;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1 class="logo">CineVerse 🎬</h1>
+  <div class="container">
+    <a href="index.html" style="color: red;">&larr; Torna alla Home</a>
+    <div id="dettagli"></div>
+  </div>
 
-    <!-- ✅ Bottone home corretto (accessibile e semanticamente giusto) -->
-    <nav>
-      <a href="index.html" class="home-button">Torna alla Home</a>
-    </nav>
+  <script>
+    const dettagli = document.getElementById("dettagli");
+    const API_KEY = "YOUR_TMDB_API_KEY"; // Sostituisci con la tua vera API key
 
-    <div class="search-bar">
-      <input type="text" id="search-input" placeholder="Cerca..." />
-      <button id="search-button">🔍</button>
-    </div>
-  </header>
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get("id");
+    const tipo = urlParams.get("tipo"); // 'movie' o 'tv'
 
-  <main id="contenitore"></main>
+    if (!id || !tipo) {
+      dettagli.innerHTML = "<p>ID o tipo mancanti.</p>";
+      throw new Error("Parametro mancante");
+    }
 
-  <script src="dettagli.js"></script>
+    async function caricaDettagli() {
+      try {
+        const res = await fetch(`https://api.themoviedb.org/3/${tipo}/${id}?api_key=${API_KEY}&language=it-IT`);
+        const data = await res.json();
+
+        const titolo = data.title || data.name;
+        const descrizione = data.overview || "Nessuna descrizione disponibile.";
+        const img = data.poster_path 
+          ? `https://image.tmdb.org/t/p/w500${data.poster_path}`
+          : "https://via.placeholder.com/300x450?text=No+Image";
+
+        dettagli.innerHTML = `
+          <h1>${titolo}</h1>
+          <img src="${img}" alt="${titolo}">
+          <p>${descrizione}</p>
+          <div id="trailer"></div>
+        `;
+
+        caricaTrailer();
+
+      } catch (error) {
+        dettagli.innerHTML = "<p>Errore nel caricamento dei dettagli.</p>";
+        console.error(error);
+      }
+    }
+
+    async function caricaTrailer() {
+      try {
+        const res = await fetch(`https://api.themoviedb.org/3/${tipo}/${id}/videos?api_key=${API_KEY}&language=it-IT`);
+        const data = await res.json();
+
+        const trailer = data.results.find(video => video.type === "Trailer" && video.site === "YouTube");
+        if (trailer) {
+          document.getElementById("trailer").innerHTML = `
+            <h2>Trailer</h2>
+            <iframe src="https://www.youtube.com/embed/${trailer.key}" allowfullscreen></iframe>
+          `;
+        } else {
+          document.getElementById("trailer").innerHTML = "<p>Nessun trailer disponibile.</p>";
+        }
+      } catch (error) {
+        console.error("Errore nel caricamento del trailer", error);
+      }
+    }
+
+    caricaDettagli();
+  </script>
 </body>
 </html>
