@@ -1,15 +1,14 @@
-const API_KEY = '2d082597ab951b3a9596ca23e71413a8'; // Inserisci qui la tua API key TMDb
+const API_KEY = '2d082597ab951b3a9596ca23e71413a8'; // ← Inserisci qui la tua API KEY di TMDb
 const contenitore = document.getElementById('contenitore');
 
-// Prendi i parametri dalla URL
 const params = new URLSearchParams(window.location.search);
 const id = params.get('id');
-const tipo = params.get('type'); // "movie" o "tv"
+const tipo = params.get('type');
 
 caricaDettagli();
-setupSearch(); // Attiva la ricerca
+setupSearch();
 
-// Carica i dettagli del film o serie
+// Carica i dettagli
 async function caricaDettagli() {
   if (!id || !tipo) {
     mostraMessaggio('Contenuto non trovato.');
@@ -17,10 +16,10 @@ async function caricaDettagli() {
   }
 
   try {
-    const risposta = await fetch(`https://api.themoviedb.org/3/${tipo}/${id}?api_key=${API_KEY}&language=it-IT`);
-    const dati = await risposta.json();
+    const res = await fetch(`https://api.themoviedb.org/3/${tipo}/${id}?api_key=${API_KEY}&language=it-IT`);
+    const dati = await res.json();
 
-    if (dati.success === false || dati.status_code === 34) {
+    if (!res.ok || dati.status_code === 34) {
       mostraMessaggio('Contenuto non trovato.');
       return;
     }
@@ -38,9 +37,9 @@ async function caricaDettagli() {
     const card = document.createElement('div');
     card.className = 'dettagli-card';
     card.innerHTML = `
-      <img src="${immagine}" alt="${titolo}" class="img-dettaglio" />
+      <img src="${immagine}" alt="${titolo}" />
       <div class="info">
-        <h1>${titolo}</h1>
+        <h2>${titolo}</h2>
         <p><strong>Tipo:</strong> ${tipo === 'movie' ? 'Film' : 'Serie TV'}</p>
         <p><strong>Data uscita:</strong> ${dataUscita || 'N/A'}</p>
         <p><strong>Durata:</strong> ${durata}</p>
@@ -52,20 +51,20 @@ async function caricaDettagli() {
     contenitore.appendChild(card);
 
     await caricaTrailer(id, tipo);
-  } catch (errore) {
+  } catch (e) {
     mostraMessaggio('Errore durante il caricamento.');
-    console.error(errore);
+    console.error(e);
   }
 }
 
-// Carica trailer da TMDb
+// Carica trailer YouTube
 async function caricaTrailer(id, tipo) {
   const url = `https://api.themoviedb.org/3/${tipo}/${id}/videos?api_key=${API_KEY}&language=it-IT`;
-  const risposta = await fetch(url);
-  const dati = await risposta.json();
+  const res = await fetch(url);
+  const dati = await res.json();
 
   const trailer = dati.results?.find(
-    video => video.type === 'Trailer' && video.site === 'YouTube'
+    v => v.type === 'Trailer' && v.site === 'YouTube'
   );
 
   if (trailer) {
@@ -84,15 +83,15 @@ async function caricaTrailer(id, tipo) {
   }
 }
 
-// Messaggio errore
+// Mostra messaggio d’errore
 function mostraMessaggio(testo) {
   contenitore.innerHTML = `<div class="messaggio">${testo}</div>`;
 }
 
-// 🔍 Funzione ricerca
+// 🔍 Ricerca
 function setupSearch() {
-  const input = document.getElementById('search-input');
-  const button = document.getElementById('search-button');
+  const input = document.querySelector('#search-input');
+  const button = document.querySelector('#search-button');
 
   if (!input || !button) return;
 
