@@ -69,11 +69,18 @@
         const data = await res.json();
 
         const trailer = data.results.find(video => video.type === "Trailer" && video.site === "YouTube");
+
         if (trailer) {
           trailerBox.innerHTML = `
-            <h2>🎬 Trailer</h2>
-            <div class="iframe-container">
-              <iframe src="https://www.youtube.com/embed/${trailer.key}" allowfullscreen></iframe>
+            <div class="trailer-header">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" height="24" viewBox="0 0 24 24" width="24">
+                <path fill="#fff" d="M4 4h16v16H4z" opacity="0"/>
+                <path fill="#e50914" d="M10 16.5l6-4.5-6-4.5v9z"/>
+              </svg>
+              <h2>Trailer</h2>
+            </div>
+            <div class="trailer-video">
+              <iframe src="https://www.youtube.com/embed/${trailer.key}" frameborder="0" allowfullscreen></iframe>
             </div>
           `;
         } else {
