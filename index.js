@@ -32,7 +32,7 @@ function createMovieCard(movie) {
   card.className = 'movie-card';
 
   card.innerHTML = `
-    <a href="dettagli.html?id=${movie.id}">
+    <a href="dettagli.html?id=${movie.id}&type=movie">
       <img src="${poster}" alt="${title}" />
       <h3>${title}</h3>
     </a>
