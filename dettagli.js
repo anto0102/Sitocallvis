@@ -1,4 +1,4 @@
-const API_KEY = "2d082597ab951b3a9596ca23e71413a8"; // <-- Inserisci la tua vera API Key TMDB
+const API_KEY = "2d082597ab951b3a9596ca23e71413a8"; // Inserisci la tua TMDB API key
 
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("id");
@@ -46,7 +46,6 @@ async function caricaDettagli() {
   if (tipo === "tv") {
     selezionaStagioneBtn.style.display = "inline-block";
     await caricaStagioni(id);
-    // Carica automaticamente la stagione 1
     const stagione1 = stagioni.find(s => s.season_number === 1);
     if (stagione1) {
       caricaEpisodi(id, 1);
@@ -118,14 +117,32 @@ async function caricaEpisodi(tvId, seasonNumber) {
     const ep = document.createElement("div");
     ep.className = "episodio-card";
     ep.innerHTML = `
-      <a href="https://vixsrc.to/tv/${tvId}/${seasonNumber}/${episodio.episode_number}" target="_blank">
+      <div class="episodio-link" style="cursor:pointer">
         <img src="https://image.tmdb.org/t/p/w300${episodio.still_path}" alt="Episodio">
         <p><strong>${episodio.episode_number}. ${episodio.name}</strong></p>
         <p>${episodio.overview || "Nessuna descrizione."}</p>
-      </a>
+      </div>
     `;
+    ep.onclick = () => {
+      aggiornaPlayer(tvId, seasonNumber, episodio.episode_number);
+    };
     wrapper.appendChild(ep);
   });
+
+  // Carica il primo episodio all’apertura
+  if (data.episodes.length > 0) {
+    aggiornaPlayer(tvId, seasonNumber, data.episodes[0].episode_number);
+  }
+}
+
+function aggiornaPlayer(tvId, season, episode) {
+  playerBox.innerHTML = `
+    <div class="box-player">
+      <h2>🎥 S${season} | Episodio ${episode}</h2>
+      <div class="iframe-container">
+        <iframe src="https://vixsrc.to/tv/${tvId}/${season}/${episode}" allowfullscreen></iframe>
+      </div>
+    </div>`;
 }
 
 // Gestione modale
