@@ -1,4 +1,4 @@
-const apiKey = '';
+const apiKey = '2d082597ab951b3a9596ca23e71413a8';
 const baseUrl = 'https://api.themoviedb.org/3';
 const imageBase = 'https://image.tmdb.org/t/p/w500';
 
@@ -7,20 +7,20 @@ document.addEventListener('DOMContentLoaded', () => {
   setupSearch();
 });
 
-// Carica le sezioni della home
+// Carica le sezioni della homepage
 function loadHomeSections() {
-  loadMovies(`${baseUrl}/movie/popular?api_key=${apiKey}&language=it-IT&page=1`, 'Consigliati');
-  loadMovies(`${baseUrl}/trending/all/week?api_key=${apiKey}&language=it-IT`, 'Titoli del momento');
-  loadMoviesByGenre(10764, 'Reality');
-  loadMoviesByGenre(27, 'Horror');
-  loadMoviesByGenre(80, 'Crime');
-  loadMoviesByGenre(28, 'Action');
-  loadMoviesByGenre(12, 'Adventure');
-  loadMoviesByGenre(10749, 'Romance');
-  loadMoviesByGenre(10752, 'War & Politics');
+  loadMovies(`${baseUrl}/movie/popular?api_key=${apiKey}&language=it-IT&page=1`, '🔥 Consigliati');
+  loadMovies(`${baseUrl}/trending/all/week?api_key=${apiKey}&language=it-IT`, '📈 Titoli del momento');
+  loadMoviesByGenre(10764, '📺 Reality');
+  loadMoviesByGenre(27, '👻 Horror');
+  loadMoviesByGenre(80, '🕵️ Crime');
+  loadMoviesByGenre(28, '💥 Action');
+  loadMoviesByGenre(12, '🌍 Adventure');
+  loadMoviesByGenre(10749, '❤️ Romance');
+  loadMoviesByGenre(10752, '⚔️ War & Politics');
 }
 
-// Carica film da un URL
+// Carica film da un URL specifico
 function loadMovies(url, sectionTitle) {
   fetch(url)
     .then(res => res.json())
@@ -32,13 +32,13 @@ function loadMovies(url, sectionTitle) {
     .catch(err => console.error('Errore nel caricamento:', err));
 }
 
-// Carica film per genere
+// Carica film tramite ID genere
 function loadMoviesByGenre(genreId, sectionTitle) {
   const url = `${baseUrl}/discover/movie?api_key=${apiKey}&with_genres=${genreId}&language=it-IT`;
   loadMovies(url, sectionTitle);
 }
 
-// Crea sezione e card
+// Crea una sezione con le card
 function renderSection(title, items) {
   const container = document.getElementById('contenuti') || createContainer();
   const section = document.createElement('section');
@@ -59,7 +59,7 @@ function renderSection(title, items) {
     card.innerHTML = `
       <img src="${imageBase + item.poster_path}" alt="${item.title || item.name}" />
       <h3>${item.title || item.name}</h3>
-      <p>⭐ ${item.vote_average?.toFixed(1)}</p>
+      <p>⭐ ${item.vote_average?.toFixed(1) || 'N/A'}</p>
     `;
     card.addEventListener('click', () => {
       const id = item.id;
@@ -83,7 +83,7 @@ function createContainer() {
   return container;
 }
 
-// Funzione di ricerca
+// Funzione ricerca
 function setupSearch() {
   const input = document.querySelector('#search-input');
   const button = document.querySelector('#search-button');
@@ -98,7 +98,7 @@ function setupSearch() {
         .then(data => {
           const container = document.getElementById('contenuti');
           container.innerHTML = '';
-          renderSection(`Risultati per "${query}"`, data.results);
+          renderSection(`🔎 Risultati per "${query}"`, data.results);
         })
         .catch(err => console.error('Errore nella ricerca:', err));
     }
