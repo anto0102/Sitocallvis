@@ -163,3 +163,12 @@ body {
 #lista-stagioni button:hover {
   background-color: #00adee;
 }
+#titolo-stagione {
+  font-size: 1.5em;
+  margin-bottom: 15px;
+  position: sticky;
+  top: 0;
+  background-color: #111;
+  z-index: 10;
+  padding: 10px 0;
+}
