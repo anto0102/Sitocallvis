@@ -76,8 +76,9 @@ body {
   color: #fff;
 }
 
-/* Trailer YouTube – Moderno */
-.box-trailer {
+/* Trailer YouTube */
+.box-trailer,
+.box-player {
   width: 100%;
   max-width: 700px;
   background-color: #1a1a1a;
@@ -87,12 +88,14 @@ body {
   text-align: center;
 }
 
-.box-trailer h2 {
+.box-trailer h2,
+.box-player h2 {
   color: #ff4d4d;
   margin-bottom: 16px;
   font-size: 20px;
 }
 
+/* Container video */
 .iframe-container {
   position: relative;
   width: 100%;
