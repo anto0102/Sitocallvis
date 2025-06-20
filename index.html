@@ -4,33 +4,89 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Cinema Discovery</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="index.js"></script>
 </head>
 <body>
   <header>
-    <h1>🎬 Cinema Discovery</h1>
-    <div id="search-bar">
-      <input id="search-input" type="text" placeholder="Cerca un film o serie..."/>
-      <button id="search-button">Cerca</button>
+    <div class="menu-toggle" id="menu-toggle">☰</div>
+    <h1 class="logo">🎬 Cinema Discovery</h1>
+    <div class="search-bar">
+      <input type="text" placeholder="Cerca un film o serie..." />
+      <button>Cerca</button>
     </div>
   </header>
 
-  <main id="contenuto">
-    <section class="sezione">
+  <nav class="sidebar" id="sidebar">
+    <ul>
+      <li><a href="#">🏠 Home</a></li>
+      <li><a href="#">⭐ Consigliati</a></li>
+      <li><a href="#">🔥 Titoli del momento</a></li>
+      <li><a href="#">🎭 Drammatici</a></li>
+      <li><a href="#">🎬 Azione</a></li>
+      <li><a href="#">😂 Commedie</a></li>
+      <li><a href="#">🎃 Horror</a></li>
+      <li><a href="#">👨‍👩‍👧 Famiglia</a></li>
+      <li><a href="#">🚀 Fantascienza</a></li>
+      <li><a href="#">💘 Romantici</a></li>
+      <li><a href="#">🎞️ Documentari</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section class="category">
       <h2>⭐ Consigliati</h2>
-      <div id="consigliati" class="scroll-container"></div>
+      <div class="movie-row" id="consigliati"></div>
     </section>
 
-    <section class="sezione">
+    <section class="category">
       <h2>🔥 Titoli del momento</h2>
-      <div id="tendenze" class="scroll-container"></div>
+      <div class="movie-row" id="momento"></div>
+    </section>
+
+    <section class="category">
+      <h2>🎭 Drammatici</h2>
+      <div class="movie-row" id="drammatici"></div>
+    </section>
+
+    <section class="category">
+      <h2>🎬 Azione</h2>
+      <div class="movie-row" id="azione"></div>
+    </section>
+
+    <section class="category">
+      <h2>😂 Commedie</h2>
+      <div class="movie-row" id="commedie"></div>
+    </section>
+
+    <section class="category">
+      <h2>🎃 Horror</h2>
+      <div class="movie-row" id="horror"></div>
+    </section>
+
+    <section class="category">
+      <h2>👨‍👩‍👧 Famiglia</h2>
+      <div class="movie-row" id="famiglia"></div>
+    </section>
+
+    <section class="category">
+      <h2>🚀 Fantascienza</h2>
+      <div class="movie-row" id="fantascienza"></div>
+    </section>
+
+    <section class="category">
+      <h2>💘 Romantici</h2>
+      <div class="movie-row" id="romantici"></div>
+    </section>
+
+    <section class="category">
+      <h2>🎞️ Documentari</h2>
+      <div class="movie-row" id="documentari"></div>
     </section>
   </main>
 
   <footer>
-    © 2025 - Progetto di cinema by anxyy 🍿
+    <p>© 2025 - Progetto di cinema by anxyy 🍿</p>
   </footer>
-
-  <script src="index.js"></script>
 </body>
 </html>
