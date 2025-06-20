@@ -1,35 +1,70 @@
-<script>
-  async function carica(tipo) {
-    const lista = document.getElementById('lista');
-    lista.innerHTML = 'Caricamento…';
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo VixSrc.to</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      img {
+        border-radius: 6px;
+        margin-bottom: 5px;
+      }
+      button {
+        margin-top: 5px;
+      }
+      .item {
+        margin: 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Demo VixSrc.to</h1>
+    <button onclick="carica('movie')">Carica Film</button>
+    <button onclick="carica('tv')">Carica Serie TV</button>
 
-    try {
-      const res = await fetch(`/api/proxy?url=${encodeURIComponent(`https://vixsrc.to/api/list/${tipo}?lang=it`)}`);
-      const data = await res.json();
+    <div id="lista"></div>
+    <hr />
+    <div id="player"></div>
 
-      lista.innerHTML = '';
-      data.results.forEach(item => {
-        const div = document.createElement('div');
-        div.innerHTML = `
-          <img src="${item.poster}" width="100"><br>
-          ${item.title}<br>
-          <button onclick="showPlayer(${item.id}, '${tipo}')">Guarda</button>
+    <script>
+      async function carica(tipo) {
+        const lista = document.getElementById('lista');
+        lista.innerHTML = 'Caricamento...';
+
+        try {
+          const res = await fetch(`/api/proxy?url=${encodeURIComponent(`https://vixsrc.to/api/list/${tipo}?lang=it`)}`);
+          const data = await res.json();
+
+          lista.innerHTML = '';
+          data.results.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'item';
+            div.innerHTML = `
+              <img src="${item.poster}" width="100"><br>
+              <strong>${item.title}</strong><br>
+              <button onclick="showPlayer(${item.id}, '${tipo}')">Guarda</button>
+            `;
+            lista.appendChild(div);
+          });
+        } catch (err) {
+          lista.innerHTML = 'Errore durante il caricamento.';
+          console.error('Errore nel fetch:', err);
+        }
+      }
+
+      function showPlayer(tmdbId, tipo) {
+        const url = tipo === 'movie'
+          ? `https://vixsrc.to/movie/${tmdbId}?lang=it&autoplay=true`
+          : `https://vixsrc.to/tv/${tmdbId}/1/1?lang=it&autoplay=true`;
+
+        document.getElementById('player').innerHTML = `
+          <iframe src="${url}" width="640" height="360" frameborder="0" allowfullscreen></iframe>
         `;
-        lista.appendChild(div);
-      });
-    } catch (e) {
-      lista.innerText = 'Errore nel caricamento';
-      console.error(e);
-    }
-  }
-
-  function showPlayer(tmdbId, tipo) {
-    const params = 'lang=it&autoplay=false&primaryColor=B20710';
-    const url = tipo === 'movie'
-      ? `https://vixsrc.to/movie/${tmdbId}?${params}`
-      : `https://vixsrc.to/tv/${tmdbId}/1/1?${params}`;
-    
-    document.getElementById('player').innerHTML =
-      `<iframe src="${url}" width="640" height="360" frameborder="0" allowfullscreen></iframe>`;
-  }
-</script>
+      }
+    </script>
+  </body>
+</html>
