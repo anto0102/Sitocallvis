@@ -2,25 +2,29 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Scopri Contenuti</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Film App</title>
   <link rel="stylesheet" href="style.css" />
-  <script type="module" src="index.js" defer></script>
 </head>
 <body>
   <header>
-    <div class="logo">
-      🎬 <span>Scopri</span>
-    </div>
-    <div class="search-bar">
-      <input type="text" id="search-input" placeholder="Cerca un film o serie..." />
-      <button id="search-button">🔍</button>
-    </div>
+    <h1>🎬 Scopri</h1>
+    <input type="text" placeholder="Cerca un film o serie..." />
+    <button>🔍</button>
   </header>
 
   <main>
-    <h1>Contenuti</h1>
-    <div id="contenuti"></div>
+    <section class="consigliati-section">
+      <h2>Contenuti</h2>
+      <div id="consigliati-carousel" class="vertical-carousel"></div>
+    </section>
+
+    <section class="titoli-momento-section">
+      <h2>Titoli del momento</h2>
+      <div id="titoli-momento" class="horizontal-scroll"></div>
+    </section>
   </main>
+
+  <script src="index.js" defer></script>
 </body>
 </html>
