@@ -1,4 +1,4 @@
-const API_KEY = ''; // Inserisci qui la tua API Key TMDB
+const API_KEY = '2d082597ab951b3a9596ca23e71413a8'; // Inserisci qui la tua API Key TMDB
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 
