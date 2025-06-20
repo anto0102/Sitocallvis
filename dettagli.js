@@ -1,4 +1,4 @@
-const API_KEY = '2d082597ab951b3a9596ca23e71413a8'; // Inserisci la tua API key qui
+const API_KEY = '2d082597ab951b3a9596ca23e71413a8'; // Inserisci qui la tua API key TMDb
 const contenitore = document.getElementById('contenitore');
 
 // Prendi i parametri dalla URL
@@ -7,7 +7,7 @@ const id = params.get('id');
 const tipo = params.get('type'); // "movie" o "tv"
 
 caricaDettagli();
-setupSearch(); // ⬅️ Attiva la ricerca
+setupSearch(); // Attiva la ricerca
 
 // Carica i dettagli del film o serie
 async function caricaDettagli() {
@@ -38,9 +38,9 @@ async function caricaDettagli() {
     const card = document.createElement('div');
     card.className = 'dettagli-card';
     card.innerHTML = `
-      <img src="${immagine}" alt="${titolo}" />
+      <img src="${immagine}" alt="${titolo}" class="img-dettaglio" />
       <div class="info">
-        <h2>${titolo}</h2>
+        <h1>${titolo}</h1>
         <p><strong>Tipo:</strong> ${tipo === 'movie' ? 'Film' : 'Serie TV'}</p>
         <p><strong>Data uscita:</strong> ${dataUscita || 'N/A'}</p>
         <p><strong>Durata:</strong> ${durata}</p>
@@ -58,7 +58,7 @@ async function caricaDettagli() {
   }
 }
 
-// Trailer
+// Carica trailer da TMDb
 async function caricaTrailer(id, tipo) {
   const url = `https://api.themoviedb.org/3/${tipo}/${id}/videos?api_key=${API_KEY}&language=it-IT`;
   const risposta = await fetch(url);
@@ -84,14 +84,15 @@ async function caricaTrailer(id, tipo) {
   }
 }
 
+// Messaggio errore
 function mostraMessaggio(testo) {
   contenitore.innerHTML = `<div class="messaggio">${testo}</div>`;
 }
 
-// 🔍 Ricerca direttamente da questa pagina
+// 🔍 Funzione ricerca
 function setupSearch() {
-  const input = document.querySelector('#search-input');
-  const button = document.querySelector('#search-button');
+  const input = document.getElementById('search-input');
+  const button = document.getElementById('search-button');
 
   if (!input || !button) return;
 
