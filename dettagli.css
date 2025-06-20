@@ -164,3 +164,33 @@ body {
 .close:hover {
   color: #fff;
 }
+
+/* ✅ Aggiunta per titolo stagione attiva */
+.stagione-attiva {
+  color: #e50914;
+  font-size: 22px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* ✅ Wrapper episodi per layout responsive */
+.episodi-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+/* ✅ Trailer mancante */
+.messaggio {
+  font-style: italic;
+  color: #bbb;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* ✅ Player più grande */
+.box-player.grande .iframe-container {
+  padding-bottom: 65%;
+                         }
