@@ -1,4 +1,4 @@
-const API_KEY = "2d082597ab951b3a9596ca23e71413a8"; // Inserisci la tua TMDB API Key
+const API_KEY = "2d082597ab951b3a9596ca23e71413a8"; // <-- Inserisci la tua vera API Key TMDB
 
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("id");
@@ -43,8 +43,13 @@ async function caricaDettagli() {
 
   await caricaTrailer();
 
-  if (tipo === "tv") caricaStagioni(id);
-  else aggiungiPlayerFilm(id);
+  if (tipo === "tv") {
+    selezionaStagioneBtn.style.display = "inline-block";
+    caricaStagioni(id);
+  } else {
+    selezionaStagioneBtn.style.display = "none";
+    aggiungiPlayerFilm(id);
+  }
 }
 
 async function caricaTrailer() {
@@ -101,4 +106,32 @@ async function caricaEpisodi(tvId, seasonNumber) {
   `;
   const wrapper = episodiBox.querySelector(".carousel-wrapper");
 
-  const res = await fetch(`https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNumber}?api
+  const res = await fetch(`https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNumber}?api_key=${API_KEY}&language=it-IT`);
+  const data = await res.json();
+
+  data.episodes.forEach(episodio => {
+    const ep = document.createElement("div");
+    ep.className = "episodio-card";
+    ep.innerHTML = `
+      <img src="https://image.tmdb.org/t/p/w300${episodio.still_path}" alt="Episodio">
+      <p><strong>${episodio.episode_number}. ${episodio.name}</strong></p>
+      <p>${episodio.overview || "Nessuna descrizione."}</p>
+    `;
+    wrapper.appendChild(ep);
+  });
+}
+
+// Gestione modale
+selezionaStagioneBtn.onclick = () => {
+  modal.style.display = "block";
+};
+
+closeModal.onclick = () => {
+  modal.style.display = "none";
+};
+
+window.onclick = (event) => {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+};
