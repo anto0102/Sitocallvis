@@ -51,3 +51,28 @@ document.getElementById('btnSerie').addEventListener('click', () => {
   ];
   caricaContenuti(serieIDs, 'tv');
 });
+const inputRicerca = document.getElementById('inputRicerca');
+const btnRicerca = document.getElementById('btnRicerca');
+
+btnRicerca.addEventListener('click', async () => {
+  const query = inputRicerca.value.trim();
+  if (!query) return;
+
+  contenitore.innerHTML = "<p>Caricamento...</p>";
+
+  const response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=it-IT`);
+  const data = await response.json();
+
+  contenitore.innerHTML = '';
+
+  if (data.results && data.results.length > 0) {
+    data.results.slice(0, 10).forEach(item => {
+      if (item.media_type === "movie" || item.media_type === "tv") {
+        const card = creaCard(item);
+        contenitore.appendChild(card);
+      }
+    });
+  } else {
+    contenitore.innerHTML = "<p>Nessun risultato trovato.</p>";
+  }
+});
