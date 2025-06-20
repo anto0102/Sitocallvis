@@ -1,48 +1,69 @@
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #f8f9fa;
-  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f8;
+  color: #333;
   margin: 0;
+  padding: 20px;
+  text-align: center;
 }
 
 h1 {
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-#bottoni {
-  text-align: center;
-  margin-bottom: 2rem;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 button {
-  margin: 0 0.5rem;
-  padding: 0.6rem 1.2rem;
+  padding: 12px 20px;
+  margin: 0 10px 30px;
   font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  border: none;
+  border-radius: 10px;
+  background-color: #007bff;
+  color: white;
   cursor: pointer;
-  background-color: #ffffff;
-  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #007bff;
-  color: white;
-  border-color: #007bff;
+  background-color: #0056b3;
 }
 
 #contenitore {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 10px;
+  justify-items: center;
 }
 
 .card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  padding: 1rem;
-  text-align: center;
-  font-weight: bold;
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  width: 100%;
+  max-width: 220px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.card h3 {
+  margin: 10px 0 5px;
+  font-size: 1.1rem;
+}
+
+.card p {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+  color: #555;
 }
