@@ -1,128 +1,27 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cinema Discovery</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
-</head>
-<body>
-  <header>
-    <a href="profilo.html" class="profile-button" title="Il mio profilo">👤</a>
-    <h1>Cinema <span>Discovery</span></h1>
-    <form id="search-form">
-      <input type="text" id="search-input" placeholder="Cerca un film o serie..." />
-      <button type="submit">🔍</button>
-    </form>
-    <div id="auth-area">
-      <button id="login-btn" onclick="location.href='auth.html'">Accedi</button>
-      <button id="logout-btn" style="display:none">Logout</button>
-    </div>
-  </header>
+<script>
+  // ✅ TMDB API Key - INSERISCI LA TUA QUI:
+  const apiKey = "2d082597ab951b3a9596ca23e71413a8";
 
-  <main id="main-content">
-    <section><h2>🍿 Consigliati</h2><div class="movie-container" id="consigliati"></div></section>
-    <section><h2>🔥 Titoli del momento</h2><div class="movie-container" id="momento"></div></section>
-    <section><h2>🎭 Drammatici</h2><div class="movie-container" id="drammatici"></div></section>
-    <section><h2>💥 Azione</h2><div class="movie-container" id="azione"></div></section>
-    <section><h2>😂 Commedie</h2><div class="movie-container" id="commedie"></div></section>
-    <section><h2>👻 Horror</h2><div class="movie-container" id="horror"></div></section>
-    <section><h2>👨‍👩‍👧 Famiglia</h2><div class="movie-container" id="famiglia"></div></section>
-    <section><h2>🚀 Fantascienza</h2><div class="movie-container" id="fantascienza"></div></section>
-    <section><h2>💖 Romantici</h2><div class="movie-container" id="romantici"></div></section>
-    <section><h2>🎬 Documentari</h2><div class="movie-container" id="documentari"></div></section>
-  </main>
-
-  <script>
-    Clerk.configure({ publishableKey: "pk_test_b23saWdpbmctaWVyWxhLTc1LmNsZXJrLmFjY291bnRzLmRldiQ" });
-
-    window.Clerk.load().then(async () => {
-      const user = await Clerk.user;
-      const loginBtn = document.getElementById("login-btn");
-      const logoutBtn = document.getElementById("logout-btn");
-
-      if (user) {
-        loginBtn.style.display = "none";
-        logoutBtn.style.display = "inline-block";
-      } else {
-        loginBtn.style.display = "inline-block";
-        logoutBtn.style.display = "none";
-      }
-
-      logoutBtn.addEventListener("click", async () => {
-        await Clerk.signOut();
-        window.location.reload();
-      });
-    });
-
-    // Caricamento casuale di film popolari
-    const apiKey = "2d082597ab951b3a9596ca23e71413a8"; // <-- sostituisci con la tua vera API key
-    const consigliatiContainer = document.getElementById("consigliati");
-
-    async function fetchConsigliatiCasuali() {
-      const page = Math.floor(Math.random() * 20) + 1; // scegli una pagina casuale tra 1 e 20
-      const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=it-IT&page=${page}`);
-      const data = await response.json();
-      const movies = data.results;
-
-      consigliatiContainer.innerHTML = "";
-
-      movies.forEach((movie) => {
-        const title = movie.title || movie.name || "Senza titolo";
-        const poster = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : "fallback.jpg";
-
-        const card = document.createElement("div");
-        card.className = "movie-card";
-        card.innerHTML = `
-          <a href="dettagli.html?id=${movie.id}">
-            <img src="${poster}" alt="${title}" />
-            <h3>${title}</h3>
-          </a>
-        `;
-        consigliatiContainer.appendChild(card);
-      });
-    }
-
-    fetchConsigliatiCasuali();
-  <script>
-  Clerk.configure({ publishableKey: "pk_test_b23saWdpbmctaWVyWxhLTc1LmNsZXJrLmFjY291bnRzLmRldiQ" });
-
-  window.Clerk.load().then(async () => {
-    const user = await Clerk.user;
-    const loginBtn = document.getElementById("login-btn");
-    const logoutBtn = document.getElementById("logout-btn");
-
-    if (user) {
-      loginBtn.style.display = "none";
-      logoutBtn.style.display = "inline-block";
-    } else {
-      loginBtn.style.display = "inline-block";
-      logoutBtn.style.display = "none";
-    }
-
-    logoutBtn.addEventListener("click", async () => {
-      await Clerk.signOut();
-      window.location.reload();
-    });
-  });
-
-  // ✅ Nuovo metodo per film consigliati random
-  const apiKey = "INSERISCI_LA_TUA_API_KEY_TMDB";
   const consigliatiContainer = document.getElementById("consigliati");
 
   async function fetchRandomPopularMovies() {
     let allMovies = [];
 
-    // Scarica 5 pagine popolari diverse
+    // Carica da 3 pagine casuali
     for (let i = 0; i < 3; i++) {
       const page = Math.floor(Math.random() * 20) + 1;
-      const res = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=it-IT&page=${page}`);
-      const data = await res.json();
-      allMovies = allMovies.concat(data.results);
+      try {
+        const res = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=it-IT&page=${page}`);
+        const data = await res.json();
+        if (data.results) {
+          allMovies = allMovies.concat(data.results);
+        }
+      } catch (error) {
+        console.error("Errore nel caricamento film:", error);
+      }
     }
 
-    // Mischia casualmente
+    // Mischia i film
     const shuffled = allMovies.sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, 10); // Mostra 10 film casuali
 
@@ -130,7 +29,9 @@
 
     selected.forEach((movie) => {
       const title = movie.title || "Senza titolo";
-      const poster = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : "fallback.jpg";
+      const poster = movie.poster_path
+        ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+        : "fallback.jpg";
 
       const card = document.createElement("div");
       card.className = "movie-card";
