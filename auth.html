@@ -1,68 +1,42 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Accedi o Registrati</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cinema Discovery - Accedi</title>
+  <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2rem;
-    }
-    h1 { margin-bottom: 1rem; }
-    .auth-container {
-      width: 100%;
-      max-width: 400px;
-    }
-    #sign-in, #sign-up {
-      margin: 1rem 0;
-    }
-    #forgot-password {
-      margin-top: 1rem;
-      text-align: center;
-    }
-    a {
-      color: #00aced;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
 </head>
 <body>
-  <h1>🎬 Cinema Discovery - Accedi</h1>
-  <div class="auth-container">
+  <main>
+    <h1>🎬 Cinema Discovery - Accedi</h1>
     <div id="sign-in"></div>
-    <div id="sign-up"></div>
-    <div id="forgot-password">
-      <a href="https://clerk.cine...yourproject.clerk.accounts.dev/forgot-password">Hai dimenticato la password?</a>
-    </div>
-  </div>
+  </main>
 
   <script>
-    window.Clerk.load().then(async () => {
-      await Clerk.mountSignIn(document.getElementById("sign-in"), {
-        signUpUrl: "#sign-up",
-        afterSignInUrl: "/profilo.html",
-        appearance: { layout: { logoPlacement: "none", socialButtonsVariant: "none" } }
-      });
-
-      await Clerk.mountSignUp(document.getElementById("sign-up"), {
-        signInUrl: "#sign-in",
-        afterSignUpUrl: "/profilo.html",
-        appearance: { layout: { logoPlacement: "none", socialButtonsVariant: "none" } }
-      });
-    });
-
     Clerk.configure({
       publishableKey: "pk_test_b23saWdpbmctaWVyWxhLTc1LmNsZXJrLmFjY291bnRzLmRldiQ"
+    });
+
+    window.Clerk.load().then(() => {
+      Clerk.mountSignIn("#sign-in", {
+        signUpUrl: "auth.html", // puoi fare signup nella stessa pagina
+        afterSignInUrl: "index.html",
+        appearance: {
+          elements: {
+            card: { backgroundColor: "#111", color: "#fff" },
+            headerTitle: { fontSize: "24px" },
+          },
+          variables: {
+            colorPrimary: "#ffffff",
+            colorText: "#ffffff",
+            colorBackground: "#000000"
+          }
+        },
+        localization: {
+          locale: "it-IT"
+        }
+      });
     });
   </script>
 </body>
