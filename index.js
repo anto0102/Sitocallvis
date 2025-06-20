@@ -1,13 +1,21 @@
-const apiKey = '2d082597ab951b3a9596ca23e71413a8';
+const apiKey = '2d082597ab951b3a9596ca23e71413a8'; // <-- inserisci la tua API key
 const baseUrl = 'https://api.themoviedb.org/3';
 const imageBase = 'https://image.tmdb.org/t/p/w500';
 
 document.addEventListener('DOMContentLoaded', () => {
-  loadHomeSections();
+  const params = new URLSearchParams(window.location.search);
+  const query = params.get('search');
+
+  if (query) {
+    performSearch(query);
+  } else {
+    loadHomeSections();
+  }
+
   setupSearch();
 });
 
-// Carica le sezioni della home
+// Caricamento sezioni homepage
 function loadHomeSections() {
   loadMovies(`${baseUrl}/movie/popular?api_key=${apiKey}&language=it-IT&page=1`, 'Consigliati');
   loadMovies(`${baseUrl}/trending/all/week?api_key=${apiKey}&language=it-IT`, 'Titoli del momento');
@@ -20,7 +28,6 @@ function loadHomeSections() {
   loadMoviesByGenre(10752, 'War & Politics');
 }
 
-// Carica film da un URL
 function loadMovies(url, sectionTitle) {
   fetch(url)
     .then(res => res.json())
@@ -32,13 +39,11 @@ function loadMovies(url, sectionTitle) {
     .catch(err => console.error('Errore nel caricamento:', err));
 }
 
-// Carica film per genere
 function loadMoviesByGenre(genreId, sectionTitle) {
   const url = `${baseUrl}/discover/movie?api_key=${apiKey}&with_genres=${genreId}&language=it-IT`;
   loadMovies(url, sectionTitle);
 }
 
-// Crea sezione e card
 function renderSection(title, items) {
   const container = document.getElementById('contenuti') || createContainer();
   const section = document.createElement('section');
@@ -52,14 +57,12 @@ function renderSection(title, items) {
   scrollContainer.classList.add('scroll-container');
 
   items.forEach(item => {
-    if (!item.poster_path) return;
-
     const card = document.createElement('div');
     card.classList.add('card');
     card.innerHTML = `
       <img src="${imageBase + item.poster_path}" alt="${item.title || item.name}" />
       <h3>${item.title || item.name}</h3>
-      <p>⭐ ${item.vote_average?.toFixed(1)}</p>
+      <p>⭐ ${item.vote_average?.toFixed(1) || 'N/A'}</p>
     `;
     card.addEventListener('click', () => {
       const id = item.id;
@@ -74,7 +77,6 @@ function renderSection(title, items) {
   container.appendChild(section);
 }
 
-// Crea contenitore principale se non esiste
 function createContainer() {
   const main = document.querySelector('main');
   const container = document.createElement('div');
@@ -83,7 +85,7 @@ function createContainer() {
   return container;
 }
 
-// Funzione di ricerca
+// 🔍 Funzione ricerca
 function setupSearch() {
   const input = document.querySelector('#search-input');
   const button = document.querySelector('#search-button');
@@ -93,14 +95,20 @@ function setupSearch() {
   button.addEventListener('click', () => {
     const query = input.value.trim();
     if (query.length > 0) {
-      fetch(`${baseUrl}/search/multi?api_key=${apiKey}&query=${encodeURIComponent(query)}&language=it-IT`)
-        .then(res => res.json())
-        .then(data => {
-          const container = document.getElementById('contenuti');
-          container.innerHTML = '';
-          renderSection(`Risultati per "${query}"`, data.results);
-        })
-        .catch(err => console.error('Errore nella ricerca:', err));
+      // reindirizza a index.html con parametro
+      window.location.href = `index.html?search=${encodeURIComponent(query)}`;
     }
   });
+}
+
+// Funzione per eseguire ricerca da URL
+function performSearch(query) {
+  fetch(`${baseUrl}/search/multi?api_key=${apiKey}&query=${query}&language=it-IT`)
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById('contenuti') || createContainer();
+      container.innerHTML = '';
+      renderSection(`Risultati per "${query}"`, data.results);
+    })
+    .catch(err => console.error('Errore nella ricerca:', err));
 }
