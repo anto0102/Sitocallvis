@@ -1,4 +1,4 @@
-const apiKey = '2d082597ab951b3a9596ca23e71413a8';
+const apiKey = '2d082597ab951b3a9596ca23e71413a8'; // 🔑 <-- METTI QUI LA TUA CHIAVE DI TMDB
 const baseUrl = 'https://api.themoviedb.org/3';
 const imageBase = 'https://image.tmdb.org/t/p/w500';
 
@@ -7,100 +7,73 @@ document.addEventListener('DOMContentLoaded', () => {
   setupSearch();
 });
 
-// Carica le sezioni della homepage
+// Carica sezioni della home
 function loadHomeSections() {
-  loadMovies(`${baseUrl}/movie/popular?api_key=${apiKey}&language=it-IT&page=1`, '🔥 Consigliati');
-  loadMovies(`${baseUrl}/trending/all/week?api_key=${apiKey}&language=it-IT`, '📈 Titoli del momento');
-  loadMoviesByGenre(10764, '📺 Reality');
-  loadMoviesByGenre(27, '👻 Horror');
-  loadMoviesByGenre(80, '🕵️ Crime');
-  loadMoviesByGenre(28, '💥 Action');
-  loadMoviesByGenre(12, '🌍 Adventure');
-  loadMoviesByGenre(10749, '❤️ Romance');
-  loadMoviesByGenre(10752, '⚔️ War & Politics');
+  loadMovies(`${baseUrl}/movie/popular?api_key=${apiKey}&language=it-IT&page=1`, 'consigliati');
+  loadMovies(`${baseUrl}/trending/all/week?api_key=${apiKey}&language=it-IT`, 'tendenze');
 }
 
-// Carica film da un URL specifico
-function loadMovies(url, sectionTitle) {
+// Carica film da URL e li mette in una sezione
+function loadMovies(url, containerId) {
   fetch(url)
     .then(res => res.json())
     .then(data => {
-      if (data.results && data.results.length > 0) {
-        renderSection(sectionTitle, data.results);
-      }
+      const container = document.getElementById(containerId);
+      container.innerHTML = ''; // svuota prima
+      data.results.forEach(item => {
+        if (!item.poster_path) return;
+        const card = createCard(item);
+        container.appendChild(card);
+      });
     })
     .catch(err => console.error('Errore nel caricamento:', err));
 }
 
-// Carica film tramite ID genere
-function loadMoviesByGenre(genreId, sectionTitle) {
-  const url = `${baseUrl}/discover/movie?api_key=${apiKey}&with_genres=${genreId}&language=it-IT`;
-  loadMovies(url, sectionTitle);
-}
+// Crea una card per ogni film/serie
+function createCard(item) {
+  const card = document.createElement('div');
+  card.classList.add('card');
+  const title = item.title || item.name;
+  const type = item.media_type || (item.title ? 'movie' : 'tv');
 
-// Crea una sezione con le card
-function renderSection(title, items) {
-  const container = document.getElementById('contenuti') || createContainer();
-  const section = document.createElement('section');
-  section.classList.add('sezione');
+  card.innerHTML = `
+    <img src="${imageBase + item.poster_path}" alt="${title}" />
+    <h3>${title}</h3>
+    <p>⭐ ${item.vote_average?.toFixed(1)}</p>
+  `;
 
-  const heading = document.createElement('h2');
-  heading.textContent = title;
-  section.appendChild(heading);
-
-  const scrollContainer = document.createElement('div');
-  scrollContainer.classList.add('scroll-container');
-
-  items.forEach(item => {
-    if (!item.poster_path) return;
-
-    const card = document.createElement('div');
-    card.classList.add('card');
-    card.innerHTML = `
-      <img src="${imageBase + item.poster_path}" alt="${item.title || item.name}" />
-      <h3>${item.title || item.name}</h3>
-      <p>⭐ ${item.vote_average?.toFixed(1) || 'N/A'}</p>
-    `;
-    card.addEventListener('click', () => {
-      const id = item.id;
-      const type = item.media_type || (item.title ? 'movie' : 'tv');
-      window.location.href = `dettagli.html?id=${id}&type=${type}`;
-    });
-
-    scrollContainer.appendChild(card);
+  card.addEventListener('click', () => {
+    window.location.href = `dettagli.html?id=${item.id}&type=${type}`;
   });
 
-  section.appendChild(scrollContainer);
-  container.appendChild(section);
+  return card;
 }
 
-// Crea contenitore principale se non esiste
-function createContainer() {
-  const main = document.querySelector('main');
-  const container = document.createElement('div');
-  container.id = 'contenuti';
-  main.appendChild(container);
-  return container;
-}
-
-// Funzione ricerca
+// Funzione per la ricerca
 function setupSearch() {
   const input = document.querySelector('#search-input');
   const button = document.querySelector('#search-button');
 
-  if (!input || !button) return;
-
   button.addEventListener('click', () => {
     const query = input.value.trim();
-    if (query.length > 0) {
-      fetch(`${baseUrl}/search/multi?api_key=${apiKey}&query=${encodeURIComponent(query)}&language=it-IT`)
-        .then(res => res.json())
-        .then(data => {
-          const container = document.getElementById('contenuti');
-          container.innerHTML = '';
-          renderSection(`🔎 Risultati per "${query}"`, data.results);
-        })
-        .catch(err => console.error('Errore nella ricerca:', err));
-    }
+    if (query.length === 0) return;
+
+    fetch(`${baseUrl}/search/multi?api_key=${apiKey}&language=it-IT&query=${encodeURIComponent(query)}`)
+      .then(res => res.json())
+      .then(data => {
+        const contenuto = document.getElementById('contenuto');
+        contenuto.innerHTML = `<section class="sezione">
+          <h2>🔍 Risultati per "${query}"</h2>
+          <div class="scroll-container" id="risultati"></div>
+        </section>`;
+
+        const resultsContainer = document.getElementById('risultati');
+        data.results.forEach(item => {
+          if (!item.poster_path) return;
+          const card = createCard(item);
+          resultsContainer.appendChild(card);
+        });
+      })
+      .catch(err => console.error('Errore nella ricerca:', err));
   });
 }
