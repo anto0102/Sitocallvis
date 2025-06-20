@@ -15,7 +15,7 @@ const categories = [
   { id: 'documentari', url: '/discover/movie?with_genres=99' },
 ];
 
-// ✅ Funzione per fare la chiamata
+// Funzione per chiamare API
 async function fetchMovies(endpoint) {
   const fullUrl = `${BASE_URL}${endpoint}${endpoint.includes('?') ? '&' : '?'}api_key=${API_KEY}&language=it-IT`;
   const response = await fetch(fullUrl);
@@ -23,16 +23,17 @@ async function fetchMovies(endpoint) {
   return data.results || [];
 }
 
-// ✅ Funzione per creare la card cliccabile
-function createMovieCard(movie) {
-  const title = movie.title || movie.name || 'Titolo sconosciuto';
-  const poster = movie.poster_path ? `${IMAGE_URL}${movie.poster_path}` : 'fallback.jpg';
+// Funzione per creare la card film/serie
+function createMovieCard(item) {
+  const title = item.title || item.name || 'Titolo sconosciuto';
+  const poster = item.poster_path ? `${IMAGE_URL}${item.poster_path}` : 'fallback.jpg';
+  const type = item.media_type || 'movie';
 
   const card = document.createElement('div');
   card.className = 'movie-card';
 
   card.innerHTML = `
-    <a href="dettagli.html?id=${movie.id}&type=movie">
+    <a href="dettagli.html?id=${item.id}&type=${type}">
       <img src="${poster}" alt="${title}" />
       <h3>${title}</h3>
     </a>
@@ -41,7 +42,7 @@ function createMovieCard(movie) {
   return card;
 }
 
-// ✅ Carica le categorie
+// Caricamento film per categoria
 async function loadMovies() {
   for (const category of categories) {
     const container = document.getElementById(category.id);
@@ -62,24 +63,62 @@ async function loadMovies() {
 
 document.addEventListener('DOMContentLoaded', loadMovies);
 
-// ✅ Gestione del form di ricerca
+// Gestione della ricerca
 document.getElementById('search-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const query = document.getElementById('search-input').value.trim();
   if (!query) return;
 
-  const response = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=it-IT&sort_by=popularity.desc`);
+  const response = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=it-IT`);
   const data = await response.json();
-const results = (data.results || []).sort((a, b) => b.popularity - a.popularity);
+  let results = (data.results || []).filter(item =>
+    (item.media_type === 'movie' || item.media_type === 'tv') && item.poster_path
+  );
+
+  // Ordina con match esatto per primo, poi per popolarità
+  results.sort((a, b) => {
+    const queryLower = query.toLowerCase();
+    const aTitle = (a.title || a.name || '').toLowerCase();
+    const bTitle = (b.title || b.name || '').toLowerCase();
+
+    const aExact = aTitle === queryLower;
+    const bExact = bTitle === queryLower;
+
+    if (aExact && !bExact) return -1;
+    if (!aExact && bExact) return 1;
+
+    return b.popularity - a.popularity;
+  });
+
+  // Separazione film e serie
+  const movies = results.filter(r => r.media_type === 'movie');
+  const series = results.filter(r => r.media_type === 'tv');
 
   const main = document.getElementById('main-content');
-  main.innerHTML = `<section><h2>🔍 Risultati per "${query}"</h2><div class="movie-container" id="search-results"></div></section>`;
+  main.innerHTML = `
+    <section>
+      <h2>🔍 Risultati per "${query}"</h2>
+      <div class="search-group">
+        <h3>🎬 Film</h3>
+        <div class="movie-container" id="search-movies"></div>
+      </div>
+      <div class="search-group">
+        <h3>📺 Serie TV</h3>
+        <div class="movie-container" id="search-series"></div>
+      </div>
+    </section>
+  `;
 
-  const container = document.getElementById('search-results');
-  results.slice(0, 20).forEach(movie => {
-    if (movie.poster_path) {
-      const card = createMovieCard(movie);
-      container.appendChild(card);
-    }
+  const movieContainer = document.getElementById('search-movies');
+  const seriesContainer = document.getElementById('search-series');
+
+  movies.slice(0, 10).forEach(movie => {
+    const card = createMovieCard(movie);
+    movieContainer.appendChild(card);
+  });
+
+  series.slice(0, 10).forEach(serie => {
+    const card = createMovieCard(serie);
+    seriesContainer.appendChild(card);
   });
 });
