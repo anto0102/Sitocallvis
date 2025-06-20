@@ -2,24 +2,21 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dettagli Contenuto</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dettagli</title>
   <link rel="stylesheet" href="dettagli.css" />
 </head>
 <body>
-  <header class="header">
-    <a href="index.html" class="torna-home">← Torna alla Home</a>
+  <header>
+    <a href="index.html" class="back-button">← Torna alla Home</a>
     <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="Cerca..." />
-      <button id="searchButton">🔍</button>
+      <input type="text" id="search-input" placeholder="Cerca..." />
+      <button id="search-button">🔍</button>
     </div>
   </header>
 
-  <main>
-    <div id="contenitore" class="contenitore-dettagli"></div>
-  </main>
+  <main id="contenitore"></main>
 
-  <script src="dettagli.js" type="module"></script>
+  <script src="dettagli.js"></script>
 </body>
 </html>
