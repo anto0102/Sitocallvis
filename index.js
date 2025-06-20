@@ -15,6 +15,7 @@ const categories = [
   { id: 'documentari', url: '/discover/movie?with_genres=99' },
 ];
 
+// ✅ Funzione per fare la chiamata
 async function fetchMovies(endpoint) {
   const fullUrl = `${BASE_URL}${endpoint}${endpoint.includes('?') ? '&' : '?'}api_key=${API_KEY}&language=it-IT`;
   const response = await fetch(fullUrl);
@@ -22,16 +23,25 @@ async function fetchMovies(endpoint) {
   return data.results || [];
 }
 
+// ✅ Funzione per creare la card cliccabile
 function createMovieCard(movie) {
+  const title = movie.title || movie.name || 'Titolo sconosciuto';
+  const poster = movie.poster_path ? `${IMAGE_URL}${movie.poster_path}` : 'fallback.jpg';
+
   const card = document.createElement('div');
   card.className = 'movie-card';
+
   card.innerHTML = `
-    <img src="${IMAGE_URL + movie.poster_path}" alt="${movie.title}" />
-    <h3>${movie.title}</h3>
+    <a href="dettagli.html?id=${movie.id}">
+      <img src="${poster}" alt="${title}" />
+      <h3>${title}</h3>
+    </a>
   `;
+
   return card;
 }
 
+// ✅ Carica le categorie
 async function loadMovies() {
   for (const category of categories) {
     const container = document.getElementById(category.id);
@@ -52,12 +62,15 @@ async function loadMovies() {
 
 document.addEventListener('DOMContentLoaded', loadMovies);
 
+// ✅ Gestione del form di ricerca
 document.getElementById('search-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const query = document.getElementById('search-input').value.trim();
   if (!query) return;
 
   const response = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=it-IT&sort_by=popularity.desc`);
+  const data = await response.json();
+  const results = data.results || [];
 
   const main = document.getElementById('main-content');
   main.innerHTML = `<section><h2>🔍 Risultati per "${query}"</h2><div class="movie-container" id="search-results"></div></section>`;
