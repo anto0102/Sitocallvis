@@ -1,127 +1,86 @@
-/* Reset e stili base */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #0d0d0d;
-  color: #f0f0f0;
-  overflow-x: hidden;
-}
-a {
-  color: inherit;
-  text-decoration: none;
+  margin: 0;
+  background-color: #111;
+  color: #fff;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-/* Header principale */
-.header {
+header {
+  background-color: #000;
+  padding: 1rem;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
   align-items: center;
-  gap: 10px;
-  background-color: #121212;
-  padding: 15px 20px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.header h1 {
-  font-size: 24px;
 }
 
-/* Barra di ricerca */
+header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
 .search-bar {
-  flex: 1;
   display: flex;
-  align-items: center;
-  margin-left: 20px;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
 }
+
 .search-bar input {
-  width: 100%;
-  max-width: 300px;
-  padding: 8px 16px;
-  border-radius: 20px;
+  padding: 0.5rem;
+  border-radius: 8px;
   border: none;
   outline: none;
-}
-.search-bar button {
-  margin-left: 8px;
-  background-color: #ff4757;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 18px;
-  color: white;
-  transition: background-color 0.3s;
-}
-.search-bar button:hover {
-  background-color: #e84146;
+  font-size: 1rem;
+  width: 200px;
 }
 
-/* Sezioni dei contenuti */
-#contenuti {
-  padding: 20px;
+.search-bar button {
+  background-color: crimson;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
 }
-.sezione {
-  margin-bottom: 30px;
+
+main {
+  padding: 1rem;
 }
-.sezione > h2 {
-  font-size: 20px;
-  margin-bottom: 10px;
-  border-left: 4px solid #ff4757;
-  padding-left: 10px;
+
+.sezione h2 {
+  margin: 1rem 0 0.5rem;
 }
+
 .scroll-container {
   display: flex;
   overflow-x: auto;
-  gap: 16px;
-  padding-bottom: 10px;
-}
-.scroll-container::-webkit-scrollbar {
-  height: 8px;
-}
-.scroll-container::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 4px;
+  gap: 1rem;
+  padding-bottom: 1rem;
 }
 
-/* Card film/serie */
 .card {
   flex: 0 0 auto;
-  width: 150px;
-  background-color: #1c1c1c;
-  border-radius: 12px;
+  width: 140px;
+  background-color: #222;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  transition: transform 0.2s ease;
   cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-.card img {
-  width: 100%;
-  display: block;
-}
-.card h3 {
-  font-size: 16px;
-  margin: 8px;
-}
-.card p {
-  font-size: 14px;
-  margin: 0 8px 8px;
-  color: #ffdd57;
-}
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .card {
-    width: 120px;
-  }
-  .search-bar input {
-    max-width: 200px;
-  }
+.card img {
+  width: 100%;
+  height: 210px;
+  object-fit: cover;
+}
+
+.card h3 {
+  font-size: 0.9rem;
+  padding: 0.5rem;
+}
+
+.card p {
+  font-size: 0.8rem;
+  padding-bottom: 0.5rem;
 }
