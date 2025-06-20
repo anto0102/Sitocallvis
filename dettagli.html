@@ -8,21 +8,40 @@
   <link rel="stylesheet" href="dettagli.css" />
 </head>
 <body>
-  <header>
-    <div class="logo">🎬 CallVis</div>
+  <header class="header">
+    <div class="header-left">
+      <a href="index.html" class="torna-home">← Home</a>
+      <h1>🎬 CallVis</h1>
+    </div>
     <div class="search-bar">
-      <input type="text" id="search-input" placeholder="Cerca...">
-      <button id="search-button">🔍</button>
+      <input type="text" id="searchInput" placeholder="Cerca..." />
+      <button id="searchBtn">🔍</button>
     </div>
   </header>
 
   <main>
-    <div id="back-home">
-      <a href="index.html">← Torna alla Home</a>
-    </div>
     <div id="contenitore" class="contenitore-dettagli"></div>
   </main>
 
   <script src="dettagli.js" type="module"></script>
+  <script type="module">
+    import { cercaContenuti } from './search.js';
+
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+
+    searchBtn.addEventListener('click', () => {
+      const query = searchInput.value.trim();
+      if (query) {
+        window.location.href = `risultati.html?query=${encodeURIComponent(query)}`;
+      }
+    });
+
+    searchInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        searchBtn.click();
+      }
+    });
+  </script>
 </body>
 </html>
