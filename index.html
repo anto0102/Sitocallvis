@@ -2,41 +2,25 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Cinema Discovery</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://kit.fontawesome.com/a2e0e6e6f6.js" crossorigin="anonymous"></script>
 </head>
 <body>
-  <div class="sidebar" id="sidebar">
-    <button class="close-btn" onclick="toggleSidebar()">✖</button>
-    <ul>
-      <li onclick="navigateTo('home')">🏠 Home</li>
-      <li onclick="navigateTo('azione')">🎬 Azione</li>
-      <li onclick="navigateTo('drammatici')">🎭 Drammatici</li>
-      <li onclick="navigateTo('commedia')">😂 Commedia</li>
-      <li onclick="navigateTo('horror')">👻 Horror</li>
-      <li onclick="navigateTo('animazione')">🐭 Animazione</li>
-      <li onclick="navigateTo('romantico')">💘 Romantico</li>
-      <li onclick="toggleDarkMode()">🌓 Tema</li>
-    </ul>
-  </div>
-
   <header>
-    <i class="fas fa-bars menu-icon" onclick="toggleSidebar()"></i>
-    <h1><i class="fas fa-film"></i> Cinema Discovery</h1>
-    <div class="search-bar">
-      <input type="text" placeholder="Cerca un film o serie..." id="searchInput">
+    <h1><span>Cinema</span> Discovery</h1>
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Cerca un film o serie..." />
       <button onclick="searchMovies()">Cerca</button>
     </div>
   </header>
 
   <main id="mainContent">
-    <!-- Sections will be generated here -->
+    <!-- Le sezioni film verranno caricate qui -->
   </main>
 
   <footer>
-    <p>&copy; 2025 - Progetto di cinema by anxyy 🍿</p>
+    <p>Realizzato con ❤️ da Te</p>
   </footer>
 
   <script src="index.js"></script>
