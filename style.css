@@ -1,141 +1,81 @@
 body {
+  margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #1e1e2f;
-  color: #f0f0f0;
+  background-color: #1a1a2e;
+  color: #fff;
 }
 
-h1 {
-  text-align: center;
-  padding: 1rem;
-  color: #ffffff;
-  background: #2c2c44;
-  margin: 0;
-}
-
-#ricerca {
-  display: flex;
-  justify-content: center;
-  margin: 1rem auto;
-  gap: 0.5rem;
-}
-
-#inputRicerca {
-  padding: 0.6rem 1rem;
-  width: 300px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-}
-
-button {
-  background-color: #4f46e5;
-  color: white;
-  border: none;
-  padding: 0.6rem 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  font-size: 1rem;
-}
-
-button:hover {
-  background-color: #6366f1;
-}
-
-#bottoni {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-#contenitore {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
-  padding: 2rem;
+main {
+  padding: 20px;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: auto;
 }
 
-.card {
-  background-color: #2b2b3d;
-  border-radius: 10px;
+.contenitore-dettagli {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: center;
+}
+
+.dettagli-card {
+  display: flex;
+  flex-direction: column;
+  background-color: #2e2e3e;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
-}
-
-.card:hover {
-  transform: scale(1.03);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.6);
-}
-
-.card img {
+  max-width: 800px;
   width: 100%;
-  height: 360px;
+  transition: transform 0.3s;
+}
+
+.dettagli-card:hover {
+  transform: scale(1.02);
+}
+
+.dettagli-card img {
+  width: 100%;
+  height: auto;
   object-fit: cover;
 }
 
-.card-content {
-  padding: 1rem;
+.dettagli-card .info {
+  padding: 20px;
 }
 
-.card-content h3 {
-  margin: 0 0 0.5rem;
-  font-size: 1.2rem;
-}
-
-.card-content p {
-  margin: 0.3rem 0;
-  font-size: 0.95rem;
-  color: #cccccc;
-}
-
-.detail-container {
-  max-width: 900px;
-  margin: 2rem auto;
-  background: #2c2c44;
-  border-radius: 10px;
-  padding: 2rem;
-  color: #fff;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-}
-
-.detail-container h2 {
+.dettagli-card .info h2 {
   font-size: 2rem;
-  margin-bottom: 1rem;
+  margin-bottom: 10px;
+  color: #00adb5;
 }
 
-.detail-container img {
-  float: left;
-  width: 300px;
-  margin-right: 2rem;
-  border-radius: 8px;
-}
-
-.detail-container p {
+.dettagli-card .info p {
+  margin: 8px 0;
   font-size: 1rem;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
-.clearfix::after {
-  content: "";
-  display: table;
-  clear: both;
+.box-trailer {
+  width: 100%;
+  max-width: 800px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
 }
 
-@media screen and (max-width: 768px) {
-  #inputRicerca {
-    width: 100%;
-  }
+iframe {
+  border: none;
+  width: 100%;
+  height: 400px;
+  display: block;
+}
 
-  .detail-container img {
-    float: none;
-    display: block;
-    margin: 0 auto 1rem;
-  }
+.messaggio {
+  background-color: #ff4d4d;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 600px;
 }
