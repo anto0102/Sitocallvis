@@ -2,56 +2,31 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Demo VixSrc API – basata su docs</title>
-  <style>
-    body { font-family: Arial; margin: 20px; }
-    .card { display: inline-block; width: 180px; margin: 10px; text-align: center; }
-    .card img { width: 100%; height: auto; }
-    #player { margin-top: 30px; }
-  </style>
+  <title>Demo VixSrc.to</title>
 </head>
 <body>
   <h1>Demo VixSrc.to</h1>
-  <button onclick="carica('movie')">Carica Film</button>
-  <button onclick="carica('tv')">Carica Serie TV</button>
-
-  <div id="lista"></div>
-  <div id="player"></div>
+  <button onclick="carica('film')">Carica Film</button>
+  <button onclick="carica('serie')">Carica Serie TV</button>
+  <div id="output">...</div>
 
   <script>
     async function carica(tipo) {
-      const lista = document.getElementById('lista');
-      lista.innerHTML = 'Caricamento in corso…';
-      try {
-        const res = await fetch(`https://vixsrc.to/api/list/${tipo}?lang=it`);
-        const data = await res.json();
-        lista.innerHTML = '';
-        data.results.forEach(item => {
-          const d = document.createElement('div');
-          d.className = 'card';
-          d.innerHTML = `
-            <img src="${item.poster}" alt="${item.title}">
-            <h4>${item.title}</h4>
-            <button onclick="showPlayer(${item.id}, '${tipo}')">Guarda</button>
-          `;
-          lista.appendChild(d);
-        });
-      } catch (e) {
-        lista.textContent = 'Errore nel caricamento.';
-        console.error(e);
-      }
-    }
+      document.getElementById('output').innerText = 'Caricamento...';
 
-    function showPlayer(tmdbId, tipo) {
-      let url = '';
-      if (tipo === 'movie') {
-        url = `https://vixsrc.to/movie/${tmdbId}?lang=it&autoplay=false`;
-      } else {
-        url = `https://vixsrc.to/tv/${tmdbId}/1/1?lang=it&autoplay=false`;
+      const urlOriginale = tipo === 'film'
+        ? 'https://vixsrc.to/movies.json'
+        : 'https://vixsrc.to/series.json';
+
+      try {
+        const response = await fetch(`/api/proxy?url=${encodeURIComponent(urlOriginale)}`);
+        const data = await response.json();
+
+        document.getElementById('output').innerText = JSON.stringify(data, null, 2);
+      } catch (error) {
+        document.getElementById('output').innerText = 'Errore nel caricamento.';
+        console.error(error);
       }
-      document.getElementById('player').innerHTML = `
-        <iframe src="${url}" width="640" height="360" frameborder="0" allowfullscreen></iframe>
-      `;
     }
   </script>
 </body>
