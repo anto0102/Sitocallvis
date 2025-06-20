@@ -22,7 +22,6 @@
   </header>
 
   <main id="main-content">
-    <!-- Sezioni film -->
     <section><h2>🍿 Consigliati</h2><div class="movie-container" id="consigliati"></div></section>
     <section><h2>🔥 Titoli del momento</h2><div class="movie-container" id="momento"></div></section>
     <section><h2>🎭 Drammatici</h2><div class="movie-container" id="drammatici"></div></section>
@@ -55,6 +54,59 @@
         await Clerk.signOut();
         window.location.reload();
       });
+    });
+  </script>
+
+  <script>
+    const apiKey = '2d082597ab951b3a9596ca23e71413a8'; // <--- Inserisci qui la tua chiave TMDB
+
+    const sezioni = {
+      consigliati: 'popular',
+      momento: 'now_playing',
+      drammatici: '18',
+      azione: '28',
+      commedie: '35',
+      horror: '27',
+      famiglia: '10751',
+      fantascienza: '878',
+      romantici: '10749',
+      documentari: '99'
+    };
+
+    async function caricaFilm(idContainer, tipo) {
+      let url;
+      if (isNaN(tipo)) {
+        url = `https://api.themoviedb.org/3/movie/${tipo}?api_key=${apiKey}&language=it-IT&page=1`;
+      } else {
+        url = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=it-IT&with_genres=${tipo}&sort_by=popularity.desc&page=1`;
+      }
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const film = data.results.sort(() => Math.random() - 0.5).slice(0, 5);
+
+        const container = document.getElementById(idContainer);
+        container.innerHTML = '';
+
+        film.forEach(f => {
+          if (f.poster_path) {
+            container.innerHTML += `
+              <div class="movie">
+                <img src="https://image.tmdb.org/t/p/w500${f.poster_path}" alt="${f.title}">
+                <p>${f.title}</p>
+              </div>`;
+          }
+        });
+      } catch (err) {
+        console.error("Errore nel caricamento di", idContainer, err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      for (const [id, tipo] of Object.entries(sezioni)) {
+        caricaFilm(id, tipo);
+      }
     });
   </script>
 
