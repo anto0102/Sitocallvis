@@ -60,29 +60,4 @@ h2 {
   display: flex;
   overflow-x: auto;
   gap: 1rem;
-  padding-bottom: 0.5rem;
-}
-
-.movie-card {
-  flex: 0 0 auto;
-  width: 120px;
-  border-radius: 8px;
-  overflow: hidden;
-  background-color: #222;
-  transition: transform 0.3s;
-}
-
-.movie-card:hover {
-  transform: scale(1.05);
-}
-
-.movie-card img {
-  width: 100%;
-  display: block;
-}
-
-.movie-card h3 {
-  font-size: 0.8rem;
-  text-align: center;
-  margin: 0.5rem;
-}
+  padding-bottom:
