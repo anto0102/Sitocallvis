@@ -9,13 +9,26 @@
 <body>
   <div class="container">
     <a href="index.html" class="home-button">🔙 Torna alla Home</a>
+    
     <div id="contenitore">
       <div id="dettagli" class="dettagli-card"></div>
       <div id="trailer" class="box-trailer"></div>
-      <div id="episodi"></div>
+      
+      <button class="stagione-selector" id="seleziona-stagione">📂 Seleziona Stagione</button>
+      <div id="episodi-carosello" class="carousel-container"></div>
       <div id="player-container"></div>
     </div>
   </div>
+
+  <!-- MODAL -->
+  <div id="modal-stagioni" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>📚 Seleziona una stagione</h2>
+      <div id="lista-stagioni"></div>
+    </div>
+  </div>
+
   <script src="dettagli.js"></script>
 </body>
 </html>
