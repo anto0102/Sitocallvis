@@ -48,7 +48,7 @@ async function caricaDettagli() {
     await caricaStagioni(id);
     const stagione1 = stagioni.find(s => s.season_number === 1);
     if (stagione1) {
-      caricaEpisodi(id, 1);
+      await caricaEpisodi(id, 1); // <-- già carica il primo episodio
     }
   } else {
     selezionaStagioneBtn.style.display = "none";
@@ -113,29 +113,43 @@ async function caricaEpisodi(tvId, seasonNumber) {
   const res = await fetch(`https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNumber}?api_key=${API_KEY}&language=it-IT`);
   const data = await res.json();
 
+  if (!data.episodes || data.episodes.length === 0) {
+    wrapper.innerHTML = `<p>Nessun episodio disponibile per questa stagione.</p>`;
+    return;
+  }
+
+  let primoCaricato = false;
+
   data.episodes.forEach(episodio => {
     const ep = document.createElement("div");
     ep.className = "episodio-card";
+
+    const imgSrc = episodio.still_path
+      ? `https://image.tmdb.org/t/p/w300${episodio.still_path}`
+      : "https://via.placeholder.com/300x169?text=Episodio+non+disponibile";
+
     ep.innerHTML = `
       <div class="episodio-link" style="cursor:pointer">
-        <img src="https://image.tmdb.org/t/p/w300${episodio.still_path}" alt="Episodio">
+        <img src="${imgSrc}" alt="Episodio">
         <p><strong>${episodio.episode_number}. ${episodio.name}</strong></p>
         <p>${episodio.overview || "Nessuna descrizione."}</p>
       </div>
     `;
-    ep.onclick = () => {
-      aggiornaPlayer(tvId, seasonNumber, episodio.episode_number);
-    };
-    wrapper.appendChild(ep);
-  });
 
-  // Carica il primo episodio all’apertura
-  if (data.episodes.length > 0) {
-    aggiornaPlayer(tvId, seasonNumber, data.episodes[0].episode_number);
-  }
+    ep.onclick = () => {
+      aggiornaPlayer(tvId, seasonNumber, episodio.episode_number, true);
+    };
+
+    wrapper.appendChild(ep);
+
+    if (!primoCaricato) {
+      aggiornaPlayer(tvId, seasonNumber, episodio.episode_number, false);
+      primoCaricato = true;
+    }
+  });
 }
 
-function aggiornaPlayer(tvId, season, episode) {
+function aggiornaPlayer(tvId, season, episode, scroll = true) {
   playerBox.innerHTML = `
     <div class="box-player">
       <h2>🎥 S${season} | Episodio ${episode}</h2>
@@ -143,6 +157,12 @@ function aggiornaPlayer(tvId, season, episode) {
         <iframe src="https://vixsrc.to/tv/${tvId}/${season}/${episode}" allowfullscreen></iframe>
       </div>
     </div>`;
+
+  if (scroll) {
+    setTimeout(() => {
+      playerBox.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  }
 }
 
 // Gestione modale
@@ -158,4 +178,4 @@ window.onclick = (event) => {
   if (event.target == modal) {
     modal.style.display = "none";
   }
-};
+}
