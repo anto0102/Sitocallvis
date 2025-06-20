@@ -103,3 +103,19 @@ h2 {
 .movie-card a:hover {
   color: #ff4d4d;
 }
+.profile-button {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 1.4em;
+  text-decoration: none;
+  color: white;
+  background-color: #00adee;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.profile-button:hover {
+  background-color: #008dbd;
+}
