@@ -1,103 +1,59 @@
-const apiKey = '2d082597ab951b3a9596ca23e71413a8';
+const apiKey = '<<2d082597ab951b3a9596ca23e71413a8>>'; // inserisci la tua API key TMDB
 const baseUrl = 'https://api.themoviedb.org/3';
-const imageBase = 'https://image.tmdb.org/t/p/w500';
 
-document.addEventListener('DOMContentLoaded', () => {
-  loadHomeSections();
-  setupSearch();
-});
-
-// Funzione per caricare varie sezioni della home
-function loadHomeSections() {
-  loadMovies(`${baseUrl}/movie/popular?api_key=${apiKey}&language=it-IT&page=1`, 'Consigliati');
-  loadMovies(`${baseUrl}/trending/all/week?api_key=${apiKey}&language=it-IT`, 'Titoli del momento');
-  loadMoviesByGenre(10764, 'Reality');
-  loadMoviesByGenre(27, 'Horror');
-  loadMoviesByGenre(80, 'Crime');
-  loadMoviesByGenre(28, 'Action');
-  loadMoviesByGenre(12, 'Adventure');
-  loadMoviesByGenre(10749, 'Romance');
-  loadMoviesByGenre(10752, 'War & Politics');
+async function getPopular() {
+  const res = await fetch(`${baseUrl}/movie/popular?api_key=${apiKey}&language=it-IT`);
+  const data = await res.json();
+  return data.results;
 }
 
-// Funzione per caricare film da un endpoint specifico
-function loadMovies(url, sectionTitle) {
-  fetch(url)
-    .then(res => res.json())
-    .then(data => {
-      if (data.results && data.results.length > 0) {
-        renderSection(sectionTitle, data.results);
-      }
-    })
-    .catch(err => console.error('Errore nel caricamento:', err));
+async function getNowPlaying() {
+  const res = await fetch(`${baseUrl}/movie/now_playing?api_key=${apiKey}&language=it-IT`);
+  const data = await res.json();
+  return data.results;
 }
 
-// Funzione per genere
-function loadMoviesByGenre(genreId, sectionTitle) {
-  const url = `${baseUrl}/discover/movie?api_key=${apiKey}&with_genres=${genreId}&language=it-IT`;
-  loadMovies(url, sectionTitle);
-}
+// Rendering della sezione Consigliati (carosello verticale)
+function renderConsigliati(list) {
+  const container = document.getElementById('consigliati-carousel');
+  container.innerHTML = '';
 
-// Rendering sezione
-function renderSection(title, items) {
-  const container = document.getElementById('contenuti') || createContainer();
-  const section = document.createElement('section');
-  section.classList.add('sezione');
-
-  const heading = document.createElement('h2');
-  heading.textContent = title;
-  section.appendChild(heading);
-
-  const scrollContainer = document.createElement('div');
-  scrollContainer.classList.add('scroll-container');
-
-  items.forEach(item => {
+  list.forEach(movie => {
     const card = document.createElement('div');
-    card.classList.add('card');
+    card.className = 'card-vertical';
+
     card.innerHTML = `
-      <img src="${imageBase + item.poster_path}" alt="${item.title || item.name}" />
-      <h3>${item.title || item.name}</h3>
-      <p>⭐ ${item.vote_average}</p>
+      <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" />
+      <div class="card-content">
+        <h3>${movie.title}</h3>
+        <div class="rating">⭐ ${movie.vote_average}</div>
+      </div>
     `;
-    card.addEventListener('click', () => {
-      const id = item.id;
-      const type = item.media_type || (item.title ? 'movie' : 'tv');
-      window.location.href = `dettagli.html?id=${id}&type=${type}`;
-    });
 
-    scrollContainer.appendChild(card);
-  });
-
-  section.appendChild(scrollContainer);
-  container.appendChild(section);
-}
-
-function createContainer() {
-  const main = document.querySelector('main');
-  const container = document.createElement('div');
-  container.id = 'contenuti';
-  main.appendChild(container);
-  return container;
-}
-
-// Funzione per gestire la ricerca
-function setupSearch() {
-  const input = document.querySelector('#search-input');
-  const button = document.querySelector('#search-button');
-
-  if (!input || !button) return;
-
-  button.addEventListener('click', () => {
-    const query = input.value.trim();
-    if (query.length > 0) {
-      fetch(`${baseUrl}/search/multi?api_key=${apiKey}&query=${query}&language=it-IT`)
-        .then(res => res.json())
-        .then(data => {
-          const container = document.getElementById('contenuti');
-          container.innerHTML = '';
-          renderSection(`Risultati per "${query}"`, data.results);
-        })
-        .catch(err => console.error('Errore nella ricerca:', err));
-    }
+    container.appendChild(card);
   });
 }
+
+// Rendering Titoli del momento
+function renderNowPlaying(list) {
+  const container = document.getElementById('titoli-momento');
+  container.innerHTML = '';
+
+  list.forEach(movie => {
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    card.innerHTML = `
+      <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" />
+      <div class="title">${movie.title}</div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+// Esegui onload
+window.addEventListener('DOMContentLoaded', () => {
+  getPopular().then(renderConsigliati);
+  getNowPlaying().then(renderNowPlaying);
+});
