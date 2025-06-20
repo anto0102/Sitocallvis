@@ -1,4 +1,5 @@
-const API_KEY = "2d082597ab951b3a9596ca23e71413a8"; // ⬅️ Sostituisci con la tua vera chiave
+const API_KEY = "2d082597ab951b3a9596ca23e71413a8"; // ⬅️ Inserisci la tua vera chiave TMDb qui
+const BASE_URL = "https://api.themoviedb.org/3";
 
 const inputRicerca = document.getElementById("inputRicerca");
 const btnRicerca = document.getElementById("btnRicerca");
@@ -8,6 +9,12 @@ const contenitore = document.getElementById("contenitore");
 
 function mostraRisultati(risultati, tipo) {
   contenitore.innerHTML = "";
+
+  if (!risultati || risultati.length === 0) {
+    contenitore.innerHTML = "<p>Nessun risultato trovato.</p>";
+    return;
+  }
+
   risultati.forEach(item => {
     const titolo = tipo === "tv" ? item.name : item.title;
     const descrizione = item.overview || "Nessuna descrizione disponibile.";
@@ -30,13 +37,12 @@ function mostraRisultati(risultati, tipo) {
 
 function caricaContenuti(tipo) {
   contenitore.innerHTML = "<p>Caricamento...</p>";
-  fetch(`https://api.themoviedb.org/3/discover/${tipo}?api_key=${API_KEY}&language=it-IT`)
-    .then(res => res.json())
-    .then(data => {
-      mostraRisultati(data.results, tipo);
-    })
-    .catch(err => {
-      console.error(err);
+
+  fetch(`${BASE_URL}/discover/${tipo}?api_key=${API_KEY}&language=it-IT`)
+    .then(response => response.json())
+    .then(data => mostraRisultati(data.results, tipo))
+    .catch(error => {
+      console.error("Errore nel caricamento:", error);
       contenitore.innerHTML = "<p>Errore nel caricamento dei contenuti.</p>";
     });
 }
@@ -47,27 +53,23 @@ function cercaContenuti() {
 
   contenitore.innerHTML = "<p>Caricamento...</p>";
 
-  // Prima cerca nelle serie TV
-  fetch(`https://api.themoviedb.org/3/search/tv?api_key=${API_KEY}&language=it-IT&query=${encodeURIComponent(query)}`)
-    .then(res => res.json())
+  fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&language=it-IT&query=${encodeURIComponent(query)}`)
+    .then(response => response.json())
     .then(data => {
-      if (data.results.length > 0) {
-        mostraRisultati(data.results, "tv");
-      } else {
-        // Se non ci sono serie, cerca nei film
-        fetch(`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=it-IT&query=${encodeURIComponent(query)}`)
-          .then(res => res.json())
-          .then(data => {
-            if (data.results.length > 0) {
-              mostraRisultati(data.results, "movie");
-            } else {
-              contenitore.innerHTML = "<p>Nessun risultato trovato.</p>";
-            }
-          });
+      if (!data.results || data.results.length === 0) {
+        contenitore.innerHTML = "<p>Nessun risultato trovato.</p>";
+        return;
       }
+
+      // Filtra solo film o serie
+      const filtrati = data.results.filter(
+        item => item.media_type === "movie" || item.media_type === "tv"
+      );
+
+      mostraRisultati(filtrati, "multi");
     })
-    .catch(err => {
-      console.error(err);
+    .catch(error => {
+      console.error("Errore nella ricerca:", error);
       contenitore.innerHTML = "<p>Errore durante la ricerca.</p>";
     });
 }
