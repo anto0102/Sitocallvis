@@ -1,53 +1,44 @@
-const TMDB_API_KEY = 'INSERISCI_LA_TUA_API_KEY'; // opzionale
+const API_KEY = '2d082597ab951b3a9596ca23e71413a8'; // <--- Cambia questa riga
 
-const carica = async (tipo) => {
-  const container = document.getElementById('contenitore');
-  container.innerHTML = 'Caricamento...';
+async function getFilmData(id) {
+  const response = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}&language=it-IT`);
+  if (!response.ok) throw new Error(`Errore TMDB per ID ${id}`);
+  return await response.json();
+}
 
-  try {
-    const urlOriginale = `https://vixsrc.to/api/list/${tipo}?lang=it`;
-    const res = await fetch(`/api/proxy?url=${encodeURIComponent(urlOriginale)}`);
+async function mostraFilm(ids) {
+  const contenitore = document.getElementById('contenitore');
+  contenitore.innerHTML = ''; // Pulisce il contenuto precedente
 
-    if (!res.ok) throw new Error(`Errore HTTP: ${res.status}`);
-    
-    const data = await res.json();
-    if (!Array.isArray(data)) throw new Error("Risposta non valida: atteso un array.");
+  for (const id of ids) {
+    try {
+      const film = await getFilmData(id);
 
-    container.innerHTML = '';
-    for (let item of data) {
-      const id = item.tmdb_id;
-      const div = document.createElement('div');
-      div.classList.add('card');
-div.textContent = `TMDB ID: ${id}`;
-      container.appendChild(div);
+      const card = document.createElement('div');
+      card.classList.add('card');
 
-      // opzionale: carica dettagli
-      if (TMDB_API_KEY !== 'INSERISCI_LA_TUA_API_KEY') {
-        await caricaDettagliTMDB(id, container);
-      }
+      card.innerHTML = `
+        <img src="https://image.tmdb.org/t/p/w500${film.poster_path}" alt="${film.title}" />
+        <h3>${film.title}</h3>
+        <p>Anno: ${film.release_date?.slice(0, 4) || 'N/A'}</p>
+        <p>Voto: ${film.vote_average.toFixed(1)} ⭐</p>
+      `;
+
+      contenitore.appendChild(card);
+    } catch (err) {
+      console.error(err);
     }
-
-  } catch (error) {
-    container.innerHTML = 'Errore durante il caricamento.';
-    console.error("Errore:", error);
   }
-};
+}
 
-// opzionale: fetch TMDB
-const caricaDettagliTMDB = async (id, container) => {
-  try {
-    const res = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${TMDB_API_KEY}&language=it`);
-    const dettagli = await res.json();
-    const div = document.createElement('div');
-    div.textContent = `Titolo: ${dettagli.title || dettagli.name}`;
-    container.appendChild(div);
-  } catch (e) {
-    console.error("Errore nel caricamento dei dettagli TMDB:", e);
-  }
-};
+document.getElementById('carica-film').addEventListener('click', async () => {
+  const response = await fetch('/film.json');
+  const filmIds = await response.json();
+  mostraFilm(filmIds);
+});
 
-// collega i pulsanti dopo il caricamento DOM
-window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('carica-film').addEventListener('click', () => carica('movie'));
-  document.getElementById('carica-serie').addEventListener('click', () => carica('tv'));
+document.getElementById('carica-serie').addEventListener('click', async () => {
+  const response = await fetch('/serie.json');
+  const serieIds = await response.json();
+  mostraFilm(serieIds); // puoi creare un mostraSerie separato se vuoi campi diversi
 });
