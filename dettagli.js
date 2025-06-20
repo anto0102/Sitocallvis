@@ -26,9 +26,9 @@ async function caricaDettagli() {
   const titolo = data.title || data.name;
   const descrizione = data.overview || "Nessuna descrizione disponibile.";
   const img = data.poster_path ? `https://image.tmdb.org/t/p/w500${data.poster_path}` : "";
-  const dataUscita = data.release_date || data.first_air_date;
+  const dataUscita = data.release_date || data.first_air_date || "Data non disponibile";
   const voto = data.vote_average ? `${data.vote_average}/10` : "N/A";
-  const generi = data.genres?.map(g => g.name).join(", ");
+  const generi = data.genres?.map(g => g.name).join(", ") || "Non disponibili";
 
   dettagli.innerHTML = `
     <img src="${img}" alt="${titolo}">
@@ -58,6 +58,11 @@ async function caricaTrailer() {
       <div class="iframe-container">
         <iframe src="https://www.youtube.com/embed/${trailer.key}" allowfullscreen></iframe>
       </div>`;
+  } else {
+    trailerBox.innerHTML = `
+      <h2>🎬 Trailer</h2>
+      <p class="messaggio">Nessun trailer disponibile.</p>
+    `;
   }
 }
 
@@ -90,7 +95,12 @@ async function caricaStagioni(tvId) {
 }
 
 async function caricaEpisodi(tvId, seasonNumber) {
-  episodiBox.innerHTML = "";
+  episodiBox.innerHTML = `
+    <h3 class="stagione-attiva">Stagione ${seasonNumber}</h3>
+    <div class="episodi-wrapper"></div>
+  `;
+  const wrapper = episodiBox.querySelector(".episodi-wrapper");
+
   const res = await fetch(`https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNumber}?api_key=${API_KEY}&language=it-IT`);
   const data = await res.json();
 
@@ -103,7 +113,7 @@ async function caricaEpisodi(tvId, seasonNumber) {
     `;
     card.onclick = () => {
       playerBox.innerHTML = `
-        <div class="box-player">
+        <div class="box-player grande">
           <h2>🎥 Episodio ${ep.episode_number}</h2>
           <div class="iframe-container">
             <iframe src="https://vixsrc.to/tv/${tvId}/${seasonNumber}/${ep.episode_number}" allowfullscreen></iframe>
@@ -111,7 +121,7 @@ async function caricaEpisodi(tvId, seasonNumber) {
         </div>
       `;
     };
-    episodiBox.appendChild(card);
+    wrapper.appendChild(card);
   });
 }
 
