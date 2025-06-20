@@ -1,8 +1,76 @@
-/* SEZIONE CONSIGLIATI */
-.consigliati-section {
-  margin-bottom: 2rem;
+/* Reset e base */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html, body {
+  height: 100%;
+  background-color: #111;
+  color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+  overflow-x: hidden;
 }
 
+/* HEADER */
+header {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: #0d0d0d;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+header h1 {
+  font-size: 1.5rem;
+  margin-right: auto;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.search-bar input {
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: none;
+  width: 200px;
+}
+
+.search-bar button {
+  background-color: #d80032;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}
+
+section {
+  padding: 1rem;
+}
+
+/* Sezioni */
+h2 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+h2::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 20px;
+  background: red;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* Carosello verticale */
 .vertical-carousel {
   display: flex;
   flex-direction: column;
@@ -14,13 +82,14 @@
 }
 
 .vertical-carousel::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 .vertical-carousel::-webkit-scrollbar-thumb {
   background: #333;
   border-radius: 4px;
 }
 
+/* Card verticale */
 .card-vertical {
   display: flex;
   background-color: #1f1f1f;
@@ -61,4 +130,37 @@
   color: #f5c518;
   font-size: 0.95rem;
   margin-top: 0.3rem;
+}
+
+/* Grid layout per altre sezioni */
+.horizontal-scroll {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+}
+
+.horizontal-scroll .card {
+  min-width: 150px;
+  flex: 0 0 auto;
+  background-color: #1f1f1f;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.horizontal-scroll .card:hover {
+  transform: scale(1.05);
+}
+
+.horizontal-scroll img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.horizontal-scroll .title {
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  text-align: center;
 }
