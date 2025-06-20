@@ -89,3 +89,20 @@ function mostraMessaggio(testo) {
 }
 
 caricaDettagli();
+// Funzione per gestire la ricerca anche in pagina dettagli
+function setupSearch() {
+  const input = document.querySelector('#search-input');
+  const button = document.querySelector('#search-button');
+
+  if (!input || !button) return;
+
+  button.addEventListener('click', () => {
+    const query = input.value.trim();
+    if (query.length > 0) {
+      // Reindirizza alla homepage con un parametro search
+      window.location.href = `index.html?search=${encodeURIComponent(query)}`;
+    }
+  });
+}
+
+setupSearch();
