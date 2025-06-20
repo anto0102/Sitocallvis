@@ -1,78 +1,69 @@
-const contenitore = document.getElementById('contenitore');
+const contenitore = document.getElementById("contenitore");
+const bottoneFilm = document.getElementById("carica-film");
+const bottoneSerie = document.getElementById("carica-serie");
+const bottoneCerca = document.getElementById("cerca");
+const inputRicerca = document.getElementById("input-ricerca");
 
-const apiKey = '2d082597ab951b3a9596ca23e71413a8';
+const API_KEY = "2d082597ab951b3a9596ca23e71413a8"; // ← Inserisci la tua vera API key qui
+const BASE_URL = "https://api.themoviedb.org/3";
 
-async function caricaContenuti(listaID, tipo) {
-  contenitore.innerHTML = ''; // Pulisce il contenuto
+async function caricaContenuti(tipo) {
+  contenitore.innerHTML = "<p>Caricamento...</p>";
 
-  for (const id of listaID) {
-    const url = `https://api.themoviedb.org/3/${tipo}/${id}?api_key=${apiKey}&language=it-IT`;
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
+  try {
+    const response = await fetch(`${BASE_URL}/discover/${tipo}?api_key=${API_KEY}&language=it-IT`);
+    if (!response.ok) throw new Error("Errore nel caricamento");
 
-      const card = document.createElement('div');
-      card.className = 'card';
-
-      const img = document.createElement('img');
-      img.src = data.poster_path
-        ? `https://image.tmdb.org/t/p/w300${data.poster_path}`
-        : 'https://via.placeholder.com/300x450?text=Nessuna+Immagine';
-
-      const titolo = document.createElement('h3');
-      titolo.textContent = tipo === 'movie' ? data.title : data.name;
-
-      const descrizione = document.createElement('p');
-      descrizione.textContent = data.overview || 'Nessuna descrizione disponibile.';
-
-      card.appendChild(img);
-      card.appendChild(titolo);
-      card.appendChild(descrizione);
-
-      contenitore.appendChild(card);
-    } catch (error) {
-      console.error(`Errore nel caricamento ID ${id}:`, error);
-    }
+    const data = await response.json();
+    mostraRisultati(data.results);
+  } catch (errore) {
+    contenitore.innerHTML = "<p>Errore nel caricamento dei dati.</p>";
+    console.error(errore);
   }
 }
 
-document.getElementById('btnFilm').addEventListener('click', () => {
-  const filmIDs = [
-    803796, 9994, 157919, 45371, 13692, 8944,
-    274820, 24663, 26171, 5723, 872170, 952701
-  ];
-  caricaContenuti(filmIDs, 'movie');
-});
-
-document.getElementById('btnSerie').addEventListener('click', () => {
-  const serieIDs = [
-    1408, 1668, 46261, 60574, 72710, 100088,
-    92749, 3452, 1419, 93405, 1399, 82856
-  ];
-  caricaContenuti(serieIDs, 'tv');
-});
-const inputRicerca = document.getElementById('inputRicerca');
-const btnRicerca = document.getElementById('btnRicerca');
-
-btnRicerca.addEventListener('click', async () => {
-  const query = inputRicerca.value.trim();
-  if (!query) return;
-
+async function cercaContenuti(query) {
   contenitore.innerHTML = "<p>Caricamento...</p>";
 
-  const response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=it-IT`);
-  const data = await response.json();
+  try {
+    const response = await fetch(
+      `${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=it-IT`
+    );
+    if (!response.ok) throw new Error("Errore nella ricerca");
 
-  contenitore.innerHTML = '';
-
-  if (data.results && data.results.length > 0) {
-    data.results.slice(0, 10).forEach(item => {
-      if (item.media_type === "movie" || item.media_type === "tv") {
-        const card = creaCard(item);
-        contenitore.appendChild(card);
-      }
-    });
-  } else {
-    contenitore.innerHTML = "<p>Nessun risultato trovato.</p>";
+    const data = await response.json();
+    mostraRisultati(data.results);
+  } catch (errore) {
+    contenitore.innerHTML = "<p>Errore nella ricerca dei dati.</p>";
+    console.error(errore);
   }
+}
+
+function mostraRisultati(risultati) {
+  if (!risultati || risultati.length === 0) {
+    contenitore.innerHTML = "<p>Nessun risultato trovato.</p>";
+    return;
+  }
+
+  contenitore.innerHTML = risultati
+    .map((item) => {
+      const titolo = item.title || item.name || "Senza titolo";
+      const immagine = item.poster_path
+        ? `https://image.tmdb.org/t/p/w300${item.poster_path}`
+        : "https://via.placeholder.com/300x450?text=Nessuna+immagine";
+      return `
+        <div class="scheda">
+          <img src="${immagine}" alt="${titolo}">
+          <h3>${titolo}</h3>
+        </div>`;
+    })
+    .join("");
+}
+
+// Eventi
+bottoneFilm.addEventListener("click", () => caricaContenuti("movie"));
+bottoneSerie.addEventListener("click", () => caricaContenuti("tv"));
+bottoneCerca.addEventListener("click", () => {
+  const query = inputRicerca.value.trim();
+  if (query) cercaContenuti(query);
 });
