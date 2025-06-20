@@ -1,6 +1,6 @@
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("id");
-const tipo = urlParams.get("tipo");
+const tipo = urlParams.get("type");
 
 if (!id || !tipo) {
   document.getElementById("dettagliContainer").innerHTML = "<p>Contenuto non trovato.</p>";
