@@ -1,43 +1,32 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cinema Discovery - Accedi</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest"></script>
 </head>
 <body>
   <main>
     <h1>🎬 Cinema Discovery - Accedi</h1>
-    <div id="sign-in"></div>
+    <!-- 👇 Qui viene montato il form Clerk -->
+    <div id="clerk-login"></div>
   </main>
 
   <script>
-    Clerk.configure({
-      publishableKey: "pk_test_b23saWdpbmctaWVyWxhLTc1LmNsZXJrLmFjY291bnRzLmRldiQ"
-    });
+    // SOSTITUISCI con la tua chiave Clerk
+    const clerkFrontendApi = "YOUR_FRONTEND_API";
 
-    window.Clerk.load().then(() => {
-      Clerk.mountSignIn("#sign-in", {
-        signUpUrl: "auth.html", // puoi fare signup nella stessa pagina
-        afterSignInUrl: "index.html",
-        appearance: {
-          elements: {
-            card: { backgroundColor: "#111", color: "#fff" },
-            headerTitle: { fontSize: "24px" },
-          },
-          variables: {
-            colorPrimary: "#ffffff",
-            colorText: "#ffffff",
-            colorBackground: "#000000"
-          }
-        },
-        localization: {
-          locale: "it-IT"
-        }
+    window.Clerk.load().then(async () => {
+      await window.Clerk.loadSignIn({
+        // 👇 Importante: questo fa apparire il form dentro il div
+        element: "#clerk-login",
+        redirectUrl: "index.html"
       });
     });
+
+    window.Clerk.configure({ frontendApi: clerkFrontendApi });
   </script>
 </body>
 </html>
