@@ -1,131 +1,103 @@
-// Inserisci la tua API Key qui
-const API_KEY = '2d082597ab951b3a9596ca23e71413a8';
-const BASE_URL = 'https://api.themoviedb.org/3';
-const IMG_URL = 'https://image.tmdb.org/t/p/w500';
+const apiKey = '2d082597ab951b3a9596ca23e71413a8';
+const baseUrl = 'https://api.themoviedb.org/3';
+const imageBase = 'https://image.tmdb.org/t/p/w500';
 
-const main = document.getElementById('main');
-const searchInput = document.getElementById('search');
-const searchBtn = document.getElementById('searchBtn');
-const filterBtn = document.getElementById('filterBtn');
-const filterModal = document.getElementById('filterModal');
-const yearInput = document.getElementById('year');
-const scoreInput = document.getElementById('score');
-const applyFiltersBtn = document.getElementById('applyFilters');
+document.addEventListener('DOMContentLoaded', () => {
+  loadHomeSections();
+  setupSearch();
+});
 
-let filters = {};
-
-function createCard(item) {
-  const card = document.createElement('div');
-  card.classList.add('card');
-  card.onclick = () => {
-    window.location.href = `dettagli.html?id=${item.id}&type=${item.media_type || item.title ? 'movie' : 'tv'}`;
-  };
-
-  card.innerHTML = `
-    <img src="${IMG_URL + item.poster_path}" alt="${item.title || item.name}" />
-    <div class="info">
-      <strong>${item.title || item.name}</strong><br />
-      ⭐ ${item.vote_average}
-    </div>
-  `;
-  return card;
+// Funzione per caricare varie sezioni della home
+function loadHomeSections() {
+  loadMovies(`${baseUrl}/movie/popular?api_key=${apiKey}&language=it-IT&page=1`, 'Consigliati');
+  loadMovies(`${baseUrl}/trending/all/week?api_key=${apiKey}&language=it-IT`, 'Titoli del momento');
+  loadMoviesByGenre(10764, 'Reality');
+  loadMoviesByGenre(27, 'Horror');
+  loadMoviesByGenre(80, 'Crime');
+  loadMoviesByGenre(28, 'Action');
+  loadMoviesByGenre(12, 'Adventure');
+  loadMoviesByGenre(10749, 'Romance');
+  loadMoviesByGenre(10752, 'War & Politics');
 }
 
-function createSection(title, items) {
-  const section = document.createElement('section');
-  section.classList.add('section');
-  section.innerHTML = `<h2 class="section-title">${title}</h2>`;
+// Funzione per caricare film da un endpoint specifico
+function loadMovies(url, sectionTitle) {
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      if (data.results && data.results.length > 0) {
+        renderSection(sectionTitle, data.results);
+      }
+    })
+    .catch(err => console.error('Errore nel caricamento:', err));
+}
 
-  const row = document.createElement('div');
-  row.classList.add('scrolling-row');
+// Funzione per genere
+function loadMoviesByGenre(genreId, sectionTitle) {
+  const url = `${baseUrl}/discover/movie?api_key=${apiKey}&with_genres=${genreId}&language=it-IT`;
+  loadMovies(url, sectionTitle);
+}
+
+// Rendering sezione
+function renderSection(title, items) {
+  const container = document.getElementById('contenuti') || createContainer();
+  const section = document.createElement('section');
+  section.classList.add('sezione');
+
+  const heading = document.createElement('h2');
+  heading.textContent = title;
+  section.appendChild(heading);
+
+  const scrollContainer = document.createElement('div');
+  scrollContainer.classList.add('scroll-container');
 
   items.forEach(item => {
-    if (item.poster_path) {
-      row.appendChild(createCard(item));
-    }
+    const card = document.createElement('div');
+    card.classList.add('card');
+    card.innerHTML = `
+      <img src="${imageBase + item.poster_path}" alt="${item.title || item.name}" />
+      <h3>${item.title || item.name}</h3>
+      <p>⭐ ${item.vote_average}</p>
+    `;
+    card.addEventListener('click', () => {
+      const id = item.id;
+      const type = item.media_type || (item.title ? 'movie' : 'tv');
+      window.location.href = `dettagli.html?id=${id}&type=${type}`;
+    });
+
+    scrollContainer.appendChild(card);
   });
 
-  section.appendChild(row);
-  main.appendChild(section);
+  section.appendChild(scrollContainer);
+  container.appendChild(section);
 }
 
-async function fetchData(endpoint, title) {
-  try {
-    const res = await fetch(`${BASE_URL}${endpoint}?api_key=${API_KEY}&language=it-IT`);
-    const data = await res.json();
-    createSection(title, data.results);
-  } catch (err) {
-    console.error('Errore nel caricamento:', err);
-  }
+function createContainer() {
+  const main = document.querySelector('main');
+  const container = document.createElement('div');
+  container.id = 'contenuti';
+  main.appendChild(container);
+  return container;
 }
 
-function loadContent() {
-  main.innerHTML = '';
-  fetchData('/movie/popular', '🎞️ Film consigliati');
-  fetchData('/trending/all/week', '🔥 Titoli del momento');
-  fetchData('/discover/tv?with_genres=10764', '🧑‍🤝‍🧑 Reality');
-  fetchData('/discover/movie?with_genres=27', '👻 Horror');
-  fetchData('/discover/movie?with_genres=80', '🔍 Crime');
-  fetchData('/discover/movie?with_genres=28', '💥 Action');
-  fetchData('/discover/movie?with_genres=12', '🌍 Adventure');
-  fetchData('/discover/movie?with_genres=10749', '💘 Romance');
-  fetchData('/discover/tv?with_genres=10768', '⚔️ War & Politics');
-}
+// Funzione per gestire la ricerca
+function setupSearch() {
+  const input = document.querySelector('#search-input');
+  const button = document.querySelector('#search-button');
 
-searchBtn.addEventListener('click', () => {
-  const query = searchInput.value;
-  if (query.trim()) searchContent(query);
-});
+  if (!input || !button) return;
 
-filterBtn.addEventListener('click', () => {
-  filterModal.classList.toggle('hidden');
-});
-
-applyFiltersBtn.addEventListener('click', () => {
-  filters.year = yearInput.value;
-  filters.vote = scoreInput.value;
-  filterModal.classList.add('hidden');
-  if (searchInput.value.trim()) {
-    searchContent(searchInput.value);
-  }
-});
-
-async function searchContent(query) {
-  main.innerHTML = '';
-  try {
-    const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&language=it-IT&query=${encodeURIComponent(query)}`);
-    const data = await res.json();
-
-    let results = data.results.filter(item => item.poster_path);
-    if (filters.year) {
-      results = results.filter(r => (r.release_date || r.first_air_date)?.startsWith(filters.year));
+  button.addEventListener('click', () => {
+    const query = input.value.trim();
+    if (query.length > 0) {
+      fetch(`${baseUrl}/search/multi?api_key=${apiKey}&query=${query}&language=it-IT`)
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById('contenuti');
+          container.innerHTML = '';
+          renderSection(`Risultati per "${query}"`, data.results);
+        })
+        .catch(err => console.error('Errore nella ricerca:', err));
     }
-    if (filters.vote) {
-      results = results.filter(r => r.vote_average >= parseFloat(filters.vote));
-    }
-
-    createSection(`Risultati per "${query}"`, results);
-  } catch (err) {
-    console.error('Errore nella ricerca:', err);
-  }
+  });
 }
-
-loadContent();
-
-
-Ecco il file index.js aggiornato e funzionante. Copialo e incollalo nel tuo progetto:
-
-📌 Cosa include:
-
-Caricamento sezioni film consigliati, titoli del momento e categorie specifiche.
-
-Funzione di ricerca con filtro per anno e voto.
-
-Navigazione alla pagina dei dettagli tramite ID.
-
-
-✅ Importante: Sostituisci 'INSERISCI_LA_TUA_API_KEY' con la tua vera API key di TMDB.
-
-Se vuoi il CSS o il file HTML aggiornato, chiedimelo pure.
-
-  
