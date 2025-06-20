@@ -17,7 +17,8 @@ const carica = async (tipo) => {
     for (let item of data) {
       const id = item.tmdb_id;
       const div = document.createElement('div');
-      div.textContent = `TMDB ID: ${id}`;
+      div.classList.add('card');
+div.textContent = `TMDB ID: ${id}`;
       container.appendChild(div);
 
       // opzionale: carica dettagli
