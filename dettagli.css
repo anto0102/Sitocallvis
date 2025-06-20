@@ -1,120 +1,145 @@
 body {
   margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #111;
-  font-family: Arial, sans-serif;
   color: #fff;
 }
 
 header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   background-color: #000;
-  padding: 10px 20px;
+  padding: 15px 20px;
+  flex-wrap: wrap;
+}
+
+header .home-link {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: space-between;
-}
-
-.logo {
-  font-size: 22px;
-  font-weight: bold;
-  color: #e50914;
-  margin: 0;
-}
-
-.home-button {
-  background-color: #e50914;
-  color: white;
-  padding: 8px 15px;
+  color: #fff;
   text-decoration: none;
-  border-radius: 30px;
+  font-size: 16px;
   font-weight: bold;
-  transition: background 0.3s;
 }
 
-.home-button:hover {
-  background-color: #b0060f;
+header .home-link::before {
+  content: '←';
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+header h1 {
+  color: #e50914;
+  font-size: 20px;
+  margin: 0 10px;
+  flex: 1;
+  text-align: center;
 }
 
 .search-bar {
   display: flex;
   align-items: center;
   background-color: #222;
-  border-radius: 30px;
+  padding: 5px;
+  border-radius: 25px;
+  margin-top: 10px;
 }
 
 .search-bar input {
   border: none;
   outline: none;
+  background: transparent;
+  color: #fff;
   padding: 8px 12px;
-  background: #fff;
-  border-radius: 30px 0 0 30px;
-  font-size: 16px;
-  color: #000;
+  font-size: 14px;
+  width: 140px;
 }
 
 .search-bar button {
-  background-color: #e50914;
+  background: linear-gradient(to right, #e50914, #ff6f61);
   border: none;
-  padding: 8px 12px;
-  border-radius: 0 30px 30px 0;
-  color: #fff;
+  color: white;
+  border-radius: 50%;
+  padding: 8px;
   cursor: pointer;
-  font-size: 18px;
+  margin-left: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.dettagli-card {
+main {
+  padding: 30px 15px;
+}
+
+#contenitore {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 20px;
-  padding: 20px;
-  background-color: #222;
+}
+
+/* Card dettagli */
+.dettagli-card {
+  background-color: #1c1c1c;
   border-radius: 10px;
+  box-shadow: 0 0 15px rgba(229, 9, 20, 0.2);
+  overflow: hidden;
+  max-width: 600px;
+  width: 100%;
+  margin-bottom: 30px;
 }
 
 .dettagli-card img {
-  max-width: 100%;
-  border-radius: 10px;
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .dettagli-card .info {
-  margin-top: 15px;
-  text-align: left;
-  max-width: 600px;
+  padding: 20px;
 }
 
-.dettagli-card .info h2 {
-  margin-bottom: 10px;
-  font-size: 24px;
-  color: #ff4757;
+.dettagli-card h2 {
+  margin-top: 0;
+  color: #e50914;
 }
 
-.dettagli-card .info p {
-  margin: 5px 0;
-  line-height: 1.5;
+.dettagli-card p {
+  margin: 8px 0;
+  font-size: 15px;
 }
 
-/* Trailer YouTube migliorato */
+.dettagli-card strong {
+  color: #fff;
+}
+
+/* Trailer YouTube */
 .box-trailer {
-  margin: 30px auto;
-  max-width: 700px;
-  border: 3px solid #e50914;
-  border-radius: 12px;
+  margin: 20px auto;
+  max-width: 600px;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 0 15px #e50914;
+  background-color: #111;
+  box-shadow: 0 0 15px rgba(229, 9, 20, 0.3);
+  transition: box-shadow 0.3s ease;
+}
+
+.box-trailer:hover {
+  box-shadow: 0 0 25px rgba(229, 9, 20, 0.45);
 }
 
 .box-trailer iframe {
-  display: block;
   width: 100%;
-  height: 400px;
+  height: 340px;
+  display: block;
   border: none;
 }
 
+/* Messaggio di errore */
 .messaggio {
-  color: red;
+  color: #aaa;
   font-size: 18px;
+  margin-top: 50px;
   text-align: center;
-  margin: 50px 0;
 }
