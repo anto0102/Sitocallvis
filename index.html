@@ -2,26 +2,61 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cinema Discovery</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <h1><span>Cinema</span> Discovery</h1>
-    <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Cerca un film o serie..." />
-      <button onclick="searchMovies()">Cerca</button>
-    </div>
+    <h1>Cinema <span>Discovery</span></h1>
+    <form id="search-form">
+      <input type="text" id="search-input" placeholder="Cerca un film o serie..." />
+      <button type="submit">🔍</button>
+    </form>
   </header>
 
-  <main id="mainContent">
-    <!-- Le sezioni film verranno caricate qui -->
+  <main id="main-content">
+    <section>
+      <h2>🍿 Consigliati</h2>
+      <div class="movie-container" id="consigliati"></div>
+    </section>
+    <section>
+      <h2>🔥 Titoli del momento</h2>
+      <div class="movie-container" id="momento"></div>
+    </section>
+    <section>
+      <h2>🎭 Drammatici</h2>
+      <div class="movie-container" id="drammatici"></div>
+    </section>
+    <section>
+      <h2>💥 Azione</h2>
+      <div class="movie-container" id="azione"></div>
+    </section>
+    <section>
+      <h2>😂 Commedie</h2>
+      <div class="movie-container" id="commedie"></div>
+    </section>
+    <section>
+      <h2>👻 Horror</h2>
+      <div class="movie-container" id="horror"></div>
+    </section>
+    <section>
+      <h2>👨‍👩‍👧 Famiglia</h2>
+      <div class="movie-container" id="famiglia"></div>
+    </section>
+    <section>
+      <h2>🚀 Fantascienza</h2>
+      <div class="movie-container" id="fantascienza"></div>
+    </section>
+    <section>
+      <h2>💖 Romantici</h2>
+      <div class="movie-container" id="romantici"></div>
+    </section>
+    <section>
+      <h2>🎬 Documentari</h2>
+      <div class="movie-container" id="documentari"></div>
+    </section>
   </main>
-
-  <footer>
-    <p>Realizzato con ❤️ da Te</p>
-  </footer>
 
   <script src="index.js"></script>
 </body>
