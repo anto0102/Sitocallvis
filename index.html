@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="it">
+<!-- ✅ index.html modificato con login/logout --><!DOCTYPE html><html lang="it">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cinema Discovery</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
   <header>
@@ -13,9 +13,13 @@
       <input type="text" id="search-input" placeholder="Cerca un film o serie..." />
       <button type="submit">🔍</button>
     </form>
-  </header>
-
-  <main id="main-content">
+    <!-- 🔐 Login/Logout -->
+    <div id="auth-area">
+      <button id="login-btn" onclick="location.href='auth.html'">Accedi</button>
+      <button id="logout-btn" style="display:none">Logout</button>
+    </div>
+  </header>  <main id="main-content">
+    <!-- Sezioni film (uguali) -->
     <section>
       <h2>🍿 Consigliati</h2>
       <div class="movie-container" id="consigliati"></div>
@@ -56,29 +60,26 @@
       <h2>🎬 Documentari</h2>
       <div class="movie-container" id="documentari"></div>
     </section>
-  </main>
+  </main>  <script>
+    const supabase = supabase.createClient("INSERISCI_LA_TUA_URL_SUPABASE", "INSERISCI_LA_TUA_PUBLIC_ANON_KEY");
 
-  <script>
-    // Funzione per creare una card cliccabile che va a dettagli.html
-    function createMovieCard(movie) {
-      const IMAGE_URL = "https://image.tmdb.org/t/p/w500";
-      const title = movie.title || movie.name || "Titolo sconosciuto";
-      const poster = movie.poster_path ? `${IMAGE_URL}${movie.poster_path}` : "fallback.jpg";
+    // Controllo sessione e mostra pulsanti
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      const loginBtn = document.getElementById("login-btn");
+      const logoutBtn = document.getElementById("logout-btn");
 
-      const card = document.createElement("div");
-      card.classList.add("movie-card");
+      if (session) {
+        loginBtn.style.display = "none";
+        logoutBtn.style.display = "inline-block";
+      } else {
+        loginBtn.style.display = "inline-block";
+        logoutBtn.style.display = "none";
+      }
+    });
 
-      card.innerHTML = `
-        <a href="dettagli.html?id=${movie.id}">
-          <img src="${poster}" alt="${title}" />
-          <h3>${title}</h3>
-        </a>
-      `;
-
-      return card;
-    }
-  </script>
-
-  <script src="index.js"></script>
-</body>
+    document.getElementById("logout-btn").addEventListener("click", async () => {
+      await supabase.auth.signOut();
+      location.reload();
+    });
+  </script>  <script src="index.js"></script></body>
 </html>
