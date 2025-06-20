@@ -7,16 +7,20 @@ document.addEventListener('DOMContentLoaded', () => {
   setupSearch();
 });
 
+// Carica le sezioni della home
 function loadHomeSections() {
-  loadMovies(`${baseUrl}/movie/popular?api_key=${apiKey}&language=it-IT`, 'Popolari');
-  loadMovies(`${baseUrl}/trending/all/week?api_key=${apiKey}&language=it-IT`, 'Tendenze');
+  loadMovies(`${baseUrl}/movie/popular?api_key=${apiKey}&language=it-IT&page=1`, 'Consigliati');
+  loadMovies(`${baseUrl}/trending/all/week?api_key=${apiKey}&language=it-IT`, 'Titoli del momento');
+  loadMoviesByGenre(10764, 'Reality');
   loadMoviesByGenre(27, 'Horror');
-  loadMoviesByGenre(10752, 'War & Politics');
-  loadMoviesByGenre(10749, 'Romance');
-  loadMoviesByGenre(28, 'Azione');
   loadMoviesByGenre(80, 'Crime');
+  loadMoviesByGenre(28, 'Action');
+  loadMoviesByGenre(12, 'Adventure');
+  loadMoviesByGenre(10749, 'Romance');
+  loadMoviesByGenre(10752, 'War & Politics');
 }
 
+// Carica film da un URL
 function loadMovies(url, sectionTitle) {
   fetch(url)
     .then(res => res.json())
@@ -25,54 +29,78 @@ function loadMovies(url, sectionTitle) {
         renderSection(sectionTitle, data.results);
       }
     })
-    .catch(err => console.error('Errore:', err));
+    .catch(err => console.error('Errore nel caricamento:', err));
 }
 
-function loadMoviesByGenre(genreId, title) {
+// Carica film per genere
+function loadMoviesByGenre(genreId, sectionTitle) {
   const url = `${baseUrl}/discover/movie?api_key=${apiKey}&with_genres=${genreId}&language=it-IT`;
-  loadMovies(url, title);
+  loadMovies(url, sectionTitle);
 }
 
+// Crea sezione e card
 function renderSection(title, items) {
-  const container = document.getElementById('contenuti');
+  const container = document.getElementById('contenuti') || createContainer();
   const section = document.createElement('section');
-  section.innerHTML = `<h2>${title}</h2>`;
-  const scroll = document.createElement('div');
-  scroll.className = 'scroll';
+  section.classList.add('sezione');
+
+  const heading = document.createElement('h2');
+  heading.textContent = title;
+  section.appendChild(heading);
+
+  const scrollContainer = document.createElement('div');
+  scrollContainer.classList.add('scroll-container');
 
   items.forEach(item => {
+    if (!item.poster_path) return;
+
     const card = document.createElement('div');
-    card.className = 'card';
-
-    const type = item.media_type || (item.title ? 'movie' : 'tv');
-    const name = item.title || item.name;
-    const img = item.poster_path 
-      ? imageBase + item.poster_path
-      : 'https://via.placeholder.com/300x450?text=Nessuna+immagine';
-
+    card.classList.add('card');
     card.innerHTML = `
-      <a href="dettagli.html?id=${item.id}&type=${type}">
-        <img src="${img}" alt="${name}" />
-        <h3>${name}</h3>
-        <p>⭐ ${item.vote_average?.toFixed(1)}</p>
-      </a>
+      <img src="${imageBase + item.poster_path}" alt="${item.title || item.name}" />
+      <h3>${item.title || item.name}</h3>
+      <p>⭐ ${item.vote_average?.toFixed(1)}</p>
     `;
+    card.addEventListener('click', () => {
+      const id = item.id;
+      const type = item.media_type || (item.title ? 'movie' : 'tv');
+      window.location.href = `dettagli.html?id=${id}&type=${type}`;
+    });
 
-    scroll.appendChild(card);
+    scrollContainer.appendChild(card);
   });
 
-  section.appendChild(scroll);
+  section.appendChild(scrollContainer);
   container.appendChild(section);
 }
 
+// Crea contenitore principale se non esiste
+function createContainer() {
+  const main = document.querySelector('main');
+  const container = document.createElement('div');
+  container.id = 'contenuti';
+  main.appendChild(container);
+  return container;
+}
+
+// Funzione di ricerca
 function setupSearch() {
   const input = document.querySelector('#search-input');
   const button = document.querySelector('#search-button');
 
+  if (!input || !button) return;
+
   button.addEventListener('click', () => {
     const query = input.value.trim();
-    if (query) {
-      window.location.href = `index.html?search=${encodeURIComponent(query)}`;
+    if (query.length > 0) {
+      fetch(`${baseUrl}/search/multi?api_key=${apiKey}&query=${encodeURIComponent(query)}&language=it-IT`)
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById('contenuti');
+          container.innerHTML = '';
+          renderSection(`Risultati per "${query}"`, data.results);
+        })
+        .catch(err => console.error('Errore nella ricerca:', err));
     }
   });
 }
