@@ -1,6 +1,6 @@
 const contenitore = document.getElementById('contenitore');
 
-const apiKey = 'TUO_API_KEY_TMDB';
+const apiKey = '2d082597ab951b3a9596ca23e71413a8';
 
 async function caricaContenuti(listaID, tipo) {
   contenitore.innerHTML = ''; // Pulisce il contenuto
