@@ -11,9 +11,8 @@ body {
   margin: 0 auto;
 }
 
-.home-button {
+.home-button, .stagione-selector {
   display: inline-block;
-  margin-bottom: 20px;
   background-color: #e50914;
   color: white;
   text-decoration: none;
@@ -21,9 +20,12 @@ body {
   border-radius: 30px;
   font-weight: bold;
   transition: background-color 0.3s ease;
+  border: none;
+  cursor: pointer;
+  margin: 10px 0;
 }
 
-.home-button:hover {
+.home-button:hover, .stagione-selector:hover {
   background-color: #b20710;
 }
 
@@ -49,8 +51,6 @@ body {
 .dettagli-card img {
   width: 100%;
   max-width: 300px;
-  height: auto;
-  border-bottom: 1px solid #333;
 }
 
 .dettagli-card .info {
@@ -59,18 +59,10 @@ body {
 }
 
 .dettagli-card h2 {
-  margin-top: 0;
   color: #e50914;
-  font-size: 24px;
 }
 
-.dettagli-card p {
-  margin: 10px 0;
-  font-size: 15px;
-}
-
-.box-trailer,
-.box-player {
+.box-trailer, .box-player {
   width: 100%;
   max-width: 700px;
   background-color: #1a1a1a;
@@ -80,20 +72,12 @@ body {
   text-align: center;
 }
 
-.box-trailer h2,
-.box-player h2 {
-  color: #ff4d4d;
-  margin-bottom: 16px;
-  font-size: 20px;
-}
-
 .iframe-container {
   position: relative;
   width: 100%;
   padding-bottom: 56.25%;
   height: 0;
   overflow: hidden;
-  background-color: #000;
   border-radius: 12px;
 }
 
@@ -104,9 +88,79 @@ body {
   width: 100%;
   height: 100%;
   border: none;
-  border-radius: 12px;
 }
 
-.episodio-btn {
-  margin: 4px;
-  padding: 6
+.carousel-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 16px;
+  padding: 10px;
+  scroll-snap-type: x mandatory;
+  width: 100%;
+  max-width: 700px;
+}
+
+.card {
+  flex: 0 0 auto;
+  width: 160px;
+  background: #222;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  scroll-snap-align: start;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card img {
+  width: 100%;
+  height: 90px;
+  object-fit: cover;
+}
+
+.card p {
+  padding: 8px;
+  font-size: 14px;
+  text-align: center;
+  color: #fff;
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.8);
+}
+
+.modal-content {
+  background-color: #222;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #444;
+  width: 80%;
+  max-width: 400px;
+  border-radius: 12px;
+  color: white;
+  text-align: center;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: #fff;
+}
