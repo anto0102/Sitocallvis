@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login / Registrazione</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .auth-container {
+      background-color: #1e1e1e;
+      padding: 30px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+      color: #00adee;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1em;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #00adee;
+      color: #fff;
+      border: none;
+      font-size: 1em;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .toggle {
+      margin-top: 15px;
+      text-align: center;
+      cursor: pointer;
+      color: #ccc;
+      font-size: 0.9em;
+    }
+
+    .toggle:hover {
+      color: #00adee;
+    }
+
+    #message {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <h2 id="form-title">Accedi</h2>
+
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+
+    <button id="auth-button">Login</button>
+    <div class="toggle" id="toggle-mode">Non hai un account? Registrati</div>
+
+    <div id="message"></div>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+    const supabase = createClient(
+      'https://eymlncdzidfgfeuhkirr.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5bWxuY2R6aWRmZ2ZldWhraXJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA0NTA3MzQsImV4cCI6MjA2NjAyNjczNH0.E3r8Pe_ZztM7GtWXvloHgL6--49Do_sOV2jvZfWrUc0'
+    );
+
+    let isLogin = true;
+
+    const emailEl = document.getElementById('email');
+    const passwordEl = document.getElementById('password');
+    const button = document.getElementById('auth-button');
+    const toggle = document.getElementById('toggle-mode');
+    const title = document.getElementById('form-title');
+    const message = document.getElementById('message');
+
+    button.addEventListener('click', async () => {
+      const email = emailEl.value.trim();
+      const password = passwordEl.value.trim();
+
+      if (!email || !password) {
+        message.textContent = 'Compila tutti i campi.';
+        return;
+      }
+
+      if (isLogin) {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+          message.textContent = 'Errore: ' + error.message;
+        } else {
+          message.textContent = 'Accesso riuscito! 🔓';
+          setTimeout(() => window.location.href = 'index.html', 1000);
+        }
+      } else {
+        const { error } = await supabase.auth.signUp({ email, password });
+        if (error) {
+          message.textContent = 'Errore: ' + error.message;
+        } else {
+          message.textContent = 'Registrazione completata! ✨ Controlla l’email.';
+        }
+      }
+    });
+
+    toggle.addEventListener('click', () => {
+      isLogin = !isLogin;
+      title.textContent = isLogin ? 'Accedi' : 'Registrati';
+      button.textContent = isLogin ? 'Login' : 'Registrati';
+      toggle.textContent = isLogin
+        ? 'Non hai un account? Registrati'
+        : 'Hai già un account? Accedi';
+      message.textContent = '';
+    });
+  </script>
+</body>
+</html>
