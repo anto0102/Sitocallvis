@@ -66,8 +66,8 @@ function renderSection(title, items) {
     `;
     card.addEventListener('click', () => {
       const id = item.id;
-      const type = item.media_type || (item.title ? 'movie' : 'tv');
-      window.location.href = `dettagli.html?id=${id}&type=${type}`;
+      const tipo = item.media_type || (item.title ? 'movie' : 'tv');
+      window.location.href = `dettagli.html?id=${id}&tipo=${tipo}`;
     });
 
     scrollContainer.appendChild(card);
