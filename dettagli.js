@@ -3,7 +3,7 @@ const contenitore = document.getElementById('contenitore');
 
 const params = new URLSearchParams(window.location.search);
 const id = params.get('id');
-const tipo = params.get('type');
+const tipo = params.get('type'); // "movie" o "tv"
 
 caricaDettagli();
 setupSearch();
@@ -51,13 +51,14 @@ async function caricaDettagli() {
     contenitore.appendChild(card);
 
     await caricaTrailer(id, tipo);
+    caricaVixPlayer(id, tipo);
   } catch (e) {
     mostraMessaggio('Errore durante il caricamento.');
     console.error(e);
   }
 }
 
-// Carica trailer YouTube
+// Trailer YouTube
 async function caricaTrailer(id, tipo) {
   const url = `https://api.themoviedb.org/3/${tipo}/${id}/videos?api_key=${API_KEY}&language=it-IT`;
   const res = await fetch(url);
@@ -68,6 +69,9 @@ async function caricaTrailer(id, tipo) {
   );
 
   if (trailer) {
+    const boxTrailer = document.createElement('div');
+    boxTrailer.className = 'box-trailer';
+
     const iframe = document.createElement('iframe');
     iframe.width = '100%';
     iframe.height = '400';
@@ -76,19 +80,34 @@ async function caricaTrailer(id, tipo) {
     iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
     iframe.allowFullscreen = true;
 
-    const boxTrailer = document.createElement('div');
-    boxTrailer.className = 'box-trailer';
     boxTrailer.appendChild(iframe);
     contenitore.appendChild(boxTrailer);
   }
 }
 
-// Mostra messaggio d’errore
+// Player VixSrc
+function caricaVixPlayer(id, tipo) {
+  const boxVix = document.createElement('div');
+  boxVix.className = 'box-trailer'; // Riutilizziamo lo stile elegante
+  const vixUrl = `https://vixsrc.to/embed/${tipo}/${id}`;
+
+  const iframe = document.createElement('iframe');
+  iframe.src = vixUrl;
+  iframe.allowFullscreen = true;
+  iframe.width = '100%';
+  iframe.height = '500';
+  iframe.style.border = 'none';
+
+  boxVix.appendChild(iframe);
+  contenitore.appendChild(boxVix);
+}
+
+// Mostra messaggio errore
 function mostraMessaggio(testo) {
   contenitore.innerHTML = `<div class="messaggio">${testo}</div>`;
 }
 
-// 🔍 Ricerca
+// Ricerca
 function setupSearch() {
   const input = document.querySelector('#search-input');
   const button = document.querySelector('#search-button');
