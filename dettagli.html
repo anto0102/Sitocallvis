@@ -19,7 +19,7 @@
   <script>
     const dettagli = document.getElementById("dettagli");
     const trailerBox = document.getElementById("trailer");
-    const API_KEY = "2d082597ab951b3a9596ca23e71413a8"; // inserisci la tua API key TMDB qui
+    const API_KEY = "2d082597ab951b3a9596ca23e71413a8"; // Inserisci qui la tua chiave TMDB
 
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get("id");
@@ -69,23 +69,27 @@
         const data = await res.json();
 
         const trailer = data.results.find(video => video.type === "Trailer" && video.site === "YouTube");
-
+        
         if (trailer) {
           trailerBox.innerHTML = `
-            <div class="trailer-header">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" height="24" viewBox="0 0 24 24" width="24">
-                <path fill="#fff" d="M4 4h16v16H4z" opacity="0"/>
-                <path fill="#e50914" d="M10 16.5l6-4.5-6-4.5v9z"/>
-              </svg>
-              <h2>Trailer</h2>
-            </div>
-            <div class="trailer-video">
-              <iframe src="https://www.youtube.com/embed/${trailer.key}" frameborder="0" allowfullscreen></iframe>
+            <h2>🎬 Trailer</h2>
+            <div class="iframe-container">
+              <iframe src="https://www.youtube.com/embed/${trailer.key}" allowfullscreen></iframe>
             </div>
           `;
         } else {
           trailerBox.innerHTML = "<p class='messaggio'>Nessun trailer disponibile.</p>";
         }
+
+        // VixSrc Embed
+        const vixEmbed = `
+          <h2>🎥 Guarda ora</h2>
+          <div class="iframe-container">
+            <iframe src="https://vixsrc.to/embed/${tipo === 'movie' ? 'movie' : 'tv'}/${id}" allowfullscreen></iframe>
+          </div>
+        `;
+        trailerBox.innerHTML += vixEmbed;
+
       } catch (error) {
         console.error("Errore nel caricamento del trailer", error);
       }
