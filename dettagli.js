@@ -96,44 +96,9 @@ async function caricaStagioni(tvId) {
 
 async function caricaEpisodi(tvId, seasonNumber) {
   episodiBox.innerHTML = `
-    <h3 class="stagione-attiva">Stagione ${seasonNumber}</h3>
-    <div class="episodi-wrapper"></div>
+    <div id="titolo-stagione">Stagione ${seasonNumber}</div>
+    <div class="carousel-wrapper"></div>
   `;
-  const wrapper = episodiBox.querySelector(".episodi-wrapper");
+  const wrapper = episodiBox.querySelector(".carousel-wrapper");
 
-  const res = await fetch(`https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNumber}?api_key=${API_KEY}&language=it-IT`);
-  const data = await res.json();
-
-  data.episodes.forEach(ep => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
-      <img src="https://image.tmdb.org/t/p/w300${ep.still_path}" alt="Ep ${ep.episode_number}" />
-      <p>Ep ${ep.episode_number}: ${ep.name}</p>
-    `;
-    card.onclick = () => {
-      playerBox.innerHTML = `
-        <div class="box-player grande">
-          <h2>🎥 Episodio ${ep.episode_number}</h2>
-          <div class="iframe-container">
-            <iframe src="https://vixsrc.to/tv/${tvId}/${seasonNumber}/${ep.episode_number}" allowfullscreen></iframe>
-          </div>
-        </div>
-      `;
-    };
-    wrapper.appendChild(card);
-  });
-}
-
-// Modal toggle
-selezionaStagioneBtn.onclick = () => {
-  modal.style.display = "block";
-};
-
-closeModal.onclick = () => {
-  modal.style.display = "none";
-};
-
-window.onclick = event => {
-  if (event.target == modal) modal.style.display = "none";
-};
+  const res = await fetch(`https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNumber}?api
