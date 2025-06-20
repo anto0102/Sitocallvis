@@ -92,16 +92,17 @@ body {
   padding-top: 90px; /* FIX: spazio per evitare sovrapposizione con titolo sticky */
 }
 
-.episodio-card {
-  background-color: #222;
-  padding: 10px;
-  border-radius: 10px;
-  min-width: 250px;
-  max-width: 250px;
-  flex-shrink: 0;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  box-sizing: border-box;
+.episodio-card p {
+  margin: 5px 0;
+  font-size: 0.85em;
+  color: white;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; /* Limita a 3 righe */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2em; /* Altezza riga */
+  max-height: 3.6em;   /* 1.2em * 3 righe */
 }
 
 .episodio-card:hover {
