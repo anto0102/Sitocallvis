@@ -68,6 +68,10 @@
       text-align: center;
       font-size: 0.9em;
     }
+
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -76,6 +80,10 @@
 
     <input type="email" id="email" placeholder="Email" required />
     <input type="password" id="password" placeholder="Password" required />
+    <input type="password" id="confirm-password" class="hidden" placeholder="Ripeti password" />
+
+    <input type="text" id="username" class="hidden" placeholder="Scegli un username" />
+    <input type="number" id="age" class="hidden" placeholder="Età" min="0" />
 
     <button id="auth-button">Login</button>
     <div class="toggle" id="toggle-mode">Non hai un account? Registrati</div>
@@ -84,7 +92,7 @@
   </div>
 
   <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
     const supabase = createClient(
       'https://eymlncdzidfgfeuhkirr.supabase.co',
@@ -95,17 +103,35 @@
 
     const emailEl = document.getElementById('email');
     const passwordEl = document.getElementById('password');
+    const confirmPasswordEl = document.getElementById('confirm-password');
+    const usernameEl = document.getElementById('username');
+    const ageEl = document.getElementById('age');
     const button = document.getElementById('auth-button');
     const toggle = document.getElementById('toggle-mode');
     const title = document.getElementById('form-title');
     const message = document.getElementById('message');
+
+    toggle.addEventListener('click', () => {
+      isLogin = !isLogin;
+      title.textContent = isLogin ? 'Accedi' : 'Registrati';
+      button.textContent = isLogin ? 'Login' : 'Registrati';
+      toggle.textContent = isLogin
+        ? 'Non hai un account? Registrati'
+        : 'Hai già un account? Accedi';
+
+      // Mostra/nascondi campi
+      confirmPasswordEl.classList.toggle('hidden', isLogin);
+      usernameEl.classList.toggle('hidden', isLogin);
+      ageEl.classList.toggle('hidden', isLogin);
+      message.textContent = '';
+    });
 
     button.addEventListener('click', async () => {
       const email = emailEl.value.trim();
       const password = passwordEl.value.trim();
 
       if (!email || !password) {
-        message.textContent = 'Compila tutti i campi.';
+        message.textContent = 'Compila email e password.';
         return;
       }
 
@@ -118,23 +144,37 @@
           setTimeout(() => window.location.href = 'index.html', 1000);
         }
       } else {
-        const { error } = await supabase.auth.signUp({ email, password });
+        const confirmPassword = confirmPasswordEl.value.trim();
+        const username = usernameEl.value.trim();
+        const age = parseInt(ageEl.value.trim());
+
+        if (!confirmPassword || !username || isNaN(age)) {
+          message.textContent = 'Compila tutti i campi.';
+          return;
+        }
+
+        if (password !== confirmPassword) {
+          message.textContent = 'Le password non coincidono.';
+          return;
+        }
+
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              username,
+              age,
+            },
+          },
+        });
+
         if (error) {
           message.textContent = 'Errore: ' + error.message;
         } else {
           message.textContent = 'Registrazione completata! ✨ Controlla l’email.';
         }
       }
-    });
-
-    toggle.addEventListener('click', () => {
-      isLogin = !isLogin;
-      title.textContent = isLogin ? 'Accedi' : 'Registrati';
-      button.textContent = isLogin ? 'Login' : 'Registrati';
-      toggle.textContent = isLogin
-        ? 'Non hai un account? Registrati'
-        : 'Hai già un account? Accedi';
-      message.textContent = '';
     });
   </script>
 </body>
