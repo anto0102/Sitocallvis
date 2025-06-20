@@ -1,148 +1,44 @@
-body {
-  margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #0d0d0d;
-  color: #f0f0f0;
-}
-
-main {
-  padding: 20px;
-  max-width: 1000px;
-  margin: auto;
-}
-
-.contenitore-dettagli {
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-  padding-top: 20px;
-}
-
-.dettagli-card {
-  display: flex;
-  flex-direction: column;
-  background-color: #1c1c1c;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  padding: 20px;
-}
-
-.dettagli-card img {
-  width: 100%;
-  max-width: 400px;
-  border-radius: 12px;
-  margin: 0 auto;
-}
-
-.dettagli-card .info {
-  padding: 20px 10px 0;
-  text-align: center;
-}
-
-.dettagli-card h2 {
-  margin-bottom: 10px;
-  font-size: 26px;
-  color: #ff4757;
-}
-
-.dettagli-card p {
-  margin: 6px 0;
-  font-size: 16px;
-}
-
-.dettagli-card p strong {
-  color: #ccc;
-}
-
-.box-trailer {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-}
-
-iframe {
-  border: none;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 700px;
-  height: 400px;
-}
-
-/* Header stile homepage */
-.header {
+header.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #121212;
+  padding: 1rem;
+  background-color: #111;
   color: white;
-  padding: 15px 20px;
   flex-wrap: wrap;
-  border-bottom: 1px solid #333;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.header h1 {
-  font-size: 24px;
-  margin: 0;
-  color: white;
-}
-
-.torna-home {
-  text-decoration: none;
-  color: #ff4757;
-  font-weight: bold;
-  background-color: #2a2a2a;
-  padding: 6px 12px;
-  border-radius: 8px;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.torna-home:hover {
-  background-color: #ff4757;
-  color: white;
 }
 
 .search-bar {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 10px;
+  gap: 0.5rem;
 }
 
 .search-bar input {
-  padding: 8px 16px;
-  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
   border: none;
   outline: none;
-  background-color: #f0f0f0;
-  color: #333;
-  width: 200px;
+  font-size: 1rem;
 }
 
 .search-bar button {
-  background-color: #ff4757;
+  background-color: #ff3c57;
   border: none;
   border-radius: 50%;
-  padding: 8px;
+  padding: 0.5rem 0.6rem;
   cursor: pointer;
-  font-size: 16px;
-  color: white;
+  font-size: 1.2rem;
   transition: background-color 0.3s;
 }
 
 .search-bar button:hover {
-  background-color: #e84146;
+  background-color: #ff1c3c;
 }
 
-.messaggio {
-  text-align: center;
-  font-size: 18px;
-  color: #999;
-  margin-top: 50px;
+a.torna-home {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
 }
