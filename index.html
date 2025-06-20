@@ -1,64 +1,63 @@
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    // ✅ TMDB API Key - INSERISCI LA TUA QUI:
-    const apiKey = "2d082597ab951b3a9596ca23e71413a8";
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cinema Discovery</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
+</head>
+<body>
+  <header>
+    <a href="profilo.html" class="profile-button" title="Il mio profilo">👤</a>
+    <h1>Cinema <span>Discovery</span></h1>
+    <form id="search-form">
+      <input type="text" id="search-input" placeholder="Cerca un film o serie..." />
+      <button type="submit">🔍</button>
+    </form>
+    <div id="auth-area">
+      <button id="login-btn" onclick="location.href='auth.html'">Accedi</button>
+      <button id="logout-btn" style="display:none">Logout</button>
+    </div>
+  </header>
 
-    const consigliatiContainer = document.getElementById("consigliati");
+  <main id="main-content">
+    <!-- Sezioni film -->
+    <section><h2>🍿 Consigliati</h2><div class="movie-container" id="consigliati"></div></section>
+    <section><h2>🔥 Titoli del momento</h2><div class="movie-container" id="momento"></div></section>
+    <section><h2>🎭 Drammatici</h2><div class="movie-container" id="drammatici"></div></section>
+    <section><h2>💥 Azione</h2><div class="movie-container" id="azione"></div></section>
+    <section><h2>😂 Commedie</h2><div class="movie-container" id="commedie"></div></section>
+    <section><h2>👻 Horror</h2><div class="movie-container" id="horror"></div></section>
+    <section><h2>👨‍👩‍👧 Famiglia</h2><div class="movie-container" id="famiglia"></div></section>
+    <section><h2>🚀 Fantascienza</h2><div class="movie-container" id="fantascienza"></div></section>
+    <section><h2>💖 Romantici</h2><div class="movie-container" id="romantici"></div></section>
+    <section><h2>🎬 Documentari</h2><div class="movie-container" id="documentari"></div></section>
+  </main>
 
-    if (!consigliatiContainer) {
-      console.error("Elemento con ID 'consigliati' non trovato nel DOM.");
-      return;
-    }
+  <script>
+    Clerk.configure({ publishableKey: "pk_test_b23saWdpbmctaWVyWxhLTc1LmNsZXJrLmFjY291bnRzLmRldiQ" });
 
-    async function fetchRandomPopularMovies() {
-      let allMovies = [];
+    window.Clerk.load().then(async () => {
+      const user = await Clerk.user;
+      const loginBtn = document.getElementById("login-btn");
+      const logoutBtn = document.getElementById("logout-btn");
 
-      // Carica da 3 pagine casuali
-      for (let i = 0; i < 3; i++) {
-        const page = Math.floor(Math.random() * 20) + 1;
-        try {
-          const res = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=it-IT&page=${page}`);
-          const data = await res.json();
-
-          if (data.results) {
-            allMovies = allMovies.concat(data.results);
-          } else {
-            console.warn("Nessun risultato nella risposta:", data);
-          }
-        } catch (error) {
-          console.error("Errore nel caricamento film:", error);
-        }
+      if (user) {
+        loginBtn.style.display = "none";
+        logoutBtn.style.display = "inline-block";
+      } else {
+        loginBtn.style.display = "inline-block";
+        logoutBtn.style.display = "none";
       }
 
-      if (allMovies.length === 0) {
-        consigliatiContainer.innerHTML = "<p>Nessun film trovato.</p>";
-        return;
-      }
-
-      // Mischia e seleziona 10 film
-      const shuffled = allMovies.sort(() => 0.5 - Math.random());
-      const selected = shuffled.slice(0, 10);
-
-      consigliatiContainer.innerHTML = "";
-
-      selected.forEach((movie) => {
-        const title = movie.title || "Senza titolo";
-        const poster = movie.poster_path
-          ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-          : "fallback.jpg";
-
-        const card = document.createElement("div");
-        card.className = "movie-card";
-        card.innerHTML = `
-          <a href="dettagli.html?id=${movie.id}">
-            <img src="${poster}" alt="${title}" />
-            <h3>${title}</h3>
-          </a>
-        `;
-        consigliatiContainer.appendChild(card);
+      logoutBtn.addEventListener("click", async () => {
+        await Clerk.signOut();
+        window.location.reload();
       });
-    }
+    });
+  </script>
 
-    fetchRandomPopularMovies();
-  });
-</script>
+  <script src="index.js"></script>
+</body>
+</html>
