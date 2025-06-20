@@ -113,9 +113,14 @@ async function caricaEpisodi(tvId, seasonNumber) {
     const ep = document.createElement("div");
     ep.className = "episodio-card";
     ep.innerHTML = `
-      <img src="https://image.tmdb.org/t/p/w300${episodio.still_path}" alt="Episodio">
-      <p><strong>${episodio.episode_number}. ${episodio.name}</strong></p>
-      <p>${episodio.overview || "Nessuna descrizione."}</p>
+      <div class="episodio-img-container">
+        <img src="https://image.tmdb.org/t/p/w300${episodio.still_path}" alt="Episodio">
+        <span class="play-button">▶</span>
+      </div>
+      <div class="episodio-info">
+        <p class="episodio-title">${episodio.episode_number}. ${episodio.name}</p>
+        <p class="episodio-desc">${episodio.overview || "Nessuna descrizione disponibile."}</p>
+      </div>
     `;
     wrapper.appendChild(ep);
   });
