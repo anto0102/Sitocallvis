@@ -1,4 +1,4 @@
-const API_KEY = '2d082597ab951b3a9596ca23e71413a8';
+const API_KEY = ''; // Inserisci qui la tua API Key TMDB
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -15,15 +15,16 @@ const categories = [
   { id: 'documentari', url: '/discover/movie?with_genres=99' },
 ];
 
-// Funzione per chiamare API
+// Funzione per chiamare API con pagina casuale
 async function fetchMovies(endpoint) {
-  const fullUrl = `${BASE_URL}${endpoint}${endpoint.includes('?') ? '&' : '?'}api_key=${API_KEY}&language=it-IT`;
+  const randomPage = Math.floor(Math.random() * 5) + 1;
+  const fullUrl = `${BASE_URL}${endpoint}${endpoint.includes('?') ? '&' : '?'}api_key=${API_KEY}&language=it-IT&page=${randomPage}`;
   const response = await fetch(fullUrl);
   const data = await response.json();
   return data.results || [];
 }
 
-// Funzione per creare la card film/serie
+// Crea card per ogni film/serie
 function createMovieCard(item) {
   const title = item.title || item.name || 'Titolo sconosciuto';
   const poster = item.poster_path ? `${IMAGE_URL}${item.poster_path}` : 'fallback.jpg';
@@ -42,10 +43,12 @@ function createMovieCard(item) {
   return card;
 }
 
-// Caricamento film per categoria
+// Carica film in ogni categoria
 async function loadMovies() {
   for (const category of categories) {
     const container = document.getElementById(category.id);
+    if (!container) continue;
+
     try {
       const movies = await fetchMovies(category.url);
       container.innerHTML = '';
@@ -63,7 +66,7 @@ async function loadMovies() {
 
 document.addEventListener('DOMContentLoaded', loadMovies);
 
-// Gestione della ricerca
+// 🔍 Gestione ricerca
 document.getElementById('search-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const query = document.getElementById('search-input').value.trim();
@@ -75,22 +78,19 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
     (item.media_type === 'movie' || item.media_type === 'tv') && item.poster_path
   );
 
-  // Ordina con match esatto per primo, poi per popolarità
+  // Ordina con match esatto > popolarità
   results.sort((a, b) => {
-    const queryLower = query.toLowerCase();
+    const q = query.toLowerCase();
     const aTitle = (a.title || a.name || '').toLowerCase();
     const bTitle = (b.title || b.name || '').toLowerCase();
-
-    const aExact = aTitle === queryLower;
-    const bExact = bTitle === queryLower;
-
+    const aExact = aTitle === q;
+    const bExact = bTitle === q;
     if (aExact && !bExact) return -1;
     if (!aExact && bExact) return 1;
-
     return b.popularity - a.popularity;
   });
 
-  // Separazione film e serie
+  // Dividi film e serie
   const movies = results.filter(r => r.media_type === 'movie');
   const series = results.filter(r => r.media_type === 'tv');
 
