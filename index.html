@@ -3,96 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Categorie Film e Serie</title>
-  <style>
-    body {
-      background-color: #111;
-      color: #eee;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 1rem;
-    }
-    h1 {
-      text-align: center;
-      color: red;
-    }
-    .categoria {
-      margin-top: 2rem;
-    }
-    h2 {
-      color: orange;
-      border-bottom: 1px solid #444;
-      padding-bottom: 0.5rem;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 1rem;
-    }
-    .item {
-      text-align: center;
-    }
-    .item img {
-      width: 100%;
-      border-radius: 8px;
-      transition: transform 0.2s;
-    }
-    .item img:hover {
-      transform: scale(1.05);
-    }
-    .item a {
-      color: #eee;
-      text-decoration: none;
-      display: block;
-      margin-top: 0.5rem;
-    }
-  </style>
+  <title>Scopri</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Film e Serie per Categoria</h1>
+  <header>
+    <h1>🎬 Scopri</h1>
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="Cerca film o serie..." />
+      <button id="search-button">🔍</button>
+    </div>
+  </header>
 
-  <div id="contenuto"></div>
+  <main>
+    <div id="contenuti"></div>
+  </main>
 
-  <script>
-    const API_KEY = "INSERISCI_LA_TUA_API_KEY"; // <-- Metti qui la tua TMDB API key
-    const contenuto = document.getElementById("contenuto");
-
-    const categorie = [
-      { nome: "Horror", id: 27 },
-      { nome: "War", id: 10752 },
-      { nome: "Politics", id: 99 },
-    ];
-
-    async function caricaCategoria(categoria) {
-      const res = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=${categoria.id}&language=it-IT`);
-      const data = await res.json();
-      const risultati = data.results.slice(0, 10);
-
-      const sezione = document.createElement("div");
-      sezione.classList.add("categoria");
-      sezione.innerHTML = `<h2>${categoria.nome}</h2><div class="grid"></div>`;
-      const grid = sezione.querySelector(".grid");
-
-      risultati.forEach(film => {
-        const img = film.poster_path 
-          ? `https://image.tmdb.org/t/p/w300${film.poster_path}`
-          : "https://via.placeholder.com/300x450?text=No+Image";
-
-        const elemento = document.createElement("div");
-        elemento.classList.add("item");
-        elemento.innerHTML = `
-          <a href="dettagli.html?id=${film.id}&tipo=movie">
-            <img src="${img}" alt="${film.title}">
-            <span>${film.title}</span>
-          </a>
-        `;
-        grid.appendChild(elemento);
-      });
-
-      contenuto.appendChild(sezione);
-    }
-
-    categorie.forEach(caricaCategoria);
-  </script>
+  <script src="index.js"></script>
 </body>
 </html>
