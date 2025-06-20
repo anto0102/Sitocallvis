@@ -1,32 +1,30 @@
 <!DOCTYPE html>
 <html lang="it">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cinema Discovery - Accedi</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest"></script>
-</head>
-<body>
-  <main>
-    <h1>🎬 Cinema Discovery - Accedi</h1>
-    <!-- 👇 Qui viene montato il form Clerk -->
-    <div id="clerk-login"></div>
-  </main>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cinema Discovery - Accedi</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest"></script>
+  </head>
+  <body>
+    <main>
+      <h1>🎬 Cinema Discovery - Accedi</h1>
+      <div id="clerk-login"></div>
+    </main>
 
-  <script>
-    // SOSTITUISCI con la tua chiave Clerk
-    const clerkFrontendApi = "https://obliging-impala-75.clerk.accounts.dev";
+    <script>
+      // 👇 Inserisci qui la tua chiave Clerk (la trovi su dashboard → frontend API)
+      const clerkFrontendApi = "https://obliging-impala-75.clerk.accounts.dev"; // <--- SOSTITUISCI QUESTO
 
-    window.Clerk.load().then(async () => {
-      await window.Clerk.loadSignIn({
-        // 👇 Importante: questo fa apparire il form dentro il div
-        element: "#clerk-login",
-        redirectUrl: "index.html"
+      window.Clerk.configure({ frontendApi: clerkFrontendApi });
+
+      window.Clerk.load().then(async () => {
+        await window.Clerk.mountSignIn({
+          element: "#clerk-login",
+          redirectUrl: "/index.html"
+        });
       });
-    });
-
-    window.Clerk.configure({ frontendApi: clerkFrontendApi });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
