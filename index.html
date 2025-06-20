@@ -85,8 +85,64 @@
     }
 
     fetchConsigliatiCasuali();
-  </script>
+  <script>
+  Clerk.configure({ publishableKey: "pk_test_b23saWdpbmctaWVyWxhLTc1LmNsZXJrLmFjY291bnRzLmRldiQ" });
 
-  <script src="index.js"></script>
-</body>
-</html>
+  window.Clerk.load().then(async () => {
+    const user = await Clerk.user;
+    const loginBtn = document.getElementById("login-btn");
+    const logoutBtn = document.getElementById("logout-btn");
+
+    if (user) {
+      loginBtn.style.display = "none";
+      logoutBtn.style.display = "inline-block";
+    } else {
+      loginBtn.style.display = "inline-block";
+      logoutBtn.style.display = "none";
+    }
+
+    logoutBtn.addEventListener("click", async () => {
+      await Clerk.signOut();
+      window.location.reload();
+    });
+  });
+
+  // ✅ Nuovo metodo per film consigliati random
+  const apiKey = "INSERISCI_LA_TUA_API_KEY_TMDB";
+  const consigliatiContainer = document.getElementById("consigliati");
+
+  async function fetchRandomPopularMovies() {
+    let allMovies = [];
+
+    // Scarica 5 pagine popolari diverse
+    for (let i = 0; i < 3; i++) {
+      const page = Math.floor(Math.random() * 20) + 1;
+      const res = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=it-IT&page=${page}`);
+      const data = await res.json();
+      allMovies = allMovies.concat(data.results);
+    }
+
+    // Mischia casualmente
+    const shuffled = allMovies.sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, 10); // Mostra 10 film casuali
+
+    consigliatiContainer.innerHTML = "";
+
+    selected.forEach((movie) => {
+      const title = movie.title || "Senza titolo";
+      const poster = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : "fallback.jpg";
+
+      const card = document.createElement("div");
+      card.className = "movie-card";
+      card.innerHTML = `
+        <a href="dettagli.html?id=${movie.id}">
+          <img src="${poster}" alt="${title}" />
+          <h3>${title}</h3>
+        </a>
+      `;
+      consigliatiContainer.appendChild(card);
+    });
+  }
+
+  fetchRandomPopularMovies();
+</script>
