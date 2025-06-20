@@ -2,85 +2,68 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Accedi o Registrati</title>
-  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+    h1 { margin-bottom: 1rem; }
+    .auth-container {
+      width: 100%;
+      max-width: 400px;
+    }
+    #sign-in, #sign-up {
+      margin: 1rem 0;
+    }
+    #forgot-password {
+      margin-top: 1rem;
+      text-align: center;
+    }
+    a {
+      color: #00aced;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
+  <h1>🎬 Cinema Discovery - Accedi</h1>
   <div class="auth-container">
-    <h2>🎟️ Cinema Discovery - Accesso</h2>
-
-    <form id="auth-form">
-      <input type="email" id="email" placeholder="Email" required />
-      <input type="text" id="username" placeholder="Username" required />
-      <input type="number" id="age" placeholder="Età" required min="1" />
-      <input type="password" id="password" placeholder="Password" required />
-      <input type="password" id="confirm-password" placeholder="Conferma Password" required />
-
-      <button type="submit">Registrati / Accedi</button>
-    </form>
-
-    <p style="margin-top: 10px;">
-      <a href="#" id="forgot-password">🔐 Ho dimenticato la mia password</a>
-    </p>
+    <div id="sign-in"></div>
+    <div id="sign-up"></div>
+    <div id="forgot-password">
+      <a href="https://clerk.cine...yourproject.clerk.accounts.dev/forgot-password">Hai dimenticato la password?</a>
+    </div>
   </div>
 
-  <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js'
+  <script>
+    window.Clerk.load().then(async () => {
+      await Clerk.mountSignIn(document.getElementById("sign-in"), {
+        signUpUrl: "#sign-up",
+        afterSignInUrl: "/profilo.html",
+        appearance: { layout: { logoPlacement: "none", socialButtonsVariant: "none" } }
+      });
 
-    const supabaseUrl = 'https://eymlncdzidfgfeuhkirr.supabase.co'
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5bWxuY2R6aWRmZ2ZldWhraXJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA0NTA3MzQsImV4cCI6MjA2NjAyNjczNH0.E3r8Pe_ZztM7GtWXvloHgL6--49Do_sOV2jvZfWrUc0'
-    const supabase = createClient(supabaseUrl, supabaseKey)
+      await Clerk.mountSignUp(document.getElementById("sign-up"), {
+        signInUrl: "#sign-in",
+        afterSignUpUrl: "/profilo.html",
+        appearance: { layout: { logoPlacement: "none", socialButtonsVariant: "none" } }
+      });
+    });
 
-    const form = document.getElementById('auth-form')
-    const forgotLink = document.getElementById('forgot-password')
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault()
-
-      const email = document.getElementById('email').value
-      const username = document.getElementById('username').value
-      const age = document.getElementById('age').value
-      const password = document.getElementById('password').value
-      const confirmPassword = document.getElementById('confirm-password').value
-
-      if (password !== confirmPassword) {
-        alert('Le password non coincidono.')
-        return
-      }
-
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            username,
-            age
-          }
-        }
-      })
-
-      if (error) {
-        alert('Errore: ' + error.message)
-      } else {
-        alert('Controlla la tua email per confermare la registrazione.')
-      }
-    })
-
-    forgotLink.addEventListener('click', async () => {
-      const email = prompt('Inserisci la tua email per resettare la password:')
-      if (!email) return
-
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + '/reset-password.html'
-      })
-
-      if (error) {
-        alert('Errore: ' + error.message)
-      } else {
-        alert('Controlla la tua email per cambiare la password.')
-      }
-    })
+    Clerk.configure({
+      publishableKey: "pk_test_b23saWdpbmctaWVyWxhLTc1LmNsZXJrLmFjY291bnRzLmRldiQ"
+    });
   </script>
 </body>
 </html>
