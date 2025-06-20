@@ -3,21 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Scopri</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Ricerca Film e Serie</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #eee;
+      font-family: Arial, sans-serif;
+      padding: 1rem;
+    }
+    form {
+      margin-bottom: 1rem;
+    }
+    input[type="text"] {
+      padding: 0.5rem;
+      width: 80%;
+      max-width: 400px;
+      font-size: 1rem;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .item {
+      margin: 1rem 0;
+    }
+    img {
+      width: 150px;
+      border-radius: 10px;
+    }
+    a {
+      color: #4af;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    p {
+      margin-top: 0.5rem;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>🎬 Scopri</h1>
-    <div class="search-bar">
-      <input type="text" id="search-input" placeholder="Cerca film o serie..." />
-      <button id="search-button">🔍</button>
-    </div>
-  </header>
-
-  <main>
-    <div id="contenuti"></div>
-  </main>
+  <h1>Ricerca Film e Serie TV</h1>
+  <form id="form">
+    <input type="text" id="input" placeholder="Cerca un film o una serie TV..." />
+    <button type="submit">Cerca</button>
+  </form>
+  <div id="risultati"></div>
 
   <script src="index.js"></script>
 </body>
