@@ -8,14 +8,13 @@
   <link rel="stylesheet" href="dettagli.css" />
 </head>
 <body>
-  <header class="header">
-    <div class="header-left">
-      <a href="index.html" class="torna-home">← Home</a>
-      <h1>🎬 CallVis</h1>
-    </div>
-    <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="Cerca..." />
-      <button id="searchBtn">🔍</button>
+  <header>
+    <div class="top-bar">
+      <a href="index.html" class="back-button">← Torna alla Home</a>
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Cerca..." />
+        <button id="search-button">🔍</button>
+      </div>
     </div>
   </header>
 
@@ -23,25 +22,6 @@
     <div id="contenitore" class="contenitore-dettagli"></div>
   </main>
 
-  <script src="dettagli.js" type="module"></script>
-  <script type="module">
-    import { cercaContenuti } from './search.js';
-
-    const searchInput = document.getElementById('searchInput');
-    const searchBtn = document.getElementById('searchBtn');
-
-    searchBtn.addEventListener('click', () => {
-      const query = searchInput.value.trim();
-      if (query) {
-        window.location.href = `risultati.html?query=${encodeURIComponent(query)}`;
-      }
-    });
-
-    searchInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        searchBtn.click();
-      }
-    });
-  </script>
+  <script src="dettagli.js" type="module" defer></script>
 </body>
 </html>
