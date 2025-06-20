@@ -1,33 +1,35 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8">
-  <title>Demo VixSrc.to</title>
-</head>
-<body>
-  <h1>Demo VixSrc.to</h1>
-  <button onclick="carica('film')">Carica Film</button>
-  <button onclick="carica('serie')">Carica Serie TV</button>
-  <div id="output">...</div>
+<script>
+  async function carica(tipo) {
+    const lista = document.getElementById('lista');
+    lista.innerHTML = 'Caricamento…';
 
-  <script>
-    async function carica(tipo) {
-      document.getElementById('output').innerText = 'Caricamento...';
+    try {
+      const res = await fetch(`/api/proxy?url=${encodeURIComponent(`https://vixsrc.to/api/list/${tipo}?lang=it`)}`);
+      const data = await res.json();
 
-      const urlOriginale = tipo === 'film'
-        ? 'https://vixsrc.to/movies.json'
-        : 'https://vixsrc.to/series.json';
-
-      try {
-        const response = await fetch(`/api/proxy?url=${encodeURIComponent(urlOriginale)}`);
-        const data = await response.json();
-
-        document.getElementById('output').innerText = JSON.stringify(data, null, 2);
-      } catch (error) {
-        document.getElementById('output').innerText = 'Errore nel caricamento.';
-        console.error(error);
-      }
+      lista.innerHTML = '';
+      data.results.forEach(item => {
+        const div = document.createElement('div');
+        div.innerHTML = `
+          <img src="${item.poster}" width="100"><br>
+          ${item.title}<br>
+          <button onclick="showPlayer(${item.id}, '${tipo}')">Guarda</button>
+        `;
+        lista.appendChild(div);
+      });
+    } catch (e) {
+      lista.innerText = 'Errore nel caricamento';
+      console.error(e);
     }
-  </script>
-</body>
-</html>
+  }
+
+  function showPlayer(tmdbId, tipo) {
+    const params = 'lang=it&autoplay=false&primaryColor=B20710';
+    const url = tipo === 'movie'
+      ? `https://vixsrc.to/movie/${tmdbId}?${params}`
+      : `https://vixsrc.to/tv/${tmdbId}/1/1?${params}`;
+    
+    document.getElementById('player').innerHTML =
+      `<iframe src="${url}" width="640" height="360" frameborder="0" allowfullscreen></iframe>`;
+  }
+</script>
