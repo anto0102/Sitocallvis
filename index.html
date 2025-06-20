@@ -3,55 +3,96 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ricerca Film e Serie</title>
+  <title>Categorie Film e Serie</title>
   <style>
     body {
       background-color: #111;
       color: #eee;
       font-family: Arial, sans-serif;
+      margin: 0;
       padding: 1rem;
     }
-    form {
-      margin-bottom: 1rem;
+    h1 {
+      text-align: center;
+      color: red;
     }
-    input[type="text"] {
-      padding: 0.5rem;
-      width: 80%;
-      max-width: 400px;
-      font-size: 1rem;
+    .categoria {
+      margin-top: 2rem;
     }
-    button {
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      cursor: pointer;
+    h2 {
+      color: orange;
+      border-bottom: 1px solid #444;
+      padding-bottom: 0.5rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1rem;
     }
     .item {
-      margin: 1rem 0;
+      text-align: center;
     }
-    img {
-      width: 150px;
-      border-radius: 10px;
+    .item img {
+      width: 100%;
+      border-radius: 8px;
+      transition: transform 0.2s;
     }
-    a {
-      color: #4af;
+    .item img:hover {
+      transform: scale(1.05);
+    }
+    .item a {
+      color: #eee;
       text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    p {
+      display: block;
       margin-top: 0.5rem;
     }
   </style>
 </head>
 <body>
-  <h1>Ricerca Film e Serie TV</h1>
-  <form id="form">
-    <input type="text" id="input" placeholder="Cerca un film o una serie TV..." />
-    <button type="submit">Cerca</button>
-  </form>
-  <div id="risultati"></div>
+  <h1>Film e Serie per Categoria</h1>
 
-  <script src="index.js"></script>
+  <div id="contenuto"></div>
+
+  <script>
+    const API_KEY = "INSERISCI_LA_TUA_API_KEY"; // <-- Metti qui la tua TMDB API key
+    const contenuto = document.getElementById("contenuto");
+
+    const categorie = [
+      { nome: "Horror", id: 27 },
+      { nome: "War", id: 10752 },
+      { nome: "Politics", id: 99 },
+    ];
+
+    async function caricaCategoria(categoria) {
+      const res = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=${categoria.id}&language=it-IT`);
+      const data = await res.json();
+      const risultati = data.results.slice(0, 10);
+
+      const sezione = document.createElement("div");
+      sezione.classList.add("categoria");
+      sezione.innerHTML = `<h2>${categoria.nome}</h2><div class="grid"></div>`;
+      const grid = sezione.querySelector(".grid");
+
+      risultati.forEach(film => {
+        const img = film.poster_path 
+          ? `https://image.tmdb.org/t/p/w300${film.poster_path}`
+          : "https://via.placeholder.com/300x450?text=No+Image";
+
+        const elemento = document.createElement("div");
+        elemento.classList.add("item");
+        elemento.innerHTML = `
+          <a href="dettagli.html?id=${film.id}&tipo=movie">
+            <img src="${img}" alt="${film.title}">
+            <span>${film.title}</span>
+          </a>
+        `;
+        grid.appendChild(elemento);
+      });
+
+      contenuto.appendChild(sezione);
+    }
+
+    categorie.forEach(caricaCategoria);
+  </script>
 </body>
 </html>
