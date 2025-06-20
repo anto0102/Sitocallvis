@@ -1,7 +1,7 @@
 const form = document.querySelector("form");
 const input = document.querySelector("input");
 const risultati = document.getElementById("risultati");
-const API_KEY = "2d082597ab951b3a9596ca23e71413a8"; // <-- Sostituiscilo con la tua vera chiave
+const API_KEY = ""; // <-- Sostituiscilo con la tua vera chiave
 
 form.addEventListener("submit", function (e) {
   e.preventDefault();
