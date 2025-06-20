@@ -19,7 +19,7 @@
   <script>
     const dettagli = document.getElementById("dettagli");
     const trailerBox = document.getElementById("trailer");
-    const API_KEY = "2d082597ab951b3a9596ca23e71413a8"; // Inserisci qui la tua chiave TMDB
+    const API_KEY = "2d082597ab951b3a9596ca23e71413a8"; // Inserisci la tua API key TMDB
 
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get("id");
@@ -55,7 +55,8 @@
           </div>
         `;
 
-        caricaTrailer();
+        await caricaTrailer();
+        aggiungiPlayerVixSrc(id, tipo);
 
       } catch (error) {
         dettagli.innerHTML = "<p class='messaggio'>Errore nel caricamento dei dettagli.</p>";
@@ -69,7 +70,6 @@
         const data = await res.json();
 
         const trailer = data.results.find(video => video.type === "Trailer" && video.site === "YouTube");
-        
         if (trailer) {
           trailerBox.innerHTML = `
             <h2>🎬 Trailer</h2>
@@ -80,19 +80,21 @@
         } else {
           trailerBox.innerHTML = "<p class='messaggio'>Nessun trailer disponibile.</p>";
         }
-
-        // VixSrc Embed
-        const vixEmbed = `
-          <h2>🎥 Guarda ora</h2>
-          <div class="iframe-container">
-            <iframe src="https://vixsrc.to/embed/${tipo === 'movie' ? 'movie' : 'tv'}/${id}" allowfullscreen></iframe>
-          </div>
-        `;
-        trailerBox.innerHTML += vixEmbed;
-
       } catch (error) {
         console.error("Errore nel caricamento del trailer", error);
       }
+    }
+
+    function aggiungiPlayerVixSrc(id, tipo) {
+      const playerBox = document.createElement("div");
+      playerBox.classList.add("box-player");
+      playerBox.innerHTML = `
+        <h2>🎥 Guarda ora</h2>
+        <div class="iframe-container">
+          <iframe src="https://vixsrc.to/${tipo}/${id}" allowfullscreen></iframe>
+        </div>
+      `;
+      trailerBox.insertAdjacentElement("afterend", playerBox);
     }
 
     caricaDettagli();
