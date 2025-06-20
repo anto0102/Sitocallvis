@@ -1,101 +1,88 @@
-/* Reset e base */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
 body {
+  margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  background-color: #121212;
+  background-color: #111;
   color: #fff;
-  padding: 0 10px;
-}
-h1 {
-  font-size: 2rem;
-  margin-bottom: 10px;
-}
-h1 span {
-  color: #ff4e4e;
-}
-h2 {
-  margin: 30px 0 10px;
-  color: #ff4e4e;
 }
 
-/* Header */
 header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px 0;
-  border-bottom: 1px solid #444;
-}
-.search-container {
-  display: flex;
-  width: 100%;
-  max-width: 500px;
-}
-.search-container input {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  border-radius: 5px 0 0 5px;
-}
-.search-container button {
-  padding: 10px 20px;
-  border: none;
-  background-color: #ff4e4e;
-  color: white;
-  font-weight: bold;
-  border-radius: 0 5px 5px 0;
-  cursor: pointer;
-}
-.search-container button:hover {
-  background-color: #e03c3c;
+  background-color: #000;
+  padding: 1rem;
+  text-align: center;
 }
 
-/* Sezione film */
-section {
-  margin-bottom: 40px;
+header h1 {
+  font-size: 2rem;
+  margin: 0.5rem 0;
 }
-.movie-row {
+
+header h1 span {
+  color: #ff4d4d;
+}
+
+form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+form input {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  width: 200px;
+}
+
+form button {
+  background-color: #ff4d4d;
+  border: none;
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+section {
+  margin: 2rem 1rem;
+}
+
+h2 {
+  color: #fff;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.movie-container {
   display: flex;
   overflow-x: auto;
-  gap: 12px;
-  padding-bottom: 10px;
+  gap: 1rem;
+  padding-bottom: 0.5rem;
 }
+
 .movie-card {
-  min-width: 140px;
-  flex-shrink: 0;
-  background-color: #1e1e1e;
-  border-radius: 10px;
+  flex: 0 0 auto;
+  width: 120px;
+  border-radius: 8px;
   overflow: hidden;
-  transition: transform 0.2s;
+  background-color: #222;
+  transition: transform 0.3s;
 }
+
 .movie-card:hover {
   transform: scale(1.05);
 }
+
 .movie-card img {
   width: 100%;
   display: block;
 }
-.movie-card .info {
-  padding: 8px;
-}
-.movie-card .title {
-  font-size: 0.9rem;
-  font-weight: bold;
-}
-.movie-card .rating {
-  font-size: 0.8rem;
-  color: #ffcc00;
-  margin-top: 4px;
-}
 
-/* Footer */
-footer {
+.movie-card h3 {
+  font-size: 0.8rem;
   text-align: center;
-  padding: 20px;
-  color: #aaa;
-  font-size: 0.85rem;
+  margin: 0.5rem;
 }
