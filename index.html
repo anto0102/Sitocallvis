@@ -1,87 +1,63 @@
-<!-- ✅ index.html modificato con login/logout --><!DOCTYPE html><html lang="it">
+<!DOCTYPE html>
+<html lang="it">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cinema Discovery</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
 </head>
 <body>
   <header>
-    <!-- Aggiungilo dentro il <header> -->
-<a href="profilo.html" class="profile-button" title="Il mio profilo">👤</a>
+    <a href="profilo.html" class="profile-button" title="Il mio profilo">👤</a>
     <h1>Cinema <span>Discovery</span></h1>
     <form id="search-form">
       <input type="text" id="search-input" placeholder="Cerca un film o serie..." />
       <button type="submit">🔍</button>
     </form>
-    <!-- 🔐 Login/Logout -->
     <div id="auth-area">
       <button id="login-btn" onclick="location.href='auth.html'">Accedi</button>
       <button id="logout-btn" style="display:none">Logout</button>
     </div>
-  </header>  <main id="main-content">
-    <!-- Sezioni film (uguali) -->
-    <section>
-      <h2>🍿 Consigliati</h2>
-      <div class="movie-container" id="consigliati"></div>
-    </section>
-    <section>
-      <h2>🔥 Titoli del momento</h2>
-      <div class="movie-container" id="momento"></div>
-    </section>
-    <section>
-      <h2>🎭 Drammatici</h2>
-      <div class="movie-container" id="drammatici"></div>
-    </section>
-    <section>
-      <h2>💥 Azione</h2>
-      <div class="movie-container" id="azione"></div>
-    </section>
-    <section>
-      <h2>😂 Commedie</h2>
-      <div class="movie-container" id="commedie"></div>
-    </section>
-    <section>
-      <h2>👻 Horror</h2>
-      <div class="movie-container" id="horror"></div>
-    </section>
-    <section>
-      <h2>👨‍👩‍👧 Famiglia</h2>
-      <div class="movie-container" id="famiglia"></div>
-    </section>
-    <section>
-      <h2>🚀 Fantascienza</h2>
-      <div class="movie-container" id="fantascienza"></div>
-    </section>
-    <section>
-      <h2>💖 Romantici</h2>
-      <div class="movie-container" id="romantici"></div>
-    </section>
-    <section>
-      <h2>🎬 Documentari</h2>
-      <div class="movie-container" id="documentari"></div>
-    </section>
-  </main>  <script>
-    const supabase = supabase.createClient("INSERISCI_LA_TUA_URL_SUPABASE", "INSERISCI_LA_TUA_PUBLIC_ANON_KEY");
+  </header>
 
-    // Controllo sessione e mostra pulsanti
-    supabase.auth.getSession().then(({ data: { session } }) => {
+  <main id="main-content">
+    <!-- Sezioni film -->
+    <section><h2>🍿 Consigliati</h2><div class="movie-container" id="consigliati"></div></section>
+    <section><h2>🔥 Titoli del momento</h2><div class="movie-container" id="momento"></div></section>
+    <section><h2>🎭 Drammatici</h2><div class="movie-container" id="drammatici"></div></section>
+    <section><h2>💥 Azione</h2><div class="movie-container" id="azione"></div></section>
+    <section><h2>😂 Commedie</h2><div class="movie-container" id="commedie"></div></section>
+    <section><h2>👻 Horror</h2><div class="movie-container" id="horror"></div></section>
+    <section><h2>👨‍👩‍👧 Famiglia</h2><div class="movie-container" id="famiglia"></div></section>
+    <section><h2>🚀 Fantascienza</h2><div class="movie-container" id="fantascienza"></div></section>
+    <section><h2>💖 Romantici</h2><div class="movie-container" id="romantici"></div></section>
+    <section><h2>🎬 Documentari</h2><div class="movie-container" id="documentari"></div></section>
+  </main>
+
+  <script>
+    Clerk.configure({ publishableKey: "pk_test_b23saWdpbmctaWVyWxhLTc1LmNsZXJrLmFjY291bnRzLmRldiQ" });
+
+    window.Clerk.load().then(async () => {
+      const user = await Clerk.user;
       const loginBtn = document.getElementById("login-btn");
       const logoutBtn = document.getElementById("logout-btn");
 
-      if (session) {
+      if (user) {
         loginBtn.style.display = "none";
         logoutBtn.style.display = "inline-block";
       } else {
         loginBtn.style.display = "inline-block";
         logoutBtn.style.display = "none";
       }
-    });
 
-    document.getElementById("logout-btn").addEventListener("click", async () => {
-      await supabase.auth.signOut();
-      location.reload();
+      logoutBtn.addEventListener("click", async () => {
+        await Clerk.signOut();
+        window.location.reload();
+      });
     });
-  </script>  <script src="index.js"></script></body>
+  </script>
+
+  <script src="index.js"></script>
+</body>
 </html>
