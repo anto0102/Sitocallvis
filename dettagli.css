@@ -48,7 +48,7 @@ body {
 .iframe-container {
   position: relative;
   width: 100%;
-  padding-bottom: 56.25%;
+  padding-bottom: 56.25%; /* 16:9 */
   height: 0;
 }
 
@@ -90,6 +90,12 @@ body {
   min-width: 250px;
   max-width: 250px;
   flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.episodio-card:hover {
+  transform: scale(1.02);
 }
 
 .episodio-card img {
@@ -101,19 +107,48 @@ body {
 }
 
 .episodio-card p {
-  margin: 0;
+  margin: 5px 0;
   font-size: 0.9em;
+  color: white;
+}
+
+.episodio-card strong {
+  color: white;
+  font-weight: 600;
+  font-size: 1em;
+}
+
+.episodio-link {
+  text-decoration: none;
+  color: white;
+}
+
+.episodio-link:hover {
+  opacity: 0.8;
 }
 
 #titolo-stagione {
   font-size: 1.5em;
   margin-bottom: 15px;
+  position: sticky;
+  top: 80px; /* distanza dal top, utile per non sovrapporsi ad header fissi */
+  background-color: #111;
+  z-index: 999;
+  padding: 10px 0;
+  border-bottom: 1px solid #333;
 }
 
 #player-container .box-player {
   margin-top: 20px;
 }
 
+#player-container h2 {
+  margin-bottom: 15px;
+  font-size: 1.3em;
+  color: #00adee;
+}
+
+/* Modale */
 .modal {
   display: none;
   position: fixed;
@@ -162,13 +197,4 @@ body {
 
 #lista-stagioni button:hover {
   background-color: #00adee;
-}
-#titolo-stagione {
-  font-size: 1.5em;
-  margin-bottom: 15px;
-  position: sticky;
-  top: 0;
-  background-color: #111;
-  z-index: 10;
-  padding: 10px 0;
 }
