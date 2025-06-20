@@ -1,17 +1,17 @@
 body {
   margin: 0;
   background-color: #111;
-  color: white;
+  color: #fff;
   font-family: 'Segoe UI', sans-serif;
 }
 
 header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   background-color: #000;
   padding: 1rem;
+  display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
 }
 
 header h1 {
@@ -47,7 +47,7 @@ main {
   padding: 1rem;
 }
 
-h2 {
+.sezione h2 {
   margin: 1rem 0 0.5rem;
 }
 
@@ -58,7 +58,7 @@ h2 {
   padding-bottom: 1rem;
 }
 
-.movie-card {
+.card {
   flex: 0 0 auto;
   width: 140px;
   background-color: #222;
@@ -69,18 +69,18 @@ h2 {
   cursor: pointer;
 }
 
-.movie-card img {
+.card img {
   width: 100%;
   height: 210px;
   object-fit: cover;
 }
 
-.movie-card h3 {
+.card h3 {
   font-size: 0.9rem;
   padding: 0.5rem;
 }
 
-.movie-card .rating {
+.card p {
   font-size: 0.8rem;
   padding-bottom: 0.5rem;
 }
