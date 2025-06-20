@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Il mio Profilo</title>
+  <style>
+    body {
+      background-color: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .profile-container {
+      background-color: #1e1e1e;
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    h2 {
+      color: #00adee;
+      margin-bottom: 20px;
+    }
+
+    .profile-data {
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    .profile-data p {
+      margin: 10px 0;
+      font-size: 1em;
+    }
+
+    button {
+      background-color: #00adee;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #008dbd;
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <h2>👤 Il mio Profilo</h2>
+    <div class="profile-data" id="profile-info">
+      Caricamento dati...
+    </div>
+    <button id="logout">🔓 Esci</button>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    const supabase = createClient(
+      'https://eymlncdzidfgfeuhkirr.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5bWxuY2R6aWRmZ2ZldWhraXJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA0NTA3MzQsImV4cCI6MjA2NjAyNjczNH0.E3r8Pe_ZztM7GtWXvloHgL6--49Do_sOV2jvZfWrUc0'
+    );
+
+    const profileInfo = document.getElementById('profile-info');
+    const logoutBtn = document.getElementById('logout');
+
+    async function loadProfile() {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error || !user) {
+        profileInfo.textContent = "Nessun utente loggato.";
+        return;
+      }
+
+      const { email, user_metadata } = user;
+      const username = user_metadata?.username || "Non impostato";
+      const age = user_metadata?.age || "Non specificata";
+
+      profileInfo.innerHTML = `
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Username:</strong> ${username}</p>
+        <p><strong>Età:</strong> ${age}</p>
+      `;
+    }
+
+    logoutBtn.addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      window.location.href = 'auth.html';
+    });
+
+    loadProfile();
+  </script>
+</body>
+</html>
