@@ -89,6 +89,7 @@ body {
   display: flex;
   flex-direction: row;
   gap: 20px;
+  padding-top: 10px; /* Spazio per evitare che il titolo copra gli episodi */
 }
 
 .episodio-card {
@@ -140,10 +141,10 @@ body {
   font-size: 1.5em;
   margin-bottom: 15px;
   position: sticky;
-  top: 70px; /* assicurati che ci sia spazio sotto eventuali header */
+  top: 70px;
   background-color: #111;
-  z-index: 999;
-  padding: 10px 0;
+  z-index: 20;
+  padding: 12px 0;
   border-bottom: 1px solid #333;
 }
 
