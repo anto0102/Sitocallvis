@@ -1,123 +1,64 @@
-body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #111;
-  color: #fff;
+/* SEZIONE CONSIGLIATI */
+.consigliati-section {
+  margin-bottom: 2rem;
 }
 
-header {
+.vertical-carousel {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #1c1c1c;
-  padding: 1rem 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-.logo {
-  font-size: 1.6rem;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.search-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-#search-input {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  border-radius: 8px;
-  border: none;
-  width: 200px;
-}
-
-#search-button {
-  background-color: #e50914;
-  color: white;
-  border: none;
-  padding: 0.5rem 0.8rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-main {
-  padding: 1rem;
-}
-
-h1 {
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
-}
-
-.sezione {
-  margin-bottom: 2.5rem;
-}
-
-.sezione h2 {
-  font-size: 1.4rem;
-  margin: 1rem 0;
-  border-left: 4px solid #e50914;
-  padding-left: 0.5rem;
-}
-
-.scroll-container {
-  display: flex;
-  overflow-x: auto;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 500px;
   gap: 1rem;
-  padding-bottom: 1rem;
-  scroll-snap-type: x mandatory;
+  scroll-snap-type: y mandatory;
+  padding-right: 10px;
 }
 
-.scroll-container::-webkit-scrollbar {
-  height: 8px;
+.vertical-carousel::-webkit-scrollbar {
+  width: 8px;
 }
-
-.scroll-container::-webkit-scrollbar-thumb {
-  background-color: #555;
+.vertical-carousel::-webkit-scrollbar-thumb {
+  background: #333;
   border-radius: 4px;
 }
 
-.card {
-  background-color: #1e1e1e;
-  border-radius: 12px;
+.card-vertical {
+  display: flex;
+  background-color: #1f1f1f;
+  border-radius: 16px;
   overflow: hidden;
-  min-width: 160px;
-  max-width: 180px;
-  flex: 0 0 auto;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
   scroll-snap-align: start;
-  transition: transform 0.2s ease;
+  min-height: 180px;
   cursor: pointer;
+  transition: transform 0.2s;
 }
 
-.card:hover {
-  transform: scale(1.05);
+.card-vertical:hover {
+  transform: scale(1.02);
 }
 
-.card img {
-  width: 100%;
-  height: 240px;
+.card-vertical img {
+  width: 120px;
+  height: 100%;
   object-fit: cover;
-  display: block;
+  flex-shrink: 0;
 }
 
-.card h3 {
-  font-size: 1rem;
-  padding: 0.5rem;
-  margin: 0;
+.card-content {
+  padding: 1rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.card p {
-  padding: 0 0.5rem 0.5rem;
-  margin: 0;
-  font-size: 0.9rem;
-  color: #ccc;
+.card-content h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.card-content .rating {
+  color: #f5c518;
+  font-size: 0.95rem;
+  margin-top: 0.3rem;
 }
