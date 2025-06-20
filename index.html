@@ -58,6 +58,27 @@
     </section>
   </main>
 
+  <script>
+    // Funzione per creare una card cliccabile che va a dettagli.html
+    function createMovieCard(movie) {
+      const IMAGE_URL = "https://image.tmdb.org/t/p/w500";
+      const title = movie.title || movie.name || "Titolo sconosciuto";
+      const poster = movie.poster_path ? `${IMAGE_URL}${movie.poster_path}` : "fallback.jpg";
+
+      const card = document.createElement("div");
+      card.classList.add("movie-card");
+
+      card.innerHTML = `
+        <a href="dettagli.html?id=${movie.id}">
+          <img src="${poster}" alt="${title}" />
+          <h3>${title}</h3>
+        </a>
+      `;
+
+      return card;
+    }
+  </script>
+
   <script src="index.js"></script>
 </body>
 </html>
