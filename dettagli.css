@@ -3,6 +3,7 @@ body {
   font-family: Arial, sans-serif;
   background-color: #111;
   color: #fff;
+  overflow-x: hidden;
 }
 
 .container {
@@ -27,6 +28,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  align-items: flex-start;
 }
 
 .dettagli-card img {
@@ -34,11 +36,17 @@ body {
   width: 100%;
   border-radius: 10px;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
 .dettagli-card .info {
   max-width: 600px;
   flex: 1;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  min-width: 250px;
+  min-height: 150px;
+  line-height: 1.5;
 }
 
 .box-trailer {
@@ -92,6 +100,7 @@ body {
   flex-shrink: 0;
   cursor: pointer;
   transition: transform 0.2s ease;
+  box-sizing: border-box;
 }
 
 .episodio-card:hover {
@@ -131,13 +140,14 @@ body {
   font-size: 1.5em;
   margin-bottom: 15px;
   position: sticky;
-  top: 80px; /* distanza dal top, utile per non sovrapporsi ad header fissi */
+  top: 70px; /* assicurati che ci sia spazio sotto eventuali header */
   background-color: #111;
   z-index: 999;
   padding: 10px 0;
   border-bottom: 1px solid #333;
 }
 
+/* Player */
 #player-container .box-player {
   margin-top: 20px;
 }
