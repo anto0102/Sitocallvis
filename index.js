@@ -1,123 +1,124 @@
-const dettagli = document.getElementById("dettagli");
-const trailerBox = document.getElementById("trailer");
-const episodiBox = document.getElementById("episodi");
-const playerContainer = document.getElementById("player-container");
-const API_KEY = "2d082597ab951b3a9596ca23e71413a8"; // Inserisci la tua API KEY TMDB
+const API_KEY = '2d082597ab951b3a9596ca23e71413a8';
+const BASE_URL = 'https://api.themoviedb.org/3';
+const IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 
-const urlParams = new URLSearchParams(window.location.search);
-const id = urlParams.get("id");
-const tipo = urlParams.get("type");
+const categories = [
+  { id: 'consigliati', url: '/movie/top_rated' },
+  { id: 'momento', url: '/trending/movie/day' },
+  { id: 'drammatici', url: '/discover/movie?with_genres=18' },
+  { id: 'azione', url: '/discover/movie?with_genres=28' },
+  { id: 'commedie', url: '/discover/movie?with_genres=35' },
+  { id: 'horror', url: '/discover/movie?with_genres=27' },
+  { id: 'famiglia', url: '/discover/movie?with_genres=10751' },
+  { id: 'fantascienza', url: '/discover/movie?with_genres=878' },
+  { id: 'romantici', url: '/discover/movie?with_genres=10749' },
+  { id: 'documentari', url: '/discover/movie?with_genres=99' },
+];
 
-if (!id || !tipo) {
-  dettagli.innerHTML = "<p class='messaggio'>ID o tipo mancanti.</p>";
-  throw new Error("Parametro mancante");
+// Funzione per chiamare API
+async function fetchMovies(endpoint) {
+  const fullUrl = `${BASE_URL}${endpoint}${endpoint.includes('?') ? '&' : '?'}api_key=${API_KEY}&language=it-IT`;
+  const response = await fetch(fullUrl);
+  const data = await response.json();
+  return data.results || [];
 }
 
-async function caricaDettagli() {
-  try {
-    const res = await fetch(`https://api.themoviedb.org/3/${tipo}/${id}?api_key=${API_KEY}&language=it-IT`);
-    const data = await res.json();
+// Funzione per creare la card film/serie
+function createMovieCard(item) {
+  const title = item.title || item.name || 'Titolo sconosciuto';
+  const poster = item.poster_path ? `${IMAGE_URL}${item.poster_path}` : 'fallback.jpg';
+  const type = item.media_type || 'movie';
 
-    const titolo = data.title || data.name;
-    const descrizione = data.overview || "Nessuna descrizione disponibile.";
-    const img = data.poster_path 
-      ? `https://image.tmdb.org/t/p/w500${data.poster_path}`
-      : "https://via.placeholder.com/300x450?text=No+Image";
-    const dataUscita = data.release_date || data.first_air_date || "Data non disponibile";
-    const voto = data.vote_average ? `${data.vote_average}/10` : "N/A";
-    const generi = data.genres?.map(g => g.name).join(", ") || "Non disponibili";
+  const card = document.createElement('div');
+  card.className = 'movie-card';
 
-    dettagli.innerHTML = `
-      <img src="${img}" alt="${titolo}">
-      <div class="info">
-        <h2>${titolo}</h2>
-        <p><strong>Data di uscita:</strong> ${dataUscita}</p>
-        <p><strong>Generi:</strong> ${generi}</p>
-        <p><strong>Voto:</strong> ${voto}</p>
-        <p><strong>Descrizione:</strong> ${descrizione}</p>
-      </div>
-    `;
-
-    await caricaTrailer();
-    
-    if (tipo === "movie") {
-      aggiungiPlayerFilm(id);
-    } else if (tipo === "tv") {
-      caricaStagioni(id);
-    }
-
-  } catch (error) {
-    dettagli.innerHTML = "<p class='messaggio'>Errore nel caricamento dei dettagli.</p>";
-    console.error(error);
-  }
-}
-
-async function caricaTrailer() {
-  try {
-    const res = await fetch(`https://api.themoviedb.org/3/${tipo}/${id}/videos?api_key=${API_KEY}&language=it-IT`);
-    const data = await res.json();
-    const trailer = data.results.find(video => video.type === "Trailer" && video.site === "YouTube");
-    if (trailer) {
-      trailerBox.innerHTML = `
-        <h2>🎬 Trailer</h2>
-        <div class="iframe-container">
-          <iframe src="https://www.youtube.com/embed/${trailer.key}" allowfullscreen></iframe>
-        </div>
-      `;
-    } else {
-      trailerBox.innerHTML = "<p class='messaggio'>Nessun trailer disponibile.</p>";
-    }
-  } catch (error) {
-    console.error("Errore nel caricamento del trailer", error);
-  }
-}
-
-function aggiungiPlayerFilm(id) {
-  playerContainer.innerHTML = `
-    <div class="box-player">
-      <h2>🎥 Guarda ora</h2>
-      <div class="iframe-container">
-        <iframe src="https://vixsrc.to/movie/${id}" allowfullscreen></iframe>
-      </div>
-    </div>
+  card.innerHTML = `
+    <a href="dettagli.html?id=${item.id}&type=${type}">
+      <img src="${poster}" alt="${title}" />
+      <h3>${title}</h3>
+    </a>
   `;
+
+  return card;
 }
 
-async function caricaStagioni(serieId) {
-  const res = await fetch(`https://api.themoviedb.org/3/tv/${serieId}?api_key=${API_KEY}&language=it-IT`);
-  const data = await res.json();
-  episodiBox.innerHTML = "";
-
-  for (const stagione of data.seasons) {
-    if (stagione.season_number === 0) continue; // salta \"Speciali\"
-    const stagioneDiv = document.createElement("div");
-    stagioneDiv.className = "stagione-container";
-    stagioneDiv.innerHTML = `<h3>Stagione ${stagione.season_number}</h3>`;
-
-    const episodioRes = await fetch(`https://api.themoviedb.org/3/tv/${serieId}/season/${stagione.season_number}?api_key=${API_KEY}&language=it-IT`);
-    const episodioData = await episodioRes.json();
-
-    episodioData.episodes.forEach(ep => {
-      const btn = document.createElement("button");
-      btn.className = "episodio-btn";
-      btn.textContent = `Episodio ${ep.episode_number}`;
-      btn.onclick = () => mostraPlayerEpisodio(serieId, stagione.season_number, ep.episode_number);
-      stagioneDiv.appendChild(btn);
-    });
-
-    episodiBox.appendChild(stagioneDiv);
+// Caricamento film per categoria
+async function loadMovies() {
+  for (const category of categories) {
+    const container = document.getElementById(category.id);
+    try {
+      const movies = await fetchMovies(category.url);
+      container.innerHTML = '';
+      movies.slice(0, 10).forEach(movie => {
+        if (movie.poster_path) {
+          const card = createMovieCard(movie);
+          container.appendChild(card);
+        }
+      });
+    } catch (err) {
+      console.error(`Errore caricamento ${category.id}:`, err);
+    }
   }
 }
 
-function mostraPlayerEpisodio(id, stagione, episodio) {
-  playerContainer.innerHTML = `
-    <div class="box-player">
-      <h2>🎥 Episodio ${episodio}</h2>
-      <div class="iframe-container">
-        <iframe src="https://vixsrc.to/tv/${id}/${stagione}/${episodio}" allowfullscreen></iframe>
-      </div>
-    </div>
-  `;
-}
+document.addEventListener('DOMContentLoaded', loadMovies);
 
-caricaDettagli();
+// Gestione della ricerca
+document.getElementById('search-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const query = document.getElementById('search-input').value.trim();
+  if (!query) return;
+
+  const response = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=it-IT`);
+  const data = await response.json();
+  let results = (data.results || []).filter(item =>
+    (item.media_type === 'movie' || item.media_type === 'tv') && item.poster_path
+  );
+
+  // Ordina con match esatto per primo, poi per popolarità
+  results.sort((a, b) => {
+    const queryLower = query.toLowerCase();
+    const aTitle = (a.title || a.name || '').toLowerCase();
+    const bTitle = (b.title || b.name || '').toLowerCase();
+
+    const aExact = aTitle === queryLower;
+    const bExact = bTitle === queryLower;
+
+    if (aExact && !bExact) return -1;
+    if (!aExact && bExact) return 1;
+
+    return b.popularity - a.popularity;
+  });
+
+  // Separazione film e serie
+  const movies = results.filter(r => r.media_type === 'movie');
+  const series = results.filter(r => r.media_type === 'tv');
+
+  const main = document.getElementById('main-content');
+  main.innerHTML = `
+    <section>
+      <h2>🔍 Risultati per "${query}"</h2>
+      <div class="search-group">
+        <h3>🎬 Film</h3>
+        <div class="movie-container" id="search-movies"></div>
+      </div>
+      <div class="search-group">
+        <h3>📺 Serie TV</h3>
+        <div class="movie-container" id="search-series"></div>
+      </div>
+    </section>
+  `;
+
+  const movieContainer = document.getElementById('search-movies');
+  const seriesContainer = document.getElementById('search-series');
+
+  movies.slice(0, 10).forEach(movie => {
+    const card = createMovieCard(movie);
+    movieContainer.appendChild(card);
+  });
+
+  series.slice(0, 10).forEach(serie => {
+    const card = createMovieCard(serie);
+    seriesContainer.appendChild(card);
+  });
+});
