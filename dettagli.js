@@ -109,13 +109,12 @@ async function caricaDettagli() {
             aggiungiPlayerFilm(id);
         }
 
-        // Setup listeners per le frecce dopo che i caroselli sono stati popolati
+        // Setup listener per le frecce DOPO che i caroselli sono stati popolati
         setupCarouselScrollListeners();
 
     } catch (error) {
         console.error("Errore nel caricamento dei dettagli:", error);
         mainDetailsSection.innerHTML = `<p class="text-center text-red-500 text-xl w-full">Impossibile caricare i dettagli del contenuto. Riprova più tardi.</p>`;
-        // Nascondi le altre sezioni
         document.getElementById('trailer-section').classList.add('hidden');
         document.getElementById('player-section').classList.add('hidden');
         document.getElementById('episodes-section').classList.add('hidden');
@@ -163,6 +162,7 @@ async function caricaCast(creditsData) {
         `;
         castCarouselTrack.appendChild(castCard);
     });
+    updateCarouselArrowsVisibility('cast-carousel'); // Aggiorna visibilità frecce dopo il caricamento
 }
 
 async function caricaSimilarContent(relatedContentData) {
@@ -183,6 +183,7 @@ async function caricaSimilarContent(relatedContentData) {
         const movieCard = createMovieCard(item);
         similarMoviesCarouselTrack.appendChild(movieCard);
     });
+    updateCarouselArrowsVisibility('similar-movies-carousel'); // Aggiorna visibilità frecce dopo il caricamento
 }
 
 function createMovieCard(item) {
@@ -272,8 +273,7 @@ async function caricaEpisodi(tvId, seasonNumber) {
             firstEpisodeLoaded = true;
         }
     });
-    // Dopo aver caricato gli episodi, aggiorna la visibilità delle frecce
-    updateCarouselArrowsVisibility('episodes-carousel');
+    updateCarouselArrowsVisibility('episodes-carousel'); // Aggiorna visibilità frecce dopo il caricamento
 }
 
 function aggiornaPlayerSeries(tvId, season, episode) {
@@ -300,8 +300,8 @@ function scrollRight(carouselId) {
         console.error(`Carousel track not found inside ${carouselId}`);
         return;
     }
-    // Calcola lo scroll basandosi sulla larghezza del contenitore o della prima card
-    const scrollAmount = carouselContainer.offsetWidth * 0.8; // Scorre l'80% della larghezza visibile
+    const firstCard = carouselTrack.querySelector('.episode-card, .cast-card, .movie-card');
+    const scrollAmount = firstCard ? firstCard.offsetWidth * 3 + parseFloat(getComputedStyle(carouselTrack).gap) * 3 : carouselContainer.offsetWidth * 0.8;
     carouselContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
 }
 
@@ -316,8 +316,8 @@ function scrollLeft(carouselId) {
         console.error(`Carousel track not found inside ${carouselId}`);
         return;
     }
-    // Calcola lo scroll basandosi sulla larghezza del contenitore o della prima card
-    const scrollAmount = carouselContainer.offsetWidth * 0.8; // Scorre l'80% della larghezza visibile
+    const firstCard = carouselTrack.querySelector('.episode-card, .cast-card, .movie-card');
+    const scrollAmount = firstCard ? firstCard.offsetWidth * 3 + parseFloat(getComputedStyle(carouselTrack).gap) * 3 : carouselContainer.offsetWidth * 0.8;
     carouselContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
 }
 
@@ -337,44 +337,39 @@ function updateCarouselArrowsVisibility(carouselId) {
         clearTimeout(scrollTimeout);
         scrollTimeout = setTimeout(() => {
             // Logica per la freccia sinistra
-            if (carouselContainer.scrollLeft > 0) {
-                scrollLeftBtn.style.opacity = '1';
-                scrollLeftBtn.style.pointerEvents = 'auto';
+            if (carouselContainer.scrollLeft > 5) { // Tolleranza di 5px
+                scrollLeftBtn.classList.add('show-arrow');
+                scrollLeftBtn.classList.remove('hide-arrow');
             } else {
-                scrollLeftBtn.style.opacity = '0';
-                scrollLeftBtn.style.pointerEvents = 'none';
+                scrollLeftBtn.classList.remove('show-arrow');
+                scrollLeftBtn.classList.add('hide-arrow');
             }
 
             // Logica per la freccia destra
-            // Aggiungi una piccola tolleranza per i calcoli in virgola mobile
             const scrollEnd = carouselContainer.scrollWidth - carouselContainer.clientWidth;
-            const tolerance = 1; // pixel di tolleranza
+            const tolerance = 5; // pixel di tolleranza
             if (carouselContainer.scrollLeft >= scrollEnd - tolerance) {
-                scrollRightBtn.style.opacity = '0';
-                scrollRightBtn.style.pointerEvents = 'none';
+                scrollRightBtn.classList.add('hide-arrow');
+                scrollRightBtn.classList.remove('show-arrow');
             } else {
-                scrollRightBtn.style.opacity = '1';
-                scrollRightBtn.style.pointerEvents = 'auto';
+                scrollRightBtn.classList.remove('hide-arrow');
+                scrollRightBtn.classList.add('show-arrow');
             }
         }, 100); // Ritardo di 100ms
     });
 
-    // Chiamata iniziale per impostare la visibilità all'inizio
-    // La freccia sinistra è inizialmente nascosta dal CSS, qui la logica la mostra se si scorre
-    // La freccia destra è inizialmente visibile (su hover del genitore), qui la logica la nasconde se non c'è più nulla da scorrere
-    const scrollEnd = carouselContainer.scrollWidth - carouselContainer.clientWidth;
-    const tolerance = 1;
-    if (carouselContainer.scrollLeft >= scrollEnd - tolerance) {
-        scrollRightBtn.style.opacity = '0';
-        scrollRightBtn.style.pointerEvents = 'none';
+    // Stato iniziale delle frecce
+    // Se c'è meno contenuto del container, nascondi entrambe le frecce
+    if (carouselContainer.scrollWidth <= carouselContainer.clientWidth + 5) { // Tolleranza
+        scrollLeftBtn.classList.add('hide-arrow');
+        scrollRightBtn.classList.add('hide-arrow');
     } else {
-        // Se c'è spazio per scorrere a destra, la freccia destra dovrebbe essere visibile su hover del genitore
-        scrollRightBtn.style.opacity = '1'; // Questo è per il caso iniziale, ma il CSS group:hover lo gestisce
-        scrollRightBtn.style.pointerEvents = 'auto';
+        // Se c'è contenuto scrollabile, la freccia sinistra è nascosta (inizio)
+        scrollLeftBtn.classList.add('hide-arrow');
+        // La freccia destra è visibile (c'è contenuto a destra)
+        scrollRightBtn.classList.remove('hide-arrow');
+        scrollRightBtn.classList.add('show-arrow');
     }
-    // La freccia sinistra è sempre nascosta all'inizio
-    scrollLeftBtn.style.opacity = '0';
-    scrollLeftBtn.style.pointerEvents = 'none';
 }
 
 
@@ -384,33 +379,8 @@ function setupCarouselScrollListeners() {
     carouselIds.forEach(id => {
         const carouselContainer = document.getElementById(id);
         if (carouselContainer) {
-            // Chiamata iniziale per impostare la visibilità delle frecce
-            // Questo gestisce il caso in cui un carosello non ha abbastanza elementi per scorrere
-            const scrollLeftBtn = carouselContainer.querySelector('.scroll-left');
-            const scrollRightBtn = carouselContainer.querySelector('.scroll-right');
-
-            if (carouselContainer.scrollWidth <= carouselContainer.clientWidth + 1) { // +1 per tolleranza
-                if (scrollLeftBtn) scrollLeftBtn.style.display = 'none';
-                if (scrollRightBtn) scrollRightBtn.style.display = 'none';
-            } else {
-                if (scrollLeftBtn) {
-                    scrollLeftBtn.style.opacity = '0'; // Nascosta di default
-                    scrollLeftBtn.style.pointerEvents = 'none';
-                }
-                // La freccia destra è gestita dal CSS group:hover e dalla logica di scroll
-                // Assicurati che sia visibile se c'è contenuto da scorrere
-                if (scrollRightBtn) {
-                    scrollRightBtn.style.opacity = '1'; // Visibile su hover se c'è spazio
-                    scrollRightBtn.style.pointerEvents = 'auto';
-                }
-            }
-
-            // Aggiungi il listener di scroll per la logica di visibilità dinamica
-            carouselContainer.addEventListener('scroll', () => {
-                updateCarouselArrowsVisibility(id);
-            });
-            // Esegui un aggiornamento immediato per lo stato iniziale
-            updateCarouselArrowsVisibility(id);
+            // Applica la logica di visibilità iniziale e aggiungi listener
+            updateCarouselArrowsVisibility(id); 
         }
     });
 }
