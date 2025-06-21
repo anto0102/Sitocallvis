@@ -1,4 +1,6 @@
-const API_KEY = '2d082597ab951b3a9596ca23e71413a8'; // Inserisci la tua API Key TMDB const BASE_URL = 'https://api.themoviedb.org/3'; const IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
+// index.js COMPLETO CORRETTO
+
+const API_KEY = '2d082597ab951b3a9596ca23e71413a8'; const BASE_URL = 'https://api.themoviedb.org/3'; const IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 
 const categories = [ { id: 'consigliati', url: '/movie/top_rated' }, { id: 'momento', url: '/trending/movie/day' }, { id: 'drammatici', url: '/discover/movie?with_genres=18' }, { id: 'azione', url: '/discover/movie?with_genres=28' }, { id: 'commedie', url: '/discover/movie?with_genres=35' }, { id: 'horror', url: '/discover/movie?with_genres=27' }, { id: 'famiglia', url: '/discover/movie?with_genres=10751' }, { id: 'fantascienza', url: '/discover/movie?with_genres=878' }, { id: 'romantici', url: '/discover/movie?with_genres=10749' }, { id: 'documentari', url: '/discover/movie?with_genres=99' }, ];
 
