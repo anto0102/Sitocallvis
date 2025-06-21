@@ -186,17 +186,20 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
     }
 });
 
-// Funzioni di scroll per i caroselli
-function scrollRight(containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    const scrollAmount = container.querySelector(".movie-card")?.offsetWidth * 3 || 600; // Scorre di 3 card alla volta
-    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+// Funzioni di scroll per i caroselli - MODIFICATE PER CORREGGERE LE FRECCE
+// La funzione dovrebbe puntare al carousel-container del genitore della sezione con l'ID
+function scrollRight(sectionId) {
+    // Trova l'elemento carousel-container all'interno della sezione specificata
+    const carouselContainer = document.getElementById(sectionId).closest('.content-row').querySelector('.carousel-container');
+    if (!carouselContainer) return;
+    const scrollAmount = carouselContainer.querySelector(".movie-card")?.offsetWidth * 3 || 600;
+    carouselContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
 }
 
-function scrollLeft(containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    const scrollAmount = container.querySelector(".movie-card")?.offsetWidth * 3 || 600; // Scorre di 3 card alla volta
-    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+function scrollLeft(sectionId) {
+    // Trova l'elemento carousel-container all'interno della sezione specificata
+    const carouselContainer = document.getElementById(sectionId).closest('.content-row').querySelector('.carousel-container');
+    if (!carouselContainer) return;
+    const scrollAmount = carouselContainer.querySelector(".movie-card")?.offsetWidth * 3 || 600;
+    carouselContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
 }
