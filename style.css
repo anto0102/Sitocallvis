@@ -60,6 +60,7 @@ form button {
 
 section {
   margin: 2rem 1rem;
+  position: relative;
 }
 
 h2 {
@@ -77,6 +78,7 @@ h2 {
   padding: 1.2rem 0 2rem;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  scroll-behavior: smooth;
 }
 
 .movie-container::-webkit-scrollbar {
@@ -141,4 +143,37 @@ h2 {
 
 .profile-button:hover {
   background-color: #008dbd;
+}
+
+/* 👇 Aggiunto: Stile per i bottoni di scorrimento laterale */
+.scroll-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: none;
+  z-index: 10;
+  transition: background-color 0.2s ease;
+}
+
+.scroll-btn:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.scroll-btn.left {
+  left: 0.5rem;
+}
+
+.scroll-btn.right {
+  right: 0.5rem;
+}
+
+/* 👇 Aggiunto: mostrare le frecce al passaggio del mouse sulla sezione */
+section.group:hover .scroll-btn {
+  display: flex;
 }
