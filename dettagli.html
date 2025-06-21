@@ -63,8 +63,7 @@
                 </div>
         </section>
 
-        <section id="episodes-section" class="section-box mb-12 hidden">
-            <h2 class="section-title flex items-center justify-between">
+        <section id="episodes-section" class="section-box mb-12 hidden group relative"> <h2 class="section-title flex items-center justify-between">
                 <span>
                     📺 Episodi 
                     <span id="current-season-display" class="text-lg text-gray-400 ml-4">(Stagione 1)</span>
@@ -77,29 +76,33 @@
                 <div class="carousel-track">
                     </div>
             </div>
+            <button class="scroll-btn scroll-right opacity-0 group-hover:opacity-100 right-0" onclick="scrollRight('episodes-carousel')">❯</button>
+            <button class="scroll-btn scroll-left opacity-0 group-hover:opacity-100 left-0" onclick="scrollLeft('episodes-carousel')">❮</button>
         </section>
 
-        <section id="cast-section" class="section-box mb-12">
-            <h2 class="section-title">👥 Cast Principale</h2>
+        <section id="cast-section" class="section-box mb-12 group relative"> <h2 class="section-title">👥 Cast Principale</h2>
             <div id="cast-carousel" class="carousel-container hide-scrollbar">
                 <div class="carousel-track">
                     </div>
             </div>
+            <button class="scroll-btn scroll-right opacity-0 group-hover:opacity-100 right-0" onclick="scrollRight('cast-carousel')">❯</button>
+            <button class="scroll-btn scroll-left opacity-0 group-hover:opacity-100 left-0" onclick="scrollLeft('cast-carousel')">❮</button>
         </section>
 
-        <section id="similar-content-section" class="section-box mb-12">
-            <h2 class="section-title">Simili a questo</h2>
+        <section id="similar-content-section" class="section-box mb-12 group relative"> <h2 class="section-title">Simili a questo</h2>
             <div id="similar-movies-carousel" class="carousel-container hide-scrollbar">
                 <div class="carousel-track">
                     </div>
             </div>
+            <button class="scroll-btn scroll-right opacity-0 group-hover:opacity-100 right-0" onclick="scrollRight('similar-movies-carousel')">❯</button>
+            <button class="scroll-btn scroll-left opacity-0 group-hover:opacity-100 left-0" onclick="scrollLeft('similar-movies-carousel')">❮</button>
         </section>
 
     </main>
 
     <div id="season-modal" class="modal">
         <div class="modal-content">
-            <span class="close-btn">&times;</span>
+            <span class="close-btn">×</span>
             <h2 class="modal-title">📚 Seleziona una stagione</h2>
             <div id="season-list" class="modal-season-list grid grid-cols-2 sm:grid-cols-3 gap-4 mt-6">
                 </div>
