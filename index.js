@@ -16,29 +16,6 @@ const categories = [
   { id: 'documentari', url: '/discover/movie?with_genres=99' },
 ];
 
-// 🔎 Controllo su Vixsrc
-async function isMovieAvailableOnVixsrc(id, type = 'movie') {
-  const key = `vixsrc_${type}_${id}`;
-  const cached = sessionStorage.getItem(key);
-
-  if (cached === 'true') return true;
-  if (cached === 'false') return false;
-
-  try {
-    const response = await fetch(`https://vixsrc.to/${type}/${id}`, {
-      method: 'HEAD',
-      mode: 'cors',
-    });
-
-    const available = response.ok && response.status !== 404;
-    sessionStorage.setItem(key, available ? 'true' : 'false');
-    return available;
-  } catch (err) {
-    sessionStorage.setItem(key, 'false');
-    return false;
-  }
-}
-
 // 🔎 Fetch film
 async function fetchMovies(endpoint) {
   const page = Math.floor(Math.random() * 5) + 1;
@@ -84,11 +61,8 @@ async function loadMovies() {
       for (const movie of movies) {
         if (!movie.poster_path) continue;
 
-        const available = await isMovieAvailableOnVixsrc(movie.id, 'movie');
-        if (available) {
-          container.appendChild(createMovieCard(movie));
-          count++;
-        }
+        container.appendChild(createMovieCard(movie));
+        count++;
         if (count >= 10) break;
       }
 
@@ -149,13 +123,11 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
   const movieContainer = document.getElementById('search-movies');
   const seriesContainer = document.getElementById('search-series');
 
-  for (const movie of movies.slice(0, 10)) {
-    const available = await isMovieAvailableOnVixsrc(movie.id, 'movie');
-    if (available) movieContainer.appendChild(createMovieCard(movie));
-  }
+  movies.slice(0, 10).forEach(movie => {
+    movieContainer.appendChild(createMovieCard(movie));
+  });
 
-  for (const serie of series.slice(0, 10)) {
-    const available = await isMovieAvailableOnVixsrc(serie.id, 'tv');
-    if (available) seriesContainer.appendChild(createMovieCard(serie));
-  }
+  series.slice(0, 10).forEach(serie => {
+    seriesContainer.appendChild(createMovieCard(serie));
+  });
 });
