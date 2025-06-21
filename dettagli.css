@@ -7,7 +7,7 @@
     --hover-color: #f40612;
     --card-bg: #1c1c1c;
     --border-color: #333;
-    --hero-backdrop-transition: all 0.7s ease-in-out;
+    --backdrop-transition: all 0.7s ease-in-out;
 }
 
 /* Base styles and resets */
@@ -39,12 +39,23 @@ html, body {
     display: none; /* Chrome, Safari, Opera */
 }
 
+/* --- Backdrop Fisso in Alto --- */
+.top-backdrop {
+    background-size: cover;
+    background-position: center top; /* Allinea in alto */
+    filter: brightness(0.4) blur(10px); /* Scura e sfoca */
+    transform: scale(1.05); /* Zoom per coprire i bordi sfocati */
+}
+.top-backdrop-gradient {
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.5) 50%, var(--primary-bg) 100%);
+}
+
 /* --- Pulsante "Torna alla Home" --- */
 .back-home-button {
     background-color: rgba(0, 0, 0, 0.6);
     color: white;
     padding: 10px 20px;
-    border-radius: 9999px; /* Pill shape */
+    border-radius: 9999px;
     text-decoration: none;
     font-weight: 600;
     font-size: 1.1em;
@@ -57,58 +68,35 @@ html, body {
     border-color: var(--accent-color);
 }
 
-/* --- Hero Section Dettagli --- */
-.detail-hero-section {
-    min-height: 90vh; /* Mantieni altezza minima */
-    padding-top: 100px; /* Spazio per il back button */
-    padding-bottom: 2rem; /* Spazio per il contenuto, il gradiente coprirà il resto */
-    box-sizing: border-box;
-    display: flex;
-    align-items: center; /* Centra il contenuto verticalmente per default */
-    justify-content: center; /* Centra orizzontalmente il contenitore flex */
-    position: relative;
-    z-index: 10; 
+/* --- Contenuto Principale Scrollabile --- */
+.content-wrapper {
+    max-width: 1400px; /* Larghezza massima per il contenuto centrale */
+    margin: 0 auto; /* Centra il wrapper */
+    position: relative; /* Necessario per lo z-index */
+    background-color: var(--primary-bg); /* Sfondo solido per coprire il backdrop sotto */
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8); /* Ombra per staccare dal backdrop */
+    border-radius: 12px; /* Piccoli bordi arrotondati per il wrapper generale */
+    min-height: calc(100vh - 40px); /* Assicurati che sia visibile */
 }
 
-.hero-backdrop {
-    background-size: cover;
-    background-position: center;
-    filter: brightness(0.5) blur(15px);
-    transform: scale(1.05);
-    z-index: 0;
+/* --- Sezione Dettagli (Poster e Info) --- */
+.main-details-section {
+    /* Tailwind classes: flex flex-col md:flex-row items-center md:items-start gap-8 lg:gap-12 */
+    /* mt-16 md:mt-24 mb-12 bg-secondary-bg p-6 md:p-8 rounded-lg shadow-lg */
+    z-index: 30; /* Assicura che sia sopra tutto il resto nella Hero area */
+    position: relative; /* Per lo z-index */
 }
 
-.hero-gradient {
-    /* Il gradiente deve coprire tutta l'altezza della hero per nascondere il backdrop sotto */
-    background: linear-gradient(to top, var(--primary-bg) 0%, rgba(0,0,0,0.8) 20%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%);
-    position: absolute; /* Deve essere posizionato assolutamente per coprire */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%; /* Copre l'intera hero section */
-    z-index: 0; /* Dietro il contenuto, sopra il backdrop */
-}
-
-.hero-content {
-    /* Margine superiore per alzare il blocco di testo all'interno della hero, regolabile */
-    margin-top: -5rem; 
-    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
-    z-index: 1; /* Sopra i gradienti e backdrop */
-    max-width: 1200px;
-    width: 100%;
-    padding: 0 2rem; /* Padding laterale */
-}
-
-.movie-info-summary h1 {
-    font-size: 4.5em;
+.movie-info-block h1 {
+    font-size: 3.5em; /* Titolo più contenuto per un look più pulito */
     line-height: 1.1;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
 }
-
-.movie-info-summary p {
+.movie-info-block p {
     line-height: 1.5;
 }
 
-.movie-info-summary .flex span {
+.movie-info-block .flex span {
     background-color: rgba(255, 255, 255, 0.1);
     padding: 4px 10px;
     border-radius: 5px;
@@ -124,7 +112,6 @@ html, body {
     cursor: pointer;
     transition: all 0.3s ease;
 }
-
 .action-buttons .play-btn {
     background-color: white;
     color: var(--primary-bg);
@@ -134,7 +121,6 @@ html, body {
     transform: scale(1.05);
     box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
 }
-
 .action-buttons .add-to-list-btn {
     background-color: rgba(109, 109, 110, 0.7);
     color: white;
@@ -145,33 +131,15 @@ html, body {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
 }
 
-/* --- Contenuto Principale (sotto la hero) --- */
-.main-content-sections {
-    /* Rimuovi !important se la pulizia funziona */
-    margin-top: 1rem; /* Margine positivo piccolo, il gradiente della hero dovrebbe coprire */
-    background-color: var(--primary-bg);
-    position: relative;
-    z-index: 20; /* Assicura che sia SOPRA la hero */
-    border-top-left-radius: 30px; /* Bordi arrotondati riattivati */
-    border-top-right-radius: 30px;
-    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.7); /* Ombra verso l'alto */
-    padding-top: 2rem;
-    padding-bottom: 4rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    /* Assicurati che non ci sia overflow: hidden qui che possa nascondere le ombre o gli ingrandimenti */
-    overflow: visible; 
-}
-
-.section-box {
-    padding: 2rem 0;
+/* --- Blocchi di Contenuto (Trailer, Player, etc.) --- */
+.content-block {
+    padding: 2rem 0; /* Padding verticale per i blocchi di contenuto */
     margin-bottom: 2rem;
     position: relative;
-    overflow: visible; /* IMPORTANTE: Permette alle card di espandersi */
+    overflow: visible; /* Permette alle card ingrandite di non essere tagliate */
 }
-
-.section-title {
-    font-size: 2.5em;
+.block-title {
+    font-size: 2em;
     font-weight: 700;
     margin-bottom: 1.5rem;
     color: white;
@@ -185,14 +153,14 @@ html, body {
 .iframe-container {
     position: relative;
     width: 100%;
-    padding-bottom: 42%; /* Circa 21:9 o un po' più basso di 16:9 */
+    padding-bottom: 42%; /* Circa 21:9 per un look più "cinematografico" */
     height: 0;
     background-color: black;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    max-width: 700px;
-    margin: 0 auto;
+    max-width: 900px; /* Larghezza massima, per non essere troppo grandi */
+    margin: 0 auto; /* Centra */
 }
 .iframe-container iframe {
     position: absolute;
@@ -204,23 +172,21 @@ html, body {
 /* --- Caroselli (Episodi, Cast, Simili) --- */
 .carousel-container {
     overflow-x: auto;
-    overflow-y: hidden; /* Nasconde scrollbar verticale */
-    padding-bottom: 1.5rem;
-    padding-top: 0.5rem;
+    overflow-y: hidden;
+    padding-bottom: 1.5rem; /* Spazio per l'ombra */
+    padding-top: 0.5rem; /* Spazio per l'ombra della card superiore */
     position: relative;
     padding-left: 0;
     padding-right: 0;
 }
-
 .carousel-track {
     display: flex;
     gap: 1rem;
-    padding: 0 2rem; /* Padding laterale interno per le card */
-    /* Assicurati che il track non si restringa e contenga bene le card */
-    min-width: max-content; /* Impedisce al flex-wrap di attivarsi */
+    padding: 0 0.5rem; /* Padding laterale interno per le card */
+    min-width: max-content; /* Impedisce il wrap delle card */
 }
 
-/* --- Card Episodio (simili alle card film) --- */
+/* --- Card Episodio --- */
 .episode-card {
     flex-shrink: 0;
     width: 280px;
@@ -240,7 +206,7 @@ html, body {
 }
 .episode-card img {
     width: 100%;
-    height: 160px;
+    height: 160px; /* 16:9 */
     object-fit: cover;
     display: block;
     border-top-left-radius: 12px;
@@ -296,7 +262,7 @@ html, body {
 /* --- Card Cast --- */
 .cast-card {
     flex-shrink: 0;
-    width: 120px; /* Larghezza piccola per i membri del cast */
+    width: 120px;
     background-color: var(--card-bg);
     border-radius: 8px;
     overflow: hidden;
@@ -304,8 +270,7 @@ html, body {
     padding-bottom: 0.5rem;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    /* Assicurati che l'altezza sia fissa o ben controllata */
-    height: 190px; /* Altezza fissa per mantenere allineamento */
+    height: 190px; /* Altezza fissa */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -318,7 +283,7 @@ html, body {
 .cast-card img {
     width: 100px;
     height: 100px;
-    border-radius: 50%; /* Immagini rotonde */
+    border-radius: 50%;
     object-fit: cover;
     margin: 10px auto;
     display: block;
@@ -328,24 +293,24 @@ html, body {
     font-weight: 600;
     color: white;
     margin-bottom: 0.25rem;
-    white-space: nowrap; /* Impedisce che il nome si spezzi */
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 90%; /* Limita la larghezza per ellipsis */
+    width: 90%;
 }
 .cast-card p {
     font-size: 0.8em;
     color: #b0b0b0;
-    white-space: nowrap; /* Impedisce che il ruolo si spezzi */
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 90%; /* Limita la larghezza per ellipsis */
+    width: 90%;
 }
 
-/* --- Card Film simili (per coerenza con homepage) --- */
+/* --- Card Film Simili (riutilizzate dalla homepage) --- */
 .movie-card {
     flex-shrink: 0;
-    width: 200px; /* Larghezza della card film simile */
+    width: 200px;
     border-radius: 12px;
     overflow: hidden;
     background-color: var(--card-bg);
@@ -355,7 +320,7 @@ html, body {
     transform-origin: center center;
     transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
     z-index: 1;
-    display: flex; /* Assicurati che il contenuto sia ben impilato */
+    display: flex;
     flex-direction: column;
 }
 .movie-card:hover {
@@ -369,7 +334,7 @@ html, body {
     object-fit: cover;
     display: block;
 }
-.movie-card .p-2 { /* Regola specifica per il testo nelle card simili */
+.movie-card .p-2 {
     padding: 0.5rem;
     text-align: center;
     font-weight: 600;
@@ -390,7 +355,7 @@ html, body {
     font-size: 3rem;
     border: none;
     width: 50px;
-    height: calc(100% - 2rem); /* Altezza della carousel-container - padding verticale */
+    height: calc(100% - 2rem);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -398,22 +363,20 @@ html, body {
     transition: background-color 0.3s ease, opacity 0.3s ease;
     z-index: 30;
 }
-
 .scroll-btn.scroll-right {
     right: 0;
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
 }
-
 .scroll-btn.scroll-left {
     left: 0;
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
 }
-
 .scroll-btn:hover {
     background-color: rgba(0, 0, 0, 0.9);
 }
+
 
 /* --- MODAL Stagioni --- */
 .modal {
@@ -486,94 +449,42 @@ html, body {
 
 /* Media Queries per la Reattività */
 @media (max-width: 1024px) {
-    .detail-hero-section {
-        padding-bottom: 2rem; /* Ridotto anche per schermi medi */
-    }
-    .hero-content {
-        margin-top: -3rem; /* Alza un po' meno su schermi medi */
-    }
-    .main-content-sections {
-        margin-top: 0.5rem; /* Margine positivo più piccolo */
-    }
-    .movie-info-summary h1 { font-size: 3.5em; }
-    .movie-info-summary p { font-size: 1em; }
-    .movie-info-summary .flex span { font-size: 0.9em; padding: 3px 8px; }
-    .section-title { font-size: 2em; }
-    .episode-card { width: 220px; }
-    .episode-card img { height: 124px; }
-    .cast-card { width: 100px; }
-    .cast-card img { width: 80px; height: 80px; }
+    .movie-info-block h1 { font-size: 3em; }
+    .movie-info-block p { font-size: 0.9em; }
+    .iframe-container { max-width: 90%; }
+    .episode-card { width: 250px; }
+    .cast-card { width: 100px; height: 160px; } /* Adatta altezza cast */
     .movie-card { width: 180px; }
-    .movie-card img { height: 270px; }
-    .scroll-btn { width: 40px; font-size: 2.5rem; }
-    .carousel-track { padding: 0 1.5rem; } /* Adatta padding laterale */
-
-    /* Dimensione trailer su schermi medi */
-    .iframe-container {
-        max-width: 80%; /* Ancora più piccolo */
-    }
 }
 
 @media (max-width: 768px) {
-    .detail-hero-section {
-        min-height: auto;
-        padding-top: 80px;
-        padding-bottom: 2rem; /* Riduci per mobile */
-        align-items: center;
-    }
-    .hero-content {
-        flex-direction: column;
-        text-align: center;
-        padding-left: 1rem;
-        padding-right: 1rem;
-        margin-top: -2rem; /* Alza ancora un po' su mobile */
-    }
-    .detail-poster {
-        width: 180px;
-        margin-bottom: 1.5rem;
-    }
-    .movie-info-summary h1 { font-size: 2.8em; }
-    .movie-info-summary p { font-size: 0.95em; }
-    .action-buttons { flex-direction: column; width: 100%; max-width: 300px; margin: 0 auto; }
+    .top-backdrop, .top-backdrop-gradient { height: 40vh; }
+    .back-home-button { top: 15px; left: 15px; padding: 8px 15px; font-size: 1em; }
+    .main-details-section { flex-direction: column; text-align: center; padding: 1.5rem; }
+    .detail-poster { width: 150px; margin-bottom: 1.5rem; }
+    .movie-info-block h1 { font-size: 2.5em; }
+    .movie-info-block p { font-size: 0.85em; }
+    .action-buttons { flex-direction: column; width: 100%; max-width: 250px; margin: 0 auto; }
     .action-buttons .btn { width: 100%; }
-    .main-content-sections { padding-left: 1.5rem; padding-right: 1.5rem; margin-top: 0.5rem; } /* Margine positivo su mobile */
-    .section-title { font-size: 1.8em; padding-left: 0; }
-    .carousel-track { padding: 0 0.5rem; }
-    .episode-card { width: 180px; }
-    .episode-card img { height: 100px; }
-    .cast-card { width: 90px; height: 150px; } /* Altezza fissa per mobile cast */
-    .cast-card img { width: 70px; height: 70px; }
+    .content-block { padding: 1.5rem 0; }
+    .block-title { font-size: 1.8em; }
+    .iframe-container { padding-bottom: 56.25%; max-width: 95%; } /* Standard 16:9 su mobile */
+    .episode-card { width: 200px; }
+    .cast-card { width: 90px; height: 140px; } /* Adatta altezza cast mobile */
     .movie-card { width: 150px; }
-    .movie-card img { height: 225px; }
-
-    /* Dimensione trailer su schermi piccoli */
-    .iframe-container {
-        max-width: 95%; /* Lascia un po' di margine */
-        padding-bottom: 50%; /* Aspect ratio leggermente meno "lungo" */
-    }
+    .carousel-track { padding: 0 0.25rem; }
 }
 
 @media (max-width: 480px) {
-    .back-home-button { padding: 6px 12px; font-size: 0.9em; top: 10px; left: 10px; }
-    .detail-hero-section { padding-top: 60px; padding-bottom: 1.5rem; }
-    .hero-content {
-        margin-top: -1rem; /* Alza leggermente su schermi molto piccoli */
-    }
-    .detail-poster { width: 150px; }
-    .movie-info-summary h1 { font-size: 2.2em; }
-    .movie-info-summary p { font-size: 0.85em; }
-    .movie-info-summary .flex span { font-size: 0.8em; padding: 2px 6px; }
-    .main-content-sections { padding-left: 1rem; padding-right: 1rem; margin-top: 0.5rem; }
-    .section-title { font-size: 1.5em; }
-    .episode-card { width: 150px; }
-    .episode-card img { height: 85px; }
-    .cast-card { width: 80px; height: 130px; } /* Altezza fissa per mobile cast */
-    .cast-card img { width: 60px; height: 60px; }
+    .top-backdrop, .top-backdrop-gradient { height: 35vh; }
+    .main-details-section { padding: 1rem; }
+    .detail-poster { width: 120px; }
+    .movie-info-block h1 { font-size: 2em; }
+    .movie-info-block p { font-size: 0.8em; }
+    .block-title { font-size: 1.5em; }
+    .iframe-container { padding-bottom: 65%; max-width: 98%; } /* Più "quadrato" su schermi molto piccoli */
+    .episode-card { width: 160px; }
+    .cast-card { width: 80px; height: 120px; } /* Adatta altezza cast molto piccolo */
     .movie-card { width: 120px; }
-    .movie-card img { height: 180px; }
-
-    /* Dimensione trailer su schermi molto piccoli */
-    .iframe-container {
-        padding-bottom: 60%; /* Aspect ratio più "quadrato" */
-    }
+    .carousel-track { padding: 0 0.1rem; }
 }
