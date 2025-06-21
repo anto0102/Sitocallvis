@@ -78,7 +78,6 @@ h2 {
   padding: 1.2rem 0 2rem;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  scroll-behavior: smooth;
 }
 
 .movie-container::-webkit-scrollbar {
@@ -145,35 +144,23 @@ h2 {
   background-color: #008dbd;
 }
 
-/* 👇 Aggiunto: Stile per i bottoni di scorrimento laterale */
-.scroll-btn {
+.scroll-right {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(0, 0, 0, 0.6);
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
   color: white;
-  padding: 8px 12px;
-  border-radius: 50%;
-  font-size: 1.5rem;
+  font-size: 2rem;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
   cursor: pointer;
-  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease, background-color 0.3s ease;
   z-index: 10;
-  transition: background-color 0.2s ease;
 }
 
-.scroll-btn:hover {
-  background-color: rgba(0, 0, 0, 0.8);
-}
-
-.scroll-btn.left {
-  left: 0.5rem;
-}
-
-.scroll-btn.right {
-  right: 0.5rem;
-}
-
-/* 👇 Aggiunto: mostrare le frecce al passaggio del mouse sulla sezione */
-section.group:hover .scroll-btn {
-  display: flex;
+.scroll-right:hover {
+  background-color: rgba(0, 0, 0, 0.75);
 }
