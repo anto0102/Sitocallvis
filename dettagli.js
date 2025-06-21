@@ -8,7 +8,7 @@ const tipo = urlParams.get("type"); // 'movie' or 'tv'
 
 // Elementi del nuovo design
 const topBackdrop = document.getElementById("top-backdrop");
-const mainDetailsSection = document.getElementById("main-details-section");
+const mainDetailsSection = document.getElementById("main-details-section"); // QUI L'ERRORE: QUESTA PUÒ ESSERE NULL
 const detailPoster = document.getElementById("detail-poster");
 const detailTitle = document.getElementById("detail-title");
 const detailTagline = document.getElementById("detail-tagline");
@@ -17,7 +17,12 @@ const detailReleaseYear = document.getElementById("detail-release-year");
 const detailRuntime = document.getElementById("detail-runtime");
 const detailGenres = document.getElementById("detail-genres");
 const detailOverview = document.getElementById("detail-overview");
-const mainPlayBtn = mainDetailsSection.querySelector('.play-btn'); // Bottone play nella sezione dettagli
+// Aggiungo un controllo subito qui, se mainDetailsSection non esiste, gli elementi al suo interno non potranno essere trovati
+let mainPlayBtn = null;
+if (mainDetailsSection) {
+    mainPlayBtn = mainDetailsSection.querySelector('.play-btn'); // Bottone play nella sezione dettagli
+}
+
 
 const trailerPlayerContainer = document.getElementById("trailer-player-container");
 const mainPlayerContainer = document.getElementById("main-player-container");
@@ -29,7 +34,10 @@ const castCarouselTrack = document.querySelector('#cast-carousel .carousel-track
 const similarMoviesCarouselTrack = document.querySelector('#similar-movies-carousel .carousel-track');
 
 const seasonModal = document.getElementById("season-modal");
-const closeModalBtn = seasonModal.querySelector('.close-btn');
+let closeModalBtn = null;
+if (seasonModal) {
+    closeModalBtn = seasonModal.querySelector('.close-btn');
+}
 const seasonListModal = document.getElementById("season-list");
 
 let allSeasons = []; // Array per memorizzare tutte le stagioni disponibili
@@ -37,32 +45,49 @@ let allSeasons = []; // Array per memorizzare tutte le stagioni disponibili
 if (!id || !tipo) {
     console.error("ID o tipo mancanti nell'URL. Reindirizzamento alla homepage.");
     window.location.href = "index.html"; // Reindirizza se i parametri sono mancanti
+    return; // Ferma l'esecuzione dello script
 }
 
 document.addEventListener('DOMContentLoaded', caricaDettagli);
 
 async function caricaDettagli() {
+    // Controllo iniziale per gli elementi critici del DOM
+    if (!mainDetailsSection || !detailPoster || !detailTitle || !mainPlayBtn) {
+        console.error("Elementi HTML essenziali non trovati. Assicurati che l'ID e la struttura HTML siano corretti.");
+        // Mostra un messaggio di errore sulla pagina se gli elementi non sono lì
+        document.body.innerHTML = `<div style="color: red; text-align: center; margin-top: 100px;">
+                                    <h1>Errore: Contenuto non disponibile</h1>
+                                    <p>Assicurati che il file HTML sia completo e corretto.</p>
+                                    <a href="index.html" style="color: blue;">Torna alla Home</a>
+                                  </div>`;
+        return; // Ferma l'esecuzione della funzione
+    }
+
+
     try {
-        // Chiamata principale per dettagli, crediti, video, raccomandazioni/simili
         const res = await fetch(`${BASE_URL}/${tipo}/${id}?api_key=${API_KEY}&language=it-IT&append_to_response=credits,videos,recommendations,similar`);
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        if (!res.ok) {
+             const errorData = await res.json();
+             throw new Error(`Errore API TMDb: ${res.status} - ${errorData.status_message || res.statusText}`);
+        }
         const data = await res.json();
 
         // --- Popola Top Backdrop e Dettagli Principali ---
         const title = data.title || data.name || "Titolo non disponibile";
         const overview = data.overview || "Nessuna descrizione disponibile.";
         const tagline = data.tagline || "";
-        const posterPath = data.poster_path ? `${IMAGE_BASE_URL}w500${data.poster_path}` : 'https://via.placeholder.com/500x750/222222/e0e0e0?text=Poster+non+disponibile';
+        // Fallback robusto per le immagini
+        const posterPath = data.poster_path ? `${IMAGE_BASE_URL}w500${data.poster_path}` : 'https://via.placeholder.com/500x750/222222/e0e0e0?text=Poster+Non+Trovato';
         const backdropPath = data.backdrop_path ? `${IMAGE_BASE_URL}original${data.backdrop_path}` : posterPath; 
 
-        topBackdrop.style.backgroundImage = `url(${backdropPath})`; 
-        detailPoster.src = posterPath;
-        detailTitle.textContent = title;
-        detailTagline.textContent = tagline;
-        detailOverview.textContent = overview;
+        if(topBackdrop) topBackdrop.style.backgroundImage = `url(${backdropPath})`; 
+        if(detailPoster) detailPoster.src = posterPath;
+        if(detailTitle) detailTitle.textContent = title;
+        if(detailTagline) detailTagline.textContent = tagline;
+        if(detailOverview) detailOverview.textContent = overview;
 
-        detailVote.innerHTML = `⭐ ${data.vote_average ? data.vote_average.toFixed(1) : 'N/A'}`;
-        detailReleaseYear.textContent = data.release_date ? new Date(data.release_date).getFullYear() : (data.first_air_date ? new Date(data.first_air_date).getFullYear() : 'N/A');
+        if(detailVote) detailVote.innerHTML = `⭐ ${data.vote_average ? data.vote_average.toFixed(1) : 'N/A'}`;
+        if(detailReleaseYear) detailReleaseYear.textContent = data.release_date ? new Date(data.release_date).getFullYear() : (data.first_air_date ? new Date(data.first_air_date).getFullYear() : 'N/A');
         
         let runtimeText = 'N/A';
         if (tipo === 'movie' && data.runtime) {
@@ -70,44 +95,49 @@ async function caricaDettagli() {
         } else if (tipo === 'tv' && data.episode_run_time && data.episode_run_time.length > 0) {
             runtimeText = `${data.episode_run_time[0]} min/episodio`;
         }
-        detailRuntime.textContent = runtimeText;
+        if(detailRuntime) detailRuntime.textContent = runtimeText;
 
-        detailGenres.textContent = data.genres?.map(g => g.name).join(" / ") || "Generi N/A";
+        if(detailGenres) detailGenres.textContent = data.genres?.map(g => g.name).join(" / ") || "Generi N/A";
 
         // --- Logica pulsanti Play/Add to List ---
-        mainPlayBtn.onclick = () => {
-            mainPlayerContainer.scrollIntoView({ behavior: "smooth", block: "start" });
-            if (tipo === 'movie') {
-                aggiungiPlayerFilm(id);
-            }
-        };
-        document.querySelector('.add-to-list-btn').onclick = () => {
-            alert('Funzione "Aggiungi alla lista" non ancora implementata.');
-        };
+        if(mainPlayBtn) {
+            mainPlayBtn.onclick = () => {
+                if(mainPlayerContainer) mainPlayerContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+                if (tipo === 'movie') {
+                    aggiungiPlayerFilm(id);
+                }
+            };
+        }
+        const addToListBtn = document.querySelector('.add-to-list-btn');
+        if(addToListBtn) {
+            addToListBtn.onclick = () => {
+                alert('Funzione "Aggiungi alla lista" non ancora implementata.');
+            };
+        }
 
         // --- Caricamento Contenuti Dinamici ---
         await caricaTrailer(data.videos);
         await caricaCast(data.credits);
-        await caricaSimilarContent(data.recommendations || data.similar); // TMDb usa 'recommendations' o 'similar'
+        await caricaSimilarContent(data.recommendations || data.similar);
 
         // --- Gestione Serie TV vs Film ---
         if (tipo === "tv") {
-            episodesSection.classList.remove('hidden');
-            selezionaStagioneBtn.style.display = "inline-flex";
-            allSeasons = data.seasons.filter(s => s.season_number > 0); // Filtra stagioni speciali
-            allSeasons.sort((a,b) => a.season_number - b.season_number); // Ordina le stagioni
+            if(episodesSection) episodesSection.classList.remove('hidden');
+            if(selezionaStagioneBtn) selezionaStagioneBtn.style.display = "inline-flex";
+            allSeasons = data.seasons.filter(s => s.season_number > 0);
+            allSeasons.sort((a,b) => a.season_number - b.season_number);
             
-            const firstSeasonToLoad = allSeasons.find(s => s.season_number === 1) || allSeasons[0]; // Prova stagione 1 o la prima disponibile
+            const firstSeasonToLoad = allSeasons.find(s => s.season_number === 1) || allSeasons[0];
             if (firstSeasonToLoad) {
                 await caricaEpisodi(id, firstSeasonToLoad.season_number);
             } else {
-                episodesCarouselTrack.innerHTML = `<p class="text-gray-400 text-center w-full py-10">Nessuna stagione disponibile.</p>`;
-                mainPlayerContainer.innerHTML = `<p class="text-gray-400 text-center py-10">Nessun episodio riproducibile per questa serie.</p>`;
+                if(episodesCarouselTrack) episodesCarouselTrack.innerHTML = `<p class="text-gray-400 text-center w-full py-10">Nessuna stagione disponibile.</p>`;
+                if(mainPlayerContainer) mainPlayerContainer.innerHTML = `<p class="text-gray-400 text-center py-10">Nessun episodio riproducibile per questa serie.</p>`;
             }
         } else {
-            episodesSection.classList.add('hidden');
-            selezionaStagioneBtn.style.display = "none";
-            aggiungiPlayerFilm(id); // Carica il player per i film immediatamente
+            if(episodesSection) episodesSection.classList.add('hidden');
+            if(selezionaStagioneBtn) selezionaStagioneBtn.style.display = "none";
+            aggiungiPlayerFilm(id);
         }
 
         // Setup listener per le frecce DOPO che i caroselli sono stati popolati
@@ -115,19 +145,20 @@ async function caricaDettagli() {
 
     } catch (error) {
         console.error("Errore nel caricamento dei dettagli:", error);
-        mainDetailsSection.innerHTML = `<p class="text-center text-red-500 text-xl w-full py-12">Impossibile caricare i dettagli del contenuto. Riprova più tardi.</p>`;
+        if(mainDetailsSection) mainDetailsSection.innerHTML = `<p class="text-center text-red-500 text-xl w-full py-12">Impossibile caricare i dettagli del contenuto. <br>Errore: ${error.message}. <br>Assicurati che la tua API key TMDb sia corretta e che tu sia connesso a Internet.</p>`;
         // Nascondi le altre sezioni in caso di errore
-        document.getElementById('trailer-section').classList.add('hidden');
-        document.getElementById('player-section').classList.add('hidden');
-        document.getElementById('episodes-section').classList.add('hidden');
-        document.getElementById('cast-section').classList.add('hidden');
-        document.getElementById('similar-content-section').classList.add('hidden');
+        if(document.getElementById('trailer-section')) document.getElementById('trailer-section').classList.add('hidden');
+        if(document.getElementById('player-section')) document.getElementById('player-section').classList.add('hidden');
+        if(document.getElementById('episodes-section')) document.getElementById('episodes-section').classList.add('hidden');
+        if(document.getElementById('cast-section')) document.getElementById('cast-section').classList.add('hidden');
+        if(document.getElementById('similar-content-section')) document.getElementById('similar-content-section').classList.add('hidden');
     }
 }
 
 async function caricaTrailer(videosData) {
+    if(!trailerPlayerContainer) return;
     const trailer = videosData.results.find(v => v.type === "Trailer" && v.site === "YouTube" && v.official) || 
-                    videosData.results.find(v => v.type === "Trailer" && v.site === "YouTube"); // Fallback se non c'è ufficiale
+                    videosData.results.find(v => v.type === "Trailer" && v.site === "YouTube"); 
 
     if (trailer) {
         trailerPlayerContainer.innerHTML = `
@@ -141,13 +172,19 @@ async function caricaTrailer(videosData) {
 }
 
 async function caricaCast(creditsData) {
+    if (!castCarouselTrack || !document.getElementById('cast-section')) {
+        console.warn("Elementi Cast Carousel non trovati.");
+        document.getElementById('cast-section').classList.add('hidden');
+        return;
+    }
+    
     if (!creditsData || !creditsData.cast || creditsData.cast.length === 0) {
         document.getElementById('cast-section').classList.add('hidden');
         return;
     }
     castCarouselTrack.innerHTML = '';
 
-    const topCast = creditsData.cast.filter(member => member.profile_path).slice(0, 15); // Prendi i primi 15 con immagine
+    const topCast = creditsData.cast.filter(member => member.profile_path).slice(0, 15);
 
     if (topCast.length === 0) {
         document.getElementById('cast-section').classList.add('hidden');
@@ -156,7 +193,7 @@ async function caricaCast(creditsData) {
 
     topCast.forEach(member => {
         const castCard = document.createElement('div');
-        castCard.className = 'cast-card'; // Questa classe ha gli stili definiti in dettagli.css
+        castCard.className = 'cast-card'; 
         castCard.innerHTML = `
             <img src="${IMAGE_BASE_URL}w185${member.profile_path}" alt="${member.name}">
             <h4>${member.name}</h4>
@@ -164,17 +201,23 @@ async function caricaCast(creditsData) {
         `;
         castCarouselTrack.appendChild(castCard);
     });
-    updateCarouselArrowsVisibility('cast-carousel'); // Aggiorna visibilità frecce dopo il caricamento
+    updateCarouselArrowsVisibility('cast-carousel'); 
 }
 
 async function caricaSimilarContent(relatedContentData) {
+    if (!similarMoviesCarouselTrack || !document.getElementById('similar-content-section')) {
+        console.warn("Elementi Similar Movies Carousel non trovati.");
+        document.getElementById('similar-content-section').classList.add('hidden');
+        return;
+    }
+
     if (!relatedContentData || !relatedContentData.results || relatedContentData.results.length === 0) {
         document.getElementById('similar-content-section').classList.add('hidden');
         return;
     }
     similarMoviesCarouselTrack.innerHTML = '';
 
-    const filteredContent = relatedContentData.results.filter(item => item.poster_path).slice(0, 20); // Limita a 20 simili
+    const filteredContent = relatedContentData.results.filter(item => item.poster_path).slice(0, 20);
 
     if (filteredContent.length === 0) {
         document.getElementById('similar-content-section').classList.add('hidden');
@@ -182,21 +225,19 @@ async function caricaSimilarContent(relatedContentData) {
     }
 
     filteredContent.forEach(item => {
-        const movieCard = createMovieCard(item); // Riutilizza la funzione della homepage per le card
+        const movieCard = createMovieCard(item); 
         similarMoviesCarouselTrack.appendChild(movieCard);
     });
-    updateCarouselArrowsVisibility('similar-movies-carousel'); // Aggiorna visibilità frecce dopo il caricamento
+    updateCarouselArrowsVisibility('similar-movies-carousel'); 
 }
 
 // createMovieCard è stata pensata per la homepage, ma la riusiamo qui per i "simili"
-// Assicurati che i suoi stili in dettagli.css siano allineati al .movie-card o .similar-card
 function createMovieCard(item) {
     const title = item.title || item.name || 'Titolo sconosciuto';
     const poster = item.poster_path ? `${IMAGE_BASE_URL}w300${item.poster_path}` : 'https://via.placeholder.com/300x450/222222/e0e0e0?text=Immagine+non+disponibile';
-    const type = item.media_type || (item.title ? 'movie' : 'tv'); // Tenta di indovinare il tipo
+    const type = item.media_type || (item.title ? 'movie' : 'tv'); 
 
     const card = document.createElement('div');
-    // Le classi qui devono corrispondere al CSS di .movie-card/similar-card in dettagli.css
     card.className = 'similar-card flex-shrink-0 rounded-lg overflow-hidden shadow-md transition-transform duration-300 hover:scale-105 cursor-pointer'; 
     card.innerHTML = `
         <a href="dettagli.html?id=${item.id}&type=${type}" class="block w-full">
@@ -209,41 +250,57 @@ function createMovieCard(item) {
 
 
 // --- Funzioni per Serie TV (Caricamento Episodi e Modal Stagioni) ---
-selezionaStagioneBtn.onclick = () => {
-    seasonListModal.innerHTML = '';
-    allSeasons.forEach(season => {
-        const btn = document.createElement('button');
-        btn.className = 'season-button text-center p-3 rounded-lg bg-gray-700 hover:bg-blue-600 transition-colors duration-200'; // Classi per il bottone del modal
-        btn.textContent = season.name;
-        btn.dataset.seasonNumber = season.season_number;
-        btn.onclick = () => {
-            seasonModal.classList.remove('active'); // Chiudi modale
+// Aggiungo controlli di null per gli elementi del modal
+if(selezionaStagioneBtn) {
+    selezionaStagioneBtn.onclick = () => {
+        if(seasonListModal) seasonListModal.innerHTML = '';
+        allSeasons.forEach(season => {
+            const btn = document.createElement('button');
+            btn.className = 'season-button text-center p-3 rounded-lg bg-gray-700 hover:bg-blue-600 transition-colors duration-200'; 
+            btn.textContent = season.name;
+            btn.dataset.seasonNumber = season.season_number;
+            btn.onclick = () => {
+                if(seasonModal) seasonModal.classList.remove('active'); 
+                if(seasonModal) seasonModal.querySelector('.modal-content').classList.remove('active-modal-content');
+                caricaEpisodi(id, season.season_number);
+            };
+            if(seasonListModal) seasonListModal.appendChild(btn);
+        });
+        if(seasonModal) seasonModal.classList.add('active'); 
+        if(seasonModal) seasonModal.querySelector('.modal-content').classList.add('active-modal-content');
+    };
+}
+
+if(closeModalBtn) {
+    closeModalBtn.onclick = () => {
+        if(seasonModal) seasonModal.classList.remove('active');
+        if(seasonModal) seasonModal.querySelector('.modal-content').classList.remove('active-modal-content');
+    };
+}
+
+if(seasonModal) {
+    window.onclick = (event) => {
+        if (event.target === seasonModal) {
+            seasonModal.classList.remove('active');
             seasonModal.querySelector('.modal-content').classList.remove('active-modal-content');
-            caricaEpisodi(id, season.season_number);
-        };
-        seasonListModal.appendChild(btn);
-    });
-    seasonModal.classList.add('active'); // Mostra modale
-    seasonModal.querySelector('.modal-content').classList.add('active-modal-content');
-};
+        }
+    };
+}
 
-closeModalBtn.onclick = () => {
-    seasonModal.classList.remove('active');
-    seasonModal.querySelector('.modal-content').classList.remove('active-modal-content');
-};
-
-window.onclick = (event) => {
-    if (event.target === seasonModal) {
-        seasonModal.classList.remove('active');
-        seasonModal.querySelector('.modal-content').classList.remove('active-modal-content');
-    }
-};
 
 async function caricaEpisodi(tvId, seasonNumber) {
+    if(!currentSeasonDisplay || !episodesCarouselTrack || !mainPlayerContainer) {
+        console.warn("Elementi Episodi non trovati.");
+        return;
+    }
+
     currentSeasonDisplay.textContent = `(Stagione ${seasonNumber})`;
 
     const res = await fetch(`${BASE_URL}/tv/${tvId}/season/${seasonNumber}?api_key=${API_KEY}&language=it-IT`);
-    if (!res.ok) throw new Error(`Errore caricamento episodi! status: ${res.status}`);
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(`Errore caricamento episodi: ${res.status} - ${errorData.status_message || res.statusText}`);
+    }
     const data = await res.json();
 
     episodesCarouselTrack.innerHTML = '';
@@ -257,7 +314,7 @@ async function caricaEpisodi(tvId, seasonNumber) {
     let firstEpisodeLoaded = false;
     data.episodes.forEach(episode => {
         const episodeCard = document.createElement('div');
-        episodeCard.className = 'episode-card flex-shrink-0 w-64 bg-gray-800 rounded-lg shadow-md overflow-hidden transition-transform duration-200 hover:scale-[1.02] cursor-pointer'; // Classi dalla precedente proposta
+        episodeCard.className = 'episode-card flex-shrink-0 w-64 bg-gray-800 rounded-lg shadow-md overflow-hidden transition-transform duration-200 hover:scale-[1.02] cursor-pointer'; 
         
         const imgSrc = episode.still_path
             ? `${IMAGE_BASE_URL}w300${episode.still_path}`
@@ -279,34 +336,34 @@ async function caricaEpisodi(tvId, seasonNumber) {
 
         episodesCarouselTrack.appendChild(episodeCard);
 
-        if (!firstEpisodeLoaded) { // Carica il primo episodio disponibile nel player
+        if (!firstEpisodeLoaded) {
             aggiornaPlayerSeries(tvId, seasonNumber, episode.episode_number);
             firstEpisodeLoaded = true;
         }
     });
-    updateCarouselArrowsVisibility('episodes-carousel'); // Aggiorna visibilità frecce dopo il caricamento
+    updateCarouselArrowsVisibility('episodes-carousel'); 
 }
 
 function aggiornaPlayerSeries(tvId, season, episode) {
+    if (!mainPlayerContainer) { console.warn("Main Player Container non trovato."); return; }
     mainPlayerContainer.innerHTML = `
         <iframe src="https://vixsrc.to/tv/${tvId}/${season}/${episode}" frameborder="0" allowfullscreen></iframe>
     `;
 }
 
 function aggiungiPlayerFilm(movieId) {
+    if (!mainPlayerContainer) { console.warn("Main Player Container non trovato."); return; }
     mainPlayerContainer.innerHTML = `
         <iframe src="https://vixsrc.to/movie/${movieId}" frameborder="0" allowfullscreen></iframe>
     `;
 }
 
 // --- Funzioni di scroll per i caroselli ---
-// Queste funzioni sono richiamate dall'onclick dei bottoni freccia in HTML
 window.scrollLeft = function(carouselId) {
     const carouselContainer = document.getElementById(carouselId);
     if (!carouselContainer) { console.error(`Carousel container not found for ID: ${carouselId}`); return; }
-    // Scrolla di una "pagina" di carosello
     carouselContainer.scrollBy({
-        left: -carouselContainer.clientWidth * 0.8, // Scorri dell'80% della larghezza visibile
+        left: -carouselContainer.clientWidth * 0.8, 
         behavior: 'smooth'
     });
 };
@@ -314,9 +371,8 @@ window.scrollLeft = function(carouselId) {
 window.scrollRight = function(carouselId) {
     const carouselContainer = document.getElementById(carouselId);
     if (!carouselContainer) { console.error(`Carousel container not found for ID: ${carouselId}`); return; }
-    // Scrolla di una "pagina" di carosello
     carouselContainer.scrollBy({
-        left: carouselContainer.clientWidth * 0.8, // Scorri dell'80% della larghezza visibile
+        left: carouselContainer.clientWidth * 0.8, 
         behavior: 'smooth'
     });
 };
@@ -335,28 +391,26 @@ function updateCarouselArrowsVisibility(carouselId) {
         if (!scrollLeftBtn || !scrollRightBtn) return; // Assicurati che i bottoni esistano
 
         const scrollEnd = carouselContainer.scrollWidth - carouselContainer.clientWidth;
-        const tolerance = 5; // pixel di tolleranza per l'arrivo alla fine
+        const tolerance = 5; 
 
-        // Freccia sinistra (indietro)
         if (carouselContainer.scrollLeft > tolerance) {
             scrollLeftBtn.classList.remove('hide-arrow');
             scrollLeftBtn.classList.add('show-arrow');
-            scrollLeftBtn.style.pointerEvents = 'auto'; // Abilita click
+            scrollLeftBtn.style.pointerEvents = 'auto'; 
         } else {
             scrollLeftBtn.classList.remove('show-arrow');
             scrollLeftBtn.classList.add('hide-arrow');
-            scrollLeftBtn.style.pointerEvents = 'none'; // Disabilita click
+            scrollLeftBtn.style.pointerEvents = 'none'; 
         }
 
-        // Freccia destra (avanti)
         if (carouselContainer.scrollLeft >= scrollEnd - tolerance) {
             scrollRightBtn.classList.remove('show-arrow');
             scrollRightBtn.classList.add('hide-arrow');
-            scrollRightBtn.style.pointerEvents = 'none'; // Disabilita click
+            scrollRightBtn.style.pointerEvents = 'none'; 
         } else {
             scrollRightBtn.classList.remove('hide-arrow');
             scrollRightBtn.classList.add('show-arrow');
-            scrollRightBtn.style.pointerEvents = 'auto'; // Abilita click
+            scrollRightBtn.style.pointerEvents = 'auto'; 
         }
     };
 
@@ -364,11 +418,10 @@ function updateCarouselArrowsVisibility(carouselId) {
     let scrollTimeout;
     carouselContainer.addEventListener('scroll', () => {
         clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(toggleArrows, 150); // Aggiorna dopo 150ms di inattività
+        scrollTimeout = setTimeout(toggleArrows, 150); 
     });
 
     // Stato iniziale delle frecce (immediatamente)
-    // Se il contenuto non è scrollabile, nascondi entrambe
     if (carouselContainer.scrollWidth <= carouselContainer.clientWidth + tolerance) {
         if (scrollLeftBtn) {
             scrollLeftBtn.classList.add('hide-arrow');
@@ -379,7 +432,6 @@ function updateCarouselArrowsVisibility(carouselId) {
             scrollRightBtn.style.pointerEvents = 'none';
         }
     } else {
-        // Altrimenti, la freccia sinistra è nascosta all'inizio, la destra è visibile
         if (scrollLeftBtn) {
             scrollLeftBtn.classList.add('hide-arrow');
             scrollLeftBtn.style.pointerEvents = 'none';
