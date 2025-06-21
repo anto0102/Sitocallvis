@@ -15,18 +15,34 @@ const categories = [
   { id: 'documentari', url: '/discover/movie?with_genres=99' },
 ];
 
-// Verifica disponibilità su Vixsrc
+// Verifica se il film esiste su vixsrc.to
 async function isMovieAvailableOnVixsrc(id) {
-  const url = `https://vixsrc.to/movie/${id}`;
-  try {
-    const response = await fetch(url, { method: 'HEAD' });
-    return response.status !== 404;
-  } catch (err) {
-    return false;
-  }
+  return new Promise((resolve) => {
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = `https://vixsrc.to/movie/${id}`;
+
+    const timeout = setTimeout(() => {
+      document.body.removeChild(iframe);
+      resolve(false);
+    }, 5000);
+
+    iframe.onload = () => {
+      clearTimeout(timeout);
+      document.body.removeChild(iframe);
+      resolve(true);
+    };
+
+    iframe.onerror = () => {
+      clearTimeout(timeout);
+      document.body.removeChild(iframe);
+      resolve(false);
+    };
+
+    document.body.appendChild(iframe);
+  });
 }
 
-// Fetch con pagina random
 async function fetchMovies(endpoint) {
   const randomPage = Math.floor(Math.random() * 5) + 1;
   const fullUrl = `${BASE_URL}${endpoint}${endpoint.includes('?') ? '&' : '?'}api_key=${API_KEY}&language=it-IT&page=${randomPage}`;
@@ -35,7 +51,6 @@ async function fetchMovies(endpoint) {
   return data.results || [];
 }
 
-// Crea card HTML
 function createMovieCard(item) {
   const title = item.title || item.name || 'Titolo sconosciuto';
   const poster = item.poster_path ? `${IMAGE_URL}${item.poster_path}` : 'fallback.jpg';
@@ -50,10 +65,10 @@ function createMovieCard(item) {
       <h3>${title}</h3>
     </a>
   `;
+
   return card;
 }
 
-// Carica film disponibili in home
 async function loadMovies() {
   for (const category of categories) {
     const container = document.getElementById(category.id);
@@ -65,13 +80,14 @@ async function loadMovies() {
 
       let count = 0;
       for (const movie of movies) {
-        if (!movie.poster_path || count >= 10) continue;
+        if (!movie.poster_path) continue;
         const available = await isMovieAvailableOnVixsrc(movie.id);
         if (available) {
           const card = createMovieCard(movie);
           container.appendChild(card);
           count++;
         }
+        if (count >= 10) break;
       }
     } catch (err) {
       console.error(`Errore caricamento ${category.id}:`, err);
@@ -81,7 +97,7 @@ async function loadMovies() {
 
 document.addEventListener('DOMContentLoaded', loadMovies);
 
-// 🔍 Gestione ricerca (non filtrata)
+// 🔍 Ricerca
 document.getElementById('search-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const query = document.getElementById('search-input').value.trim();
@@ -93,6 +109,7 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
     (item.media_type === 'movie' || item.media_type === 'tv') && item.poster_path
   );
 
+  // Ordina: match esatto > popolarità
   results.sort((a, b) => {
     const q = query.toLowerCase();
     const aTitle = (a.title || a.name || '').toLowerCase();
@@ -104,6 +121,7 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
     return b.popularity - a.popularity;
   });
 
+  // Dividi film e serie
   const movies = results.filter(r => r.media_type === 'movie');
   const series = results.filter(r => r.media_type === 'tv');
 
