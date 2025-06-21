@@ -8,8 +8,9 @@ const id = urlParams.get("id");
 const tipo = urlParams.get("type"); // 'movie' or 'tv'
 
 // Elementi HTML
-const detailHeroSection = document.getElementById("detail-hero-section"); // Aggiunto per Hero Section
-const heroBackdrop = document.getElementById("hero-backdrop"); // Aggiunto per Hero Section
+const heroMediaContainer = document.getElementById("hero-media-container");
+const youtubePlayerDiv = document.getElementById("youtube-player-div");
+const heroBackdropImg = document.getElementById("hero-backdrop-img");
 const mainDetailsSection = document.getElementById("main-details-section"); 
 const detailPoster = document.getElementById("detail-poster");
 const detailTitle = document.getElementById("detail-title");
@@ -18,15 +19,11 @@ const detailVote = document.getElementById("detail-vote");
 const detailReleaseYear = document.getElementById("detail-release-year");
 const detailRuntime = document.getElementById("detail-runtime");
 const detailGenres = document.getElementById("detail-genres");
-const detailOverview = document.getElementById("detail-overview"); // Sinossi breve nella Hero
-
-// Questi sono elementi specifici del design Ginny & Georgia, nel "Design 2.0" non esistono nell'HTML
-// Li lascio qui ma non verranno trovati, quindi le loro operazioni saranno ignorate dai controlli nulli
 const detailViews = document.getElementById("detail-views"); 
 const detailSeasons = document.getElementById("detail-seasons"); 
+const detailOverviewFull = document.getElementById("detail-overview-full"); 
 
-const detailOverviewFull = document.getElementById("detail-overview-full"); // Sinossi completa
-const btnPlayHero = mainDetailsSection ? mainDetailsSection.querySelector('.play-btn') : null; 
+const btnPlayHero = mainDetailsSection ? mainDetailsSection.querySelector('.btn-play-hero') : null; 
 
 const mainPlayerContainer = document.getElementById("main-player-container"); 
 const episodesSection = document.getElementById("episodes-section");
@@ -44,6 +41,104 @@ let allSeasons = [];
 let youtubePlayer; 
 let trailerVideoKey = null; 
 
+// --- INIZIO FUNZIONI SPOSTATE IN ALTO PER GARANTIRE DEFINIZIONE ---
+
+// Funzioni di scroll per i caroselli
+window.scrollLeft = function(carouselId) {
+    const carouselContainer = document.getElementById(carouselId);
+    if (!carouselContainer) { console.error(`Carousel container not found for ID: ${carouselId}`); return; }
+    carouselContainer.scrollBy({
+        left: -carouselContainer.clientWidth * 0.8, 
+        behavior: 'smooth'
+    });
+};
+
+window.scrollRight = function(carouselId) {
+    const carouselContainer = document.getElementById(carouselId);
+    if (!carouselContainer) { console.error(`Carousel container not found for ID: ${carouselId}`); return; }
+    carouselContainer.scrollBy({
+        left: carouselContainer.clientWidth * 0.8, 
+        behavior: 'smooth'
+    });
+};
+
+// Funzione per aggiornare la visibilità delle frecce (dopo caricamento e su scroll)
+function updateCarouselArrowsVisibility(carouselId) {
+    const carouselContainer = document.getElementById(carouselId);
+    if (!carouselContainer) return;
+
+    const scrollLeftBtn = carouselContainer.querySelector('.scroll-btn.scroll-left');
+    const scrollRightBtn = carouselContainer.querySelector('.scroll-btn.scroll-right');
+
+    if (!scrollLeftBtn || !scrollRightBtn) return; 
+
+    const toggleArrows = () => {
+        const scrollEnd = carouselContainer.scrollWidth - carouselContainer.clientWidth;
+        const tolerance = 5; 
+
+        if (carouselContainer.scrollLeft > tolerance) {
+            scrollLeftBtn.classList.remove('hide-arrow');
+            scrollLeftBtn.classList.add('show-arrow');
+            scrollLeftBtn.style.pointerEvents = 'auto'; 
+        } else {
+            scrollLeftBtn.classList.remove('show-arrow');
+            scrollLeftBtn.classList.add('hide-arrow');
+            scrollLeftBtn.style.pointerEvents = 'none'; 
+        }
+
+        if (carouselContainer.scrollLeft >= scrollEnd - tolerance) {
+            scrollRightBtn.classList.remove('show-arrow');
+            scrollRightBtn.classList.add('hide-arrow');
+            scrollRightBtn.style.pointerEvents = 'none'; 
+        } else {
+            scrollRightBtn.classList.remove('hide-arrow');
+            scrollRightBtn.classList.add('show-arrow');
+            scrollRightBtn.style.pointerEvents = 'auto'; 
+        }
+    };
+
+    let scrollTimeout;
+    carouselContainer.addEventListener('scroll', () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(toggleArrows, 150); 
+    });
+
+    // Stato iniziale delle frecce (immediatamente)
+    if (carouselContainer.scrollWidth <= carouselContainer.clientWidth + tolerance) {
+        if (scrollLeftBtn) {
+            scrollLeftBtn.classList.add('hide-arrow');
+            scrollLeftBtn.style.pointerEvents = 'none';
+        }
+        if (scrollRightBtn) {
+            scrollRightBtn.classList.add('hide-arrow');
+            scrollRightBtn.style.pointerEvents = 'none';
+        }
+    } else {
+        if (scrollLeftBtn) {
+            scrollLeftBtn.classList.add('hide-arrow');
+            scrollLeftBtn.style.pointerEvents = 'none';
+        }
+        if (scrollRightBtn) {
+            scrollRightBtn.classList.add('show-arrow');
+            scrollRightBtn.style.pointerEvents = 'auto';
+        }
+    }
+}
+
+// Funzione per impostare i listener di scroll su tutti i caroselli
+function setupCarouselScrollListeners() {
+    const carouselIds = ['episodes-carousel', 'cast-carousel', 'similar-movies-carousel'];
+    carouselIds.forEach(id => {
+        const carouselContainer = document.getElementById(id);
+        if (carouselContainer) {
+            updateCarouselArrowsVisibility(id); 
+        }
+    });
+}
+
+// --- FINE FUNZIONI SPOSTATE IN ALTO ---
+
+
 if (!id || !tipo) {
     console.error("ID o tipo mancanti nell'URL. Reindirizzamento alla homepage.");
     window.location.href = "index.html"; 
@@ -52,9 +147,8 @@ if (!id || !tipo) {
 document.addEventListener('DOMContentLoaded', caricaDettagli);
 
 async function caricaDettagli() {
-    // Controllo robusto degli elementi HTML essenziali (questi devono essere presenti nell'HTML)
     if (!mainDetailsSection || !detailPoster || !detailTitle || !btnPlayHero) {
-        console.error("Elementi HTML essenziali non trovati. Assicurati che l'ID 'main-details-section' e altri ID/classi siano corretti nell'HTML.");
+        console.error("Elementi HTML essenziali non trovati. Assicurati che l'ID 'main-details-section' e altri ID siano corretti nell'HTML.");
         document.body.innerHTML = `<div style="color: red; text-align: center; margin-top: 100px;">
                                     <h1>Errore: Contenuto non disponibile</h1>
                                     <p>Verifica gli ID degli elementi HTML. Potrebbe mancare l'ID 'main-details-section' nel DIV con il poster e i dettagli.</p>
@@ -97,7 +191,7 @@ async function caricaDettagli() {
         if(detailRuntime) detailRuntime.textContent = runtimeText;
         if(detailGenres) detailGenres.textContent = data.genres?.map(g => g.name).join(" / ") || "Generi N/A";
 
-        // Campi specifici del design Ginny & Georgia (nel Design 2.0 potrebbero non esserci, gestisco la loro assenza)
+        // Popola campi specifici del design Ginny & Georgia (nel Design 2.0 potrebbero non esserci, gestisco la loro assenza)
         if (detailViews) {
             if (data.vote_count) { 
                 detailViews.textContent = `${(data.vote_count / 1000000).toFixed(1)}M views`;
@@ -134,16 +228,12 @@ async function caricaDettagli() {
             btnPlayHero.onclick = () => {
                 if(mainPlayerContainer) {
                     mainPlayerContainer.scrollIntoView({ behavior: "smooth", block: "start" });
-                    // Solo carica il player se non è già lì
-                    if(mainPlayerContainer.innerHTML.trim() === "") { 
-                        if (tipo === 'movie') {
-                            aggiungiPlayerFilm(id);
-                        } else if (allSeasons.length > 0) {
-                            // Carica il primo episodio della prima stagione se è una serie TV
-                            const firstSeasonToLoad = allSeasons.find(s => s.season_number === 1) || allSeasons[0];
-                            if (firstSeasonToLoad) {
-                                caricaEpisodi(id, firstSeasonToLoad.season_number);
-                            }
+                    if (tipo === 'movie') {
+                        aggiungiPlayerFilm(id);
+                    } else if (allSeasons.length > 0) {
+                        const firstSeasonToLoad = allSeasons.find(s => s.season_number === 1) || allSeasons[0];
+                        if (firstSeasonToLoad) {
+                            caricaEpisodi(id, firstSeasonToLoad.season_number);
                         }
                     }
                 }
@@ -179,8 +269,8 @@ async function caricaDettagli() {
     } catch (error) {
         console.error("Errore nel caricamento dei dettagli:", error);
         if(mainDetailsSection) mainDetailsSection.innerHTML = `<p class="text-center text-red-500 text-xl w-full py-12">Impossibile caricare i dettagli del contenuto. <br>Errore: ${error.message}. <br>Assicurati che la tua API key TMDb sia corretta e che tu sia connesso a Internet.</p>`;
-        // Nascondi le altre sezioni in caso di errore
-        if(document.getElementById('trailer-section')) document.getElementById('trailer-section').classList.add('hidden'); // Aggiungo questo
+        if(document.getElementById('overview-section')) document.getElementById('overview-section').classList.add('hidden'); 
+        if(document.getElementById('trailer-section')) document.getElementById('trailer-section').classList.add('hidden');
         if(document.getElementById('player-section')) document.getElementById('player-section').classList.add('hidden');
         if(document.getElementById('episodes-section')) document.getElementById('episodes-section').classList.add('hidden');
         if(document.getElementById('cast-section')) document.getElementById('cast-section').classList.add('hidden');
@@ -329,68 +419,4 @@ async function caricaEpisodi(tvId, seasonNumber) {
         return;
     }
 
-    currentSeasonDisplay.textContent = `(Stagione ${seasonNumber})`;
-
-    const res = await fetch(`${BASE_URL}/tv/${tvId}/season/${seasonNumber}?api_key=${API_KEY}&language=it-IT`);
-    if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(`Errore caricamento episodi: ${res.status} - ${errorData.status_message || res.statusText}`);
-    }
-    const data = await res.json();
-
-    episodesCarouselTrack.innerHTML = '';
-
-    if (!data.episodes || data.episodes.length === 0) {
-        episodesCarouselTrack.innerHTML = `<p class="text-gray-400 text-center w-full py-10">Nessun episodio disponibile per questa stagione.</p>`;
-        mainPlayerContainer.innerHTML = `<p class="text-gray-400 text-center py-10">Nessun episodio riproducibile per questa stagione.</p>`;
-        return;
-    }
-
-    let firstEpisodeLoaded = false;
-    data.episodes.forEach(episode => {
-        const episodeCard = document.createElement('div');
-        episodeCard.className = 'episode-card flex-shrink-0 w-64 bg-gray-800 rounded-lg shadow-md overflow-hidden transition-transform duration-200 hover:scale-[1.02] cursor-pointer'; 
-        
-        const imgSrc = episode.still_path
-            ? `${IMAGE_BASE_URL}w300${episode.still_path}`
-            : 'https://via.placeholder.com/300x168/333333/e0e0e0?text=Episodio+non+disponibile';
-
-        episodeCard.innerHTML = `
-            <img src="${imgSrc}" alt="Episodio ${episode.episode_number}" class="w-full h-36 object-cover">
-            <div class="p-3">
-                <h3 class="font-semibold text-lg text-white truncate">E${episode.episode_number}: ${episode.name || 'Senza Titolo'}</h3>
-                <p class="text-sm text-gray-400 line-clamp-2">${episode.overview || 'Nessuna descrizione disponibile.'}</p>
-                <button class="play-episode-btn btn-primary text-sm mt-3 px-3 py-1.5 rounded-full">▶ Guarda</button>
-            </div>
-        `;
-        
-        episodeCard.querySelector('.play-episode-btn').onclick = () => {
-            aggiornaPlayerSeries(tvId, seasonNumber, episode.episode_number);
-            mainPlayerContainer.scrollIntoView({ behavior: "smooth", block: "start" });
-        };
-
-        episodesCarouselTrack.appendChild(episodeCard);
-
-        if (!firstEpisodeLoaded) {
-            aggiornaPlayerSeries(tvId, seasonNumber, episode.episode_number);
-            firstEpisodeLoaded = true;
-        }
-    });
-    updateCarouselArrowsVisibility('episodes-carousel'); 
-}
-
-function aggiornaPlayerSeries(tvId, season, episode) {
-    if (!mainPlayerContainer) { console.warn("Main Player Container non trovato."); return; }
-    mainPlayerContainer.innerHTML = `
-        <iframe src="https://vixsrc.to/tv/${tvId}/${season}/${episode}" frameborder="0" allowfullscreen></iframe>
-    `;
-}
-
-function aggiungiPlayerFilm(movieId) {
-    if (!mainPlayerContainer) { console.warn("Main Player Container non trovato."); return; }
-    mainPlayerContainer.innerHTML = `
-        <iframe src="https://vixsrc.to/movie/${movieId}" frameborder="0" allowfullscreen></iframe>
-    `;
-}
-
-// --- Funzioni
+    currentS
