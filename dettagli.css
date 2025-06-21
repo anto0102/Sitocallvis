@@ -44,7 +44,7 @@ html, body {
     background-color: rgba(0, 0, 0, 0.6);
     color: white;
     padding: 10px 20px;
-    border-radius: 9999px;
+    border-radius: 9999px; /* Pill shape */
     text-decoration: none;
     font-weight: 600;
     font-size: 1.1em;
@@ -61,7 +61,7 @@ html, body {
 .detail-hero-section {
     min-height: 90vh; /* Altezza minima per un impatto visivo */
     padding-top: 100px; /* Spazio per il back button */
-    padding-bottom: 4rem; /* Spazio sotto il contenuto */
+    padding-bottom: 6rem; /* AUMENTATO: Spazio sotto il contenuto per evitare overlap */
     box-sizing: border-box; /* Include padding nel calcolo dell'altezza */
     display: flex;
     align-items: flex-end; /* Allinea il contenuto in basso */
@@ -135,12 +135,15 @@ html, body {
 /* --- Contenuto Principale (sotto la hero) --- */
 .main-content-sections {
     /* Tailwind classes: bg-primary-bg relative z-20 -mt-20 pt-10 pb-20 px-8 lg:px-16 rounded-t-3xl shadow-lg */
+    margin-top: -80px; /* Riduci il margine negativo per minor sovrapposizione */
     box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.7); /* Ombra più pronunciata verso l'alto */
 }
 
 .section-box {
     padding: 2rem 0; /* Padding verticale per le sezioni */
     margin-bottom: 2rem; /* Spazio tra le sezioni */
+    position: relative; /* Necessario per le frecce di scorrimento assolute */
+    overflow: visible; /* PERMETTE ALLE CARD DI ESPANDERSI FUORI DALLA SEZIONE */
 }
 
 .section-title {
@@ -181,12 +184,16 @@ html, body {
     padding-bottom: 1.5rem; /* Spazio per l'ombra del contenuto */
     padding-top: 0.5rem; /* Spazio per l'ombra della card superiore */
     position: relative;
+    /* Rimuovi padding-left/right qui, usa i px sui .carousel-track */
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .carousel-track {
     display: flex;
     gap: 1rem;
-    padding: 0 0.5rem; /* Padding interno per le card */
+    /* Aggiungi padding laterale qui per allineamento */
+    padding: 0 2rem; /* Mantieni il padding costante */
 }
 
 /* --- Card Episodio (simili alle card film) --- */
@@ -297,9 +304,75 @@ html, body {
     color: #b0b0b0;
 }
 
+/* --- Card Film simili (per coerenza con homepage) --- */
+/* Le classi .movie-card usate qui sono le stesse della homepage, quindi il CSS sarà riutilizzato */
+.movie-card {
+    flex-shrink: 0;
+    width: 200px; /* Larghezza della card film simile */
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: var(--card-bg);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    position: relative;
+    transform-origin: center center;
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
+    z-index: 1;
+}
+.movie-card:hover {
+    transform: scale(1.1);
+    z-index: 20;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
+}
+.movie-card img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    display: block;
+}
+.movie-card .p-2 { /* Regola specifica per il testo nelle card simili */
+    padding: 0.5rem;
+}
+
+
+/* --- Pulsanti di Scorrimento (per Caroselli) --- */
+.scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: 3rem;
+    border: none;
+    width: 50px;
+    height: calc(100% - 2rem); /* Altezza della carousel-container - padding verticale */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+    z-index: 30;
+}
+
+.scroll-btn.scroll-right {
+    right: 0;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.scroll-btn.scroll-left {
+    left: 0;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.scroll-btn:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
 /* --- MODAL Stagioni --- */
 .modal {
-    display: none; /* Nascondi per default */
+    display: none;
     position: fixed;
     z-index: 10000;
     left: 0;
@@ -376,14 +449,18 @@ html, body {
     .episode-card img { height: 124px; }
     .cast-card { width: 100px; }
     .cast-card img { width: 80px; height: 80px; }
+    .movie-card { width: 180px; }
+    .movie-card img { height: 270px; }
+    .scroll-btn { width: 40px; font-size: 2.5rem; }
+    .carousel-track { padding: 0 1.5rem; } /* Adatta padding laterale */
 }
 
 @media (max-width: 768px) {
     .detail-hero-section {
-        min-height: auto; /* Adatta altezza */
+        min-height: auto;
         padding-top: 80px;
-        padding-bottom: 2rem;
-        align-items: center; /* Centra contenuto */
+        padding-bottom: 3rem; /* AUMENTATO: per mobile */
+        align-items: center;
     }
     .hero-content {
         flex-direction: column;
@@ -399,18 +476,20 @@ html, body {
     .movie-info-summary p { font-size: 0.95em; }
     .action-buttons { flex-direction: column; width: 100%; max-width: 300px; margin: 0 auto; }
     .action-buttons .btn { width: 100%; }
-    .main-content-sections { padding-left: 1.5rem; padding-right: 1.5rem; margin-top: -50px; }
+    .main-content-sections { padding-left: 1.5rem; padding-right: 1.5rem; margin-top: -60px; } /* Riduci margine negativo */
     .section-title { font-size: 1.8em; padding-left: 0; }
-    .carousel-track { padding: 0 0.25rem; }
+    .carousel-track { padding: 0 0.5rem; }
     .episode-card { width: 180px; }
     .episode-card img { height: 100px; }
     .cast-card { width: 90px; }
     .cast-card img { width: 70px; height: 70px; }
+    .movie-card { width: 150px; }
+    .movie-card img { height: 225px; }
 }
 
 @media (max-width: 480px) {
     .back-home-button { padding: 6px 12px; font-size: 0.9em; top: 10px; left: 10px; }
-    .detail-hero-section { padding-top: 60px; padding-bottom: 1.5rem; }
+    .detail-hero-section { padding-top: 60px; padding-bottom: 2rem; }
     .detail-poster { width: 150px; }
     .movie-info-summary h1 { font-size: 2.2em; }
     .movie-info-summary p { font-size: 0.85em; }
@@ -421,7 +500,6 @@ html, body {
     .episode-card img { height: 85px; }
     .cast-card { width: 80px; }
     .cast-card img { width: 60px; height: 60px; }
-    .modal-content { padding: 20px; }
-    .modal-title { font-size: 1.5em; }
-    .modal-season-list button { font-size: 1em; padding: 10px 15px; }
+    .movie-card { width: 120px; }
+    .movie-card img { height: 180px; }
 }
