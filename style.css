@@ -165,16 +165,14 @@ html, body {
 .content-row {
     position: relative; /* Necessario per posizionare le frecce di scorrimento */
     margin-bottom: 3rem; /* Spazio tra le sezioni */
-    /* Assicurati che i genitori non abbiano overflow: hidden; che blocchi la scalatura */
     overflow: visible; /* PERMETTE ALLE CARD DI ESPANDERSI FUORI DALLA SEZIONE */
     padding-left: 0; /* Assicura che il padding sia gestito dai wrapper interni */
     padding-right: 0;
 }
 
 
-.content-row h2 {
-    /* Rimuovi sticky se crea problemi con l'overflow visibile */
-    /* position: sticky; */
+.content-row h2,
+.search-results-section h2 { /* Applica lo stile anche ai titoli della ricerca */
     left: 0;
     background-color: var(--primary-bg);
     padding-right: 20px;
@@ -187,7 +185,6 @@ html, body {
     padding-left: 2rem; /* Padding per l'inizio del carosello */
     padding-right: 2rem; /* Padding per la fine del carosello */
     overflow-x: scroll;
-    /* overflow-y: visible; /* Potrebbe aiutare per le ombre superiori se necessario */
     padding-top: 1rem; /* Spazio sopra le card per l'ombra superiore */
     padding-bottom: 2rem; /* Spazio sotto le card per l'ombra inferiore */
     position: relative; /* Per le frecce di scorrimento assolute */
@@ -332,6 +329,25 @@ footer {
     background-color: var(--secondary-bg);
 }
 
+/* --- NUOVI STILI PER LA SEZIONE DI RICERCA --- */
+.search-results-section {
+    padding-top: 120px; /* Per compensare la navbar fissa */
+    padding-bottom: 40px;
+    min-height: calc(100vh - 200px); /* Assicura che sia abbastanza alta */
+}
+
+.search-results-section h2 {
+    margin-bottom: 2rem;
+    padding-left: 2rem; /* Allinea con il padding del carousel */
+}
+
+.search-results-section h3 {
+    font-size: 1.8em;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    padding-left: 2rem; /* Allinea con il padding del carousel */
+}
+
 
 /* Media Queries for Responsiveness */
 @media (max-width: 1024px) {
@@ -355,8 +371,9 @@ footer {
         padding-left: 30px;
         padding-right: 30px;
     }
-    .content-row h2 {
-        font-size: 2.5em;
+    .content-row h2,
+    .search-results-section h2,
+    .search-results-section h3 {
         padding-left: 30px; /* Adatta il padding del titolo */
     }
     .carousel-container {
@@ -425,8 +442,9 @@ footer {
         padding-left: 20px;
         padding-right: 20px;
     }
-    .content-row h2 {
-        font-size: 2em;
+    .content-row h2,
+    .search-results-section h2,
+    .search-results-section h3 {
         padding-left: 20px; /* Adatta il padding del titolo */
     }
     .carousel-container {
@@ -465,8 +483,9 @@ footer {
     .hero-content p {
         font-size: 0.8em;
     }
-    .content-row h2 {
-        font-size: 1.8em;
+    .content-row h2,
+    .search-results-section h2,
+    .search-results-section h3 {
         padding-left: 20px; /* Adatta il padding del titolo */
     }
     .movie-card {
