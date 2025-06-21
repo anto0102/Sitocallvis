@@ -2,6 +2,7 @@ const API_KEY = '2d082597ab951b3a9596ca23e71413a8'; // 🔐 Inserisci qui la tua
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 
+// 👇 Categorie
 const categories = [
   { id: 'consigliati', url: '/movie/top_rated' },
   { id: 'momento', url: '/trending/movie/day' },
@@ -15,25 +16,27 @@ const categories = [
   { id: 'documentari', url: '/discover/movie?with_genres=99' },
 ];
 
-// ⚡ Verifica disponibilità Vixsrc con cache + fallback rapido
-function isMovieAvailableOnVixsrc(id, type = 'movie') {
+// 🔎 Controllo su Vixsrc
+async function isMovieAvailableOnVixsrc(id, type = 'movie') {
   const key = `vixsrc_${type}_${id}`;
-  const cached = localStorage.getItem(key);
+  const cached = sessionStorage.getItem(key);
 
-  // se già verificato, restituisci il risultato
-  if (cached === 'true') return Promise.resolve(true);
-  if (cached === 'false') return Promise.resolve(false);
+  if (cached === 'true') return true;
+  if (cached === 'false') return false;
 
-  // altrimenti prova con fetch HEAD (più veloce di iframe)
-  return fetch(`https://vixsrc.to/${type}/${id}`, { method: 'HEAD', mode: 'no-cors' })
-    .then(() => {
-      localStorage.setItem(key, 'true');
-      return true;
-    })
-    .catch(() => {
-      localStorage.setItem(key, 'false');
-      return false;
+  try {
+    const response = await fetch(`https://vixsrc.to/${type}/${id}`, {
+      method: 'HEAD',
+      mode: 'cors',
     });
+
+    const available = response.ok && response.status !== 404;
+    sessionStorage.setItem(key, available ? 'true' : 'false');
+    return available;
+  } catch (err) {
+    sessionStorage.setItem(key, 'false');
+    return false;
+  }
 }
 
 // 🔎 Fetch film
@@ -62,23 +65,26 @@ function createMovieCard(item) {
   return card;
 }
 
-// 🚀 Carica i film per categoria
+// 🚀 Carica i film
 async function loadMovies() {
   for (const category of categories) {
     const container = document.getElementById(category.id);
-    if (!container) continue;
+    if (!container) {
+      console.warn(`Contenitore mancante per categoria: ${category.id}`);
+      continue;
+    }
 
     container.innerHTML = '<p class="loading">Caricamento...</p>';
 
     try {
       const movies = await fetchMovies(category.url);
-      container.innerHTML = '';
+      container.innerHTML = ''; // Svuota
 
       let count = 0;
       for (const movie of movies) {
         if (!movie.poster_path) continue;
 
-        const available = await isMovieAvailableOnVixsrc(movie.id);
+        const available = await isMovieAvailableOnVixsrc(movie.id, 'movie');
         if (available) {
           container.appendChild(createMovieCard(movie));
           count++;
@@ -90,7 +96,7 @@ async function loadMovies() {
         container.innerHTML = '<p>Nessun contenuto disponibile.</p>';
       }
     } catch (err) {
-      console.error(`Errore nella categoria "${category.id}":`, err);
+      console.error(`Errore caricamento categoria "${category.id}":`, err);
       container.innerHTML = '<p class="error">Errore nel caricamento.</p>';
     }
   }
@@ -99,7 +105,7 @@ async function loadMovies() {
 // ⏱️ Inizializza
 document.addEventListener('DOMContentLoaded', loadMovies);
 
-// 🔍 Ricerca (non applica filtro)
+// 🔍 Ricerca
 document.getElementById('search-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const query = document.getElementById('search-input').value.trim();
@@ -143,11 +149,13 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
   const movieContainer = document.getElementById('search-movies');
   const seriesContainer = document.getElementById('search-series');
 
-  movies.slice(0, 10).forEach(movie => {
-    movieContainer.appendChild(createMovieCard(movie));
-  });
+  for (const movie of movies.slice(0, 10)) {
+    const available = await isMovieAvailableOnVixsrc(movie.id, 'movie');
+    if (available) movieContainer.appendChild(createMovieCard(movie));
+  }
 
-  series.slice(0, 10).forEach(serie => {
-    seriesContainer.appendChild(createMovieCard(serie));
-  });
+  for (const serie of series.slice(0, 10)) {
+    const available = await isMovieAvailableOnVixsrc(serie.id, 'tv');
+    if (available) seriesContainer.appendChild(createMovieCard(serie));
+  }
 });
