@@ -8,7 +8,6 @@ const tipo = urlParams.get("type"); // 'movie' or 'tv'
 
 // Elementi del nuovo design
 const topBackdrop = document.getElementById("top-backdrop");
-// RIFERIMENTO AL CONTENITORE PRINCIPALE DI DETTAGLI DENTRO L'HEADER
 const mainDetailsSection = document.getElementById("main-details-section"); 
 const detailPoster = document.getElementById("detail-poster");
 const detailTitle = document.getElementById("detail-title");
@@ -19,9 +18,10 @@ const detailRuntime = document.getElementById("detail-runtime");
 const detailGenres = document.getElementById("detail-genres");
 const detailOverview = document.getElementById("detail-overview");
 let mainPlayBtn = null;
-if (mainDetailsSection) { // Questo controllo ora dovrebbe passare
+if (mainDetailsSection) {
     mainPlayBtn = mainDetailsSection.querySelector('.play-btn'); 
 }
+
 
 const trailerPlayerContainer = document.getElementById("trailer-player-container");
 const mainPlayerContainer = document.getElementById("main-player-container");
@@ -49,7 +49,6 @@ if (!id || !tipo) {
 document.addEventListener('DOMContentLoaded', caricaDettagli);
 
 async function caricaDettagli() {
-    // Questo controllo ora dovrebbe passare correttamente se l'HTML è stato aggiornato
     if (!mainDetailsSection || !detailPoster || !detailTitle || !mainPlayBtn) {
         console.error("Elementi HTML essenziali non trovati. Assicurati che l'ID 'main-details-section' e altri ID siano corretti nell'HTML.");
         document.body.innerHTML = `<div style="color: red; text-align: center; margin-top: 100px;">
@@ -59,6 +58,7 @@ async function caricaDettagli() {
                                   </div>`;
         return; 
     }
+
 
     try {
         const res = await fetch(`${BASE_URL}/${tipo}/${id}?api_key=${API_KEY}&language=it-IT&append_to_response=credits,videos,recommendations,similar`);
