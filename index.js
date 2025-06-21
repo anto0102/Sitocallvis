@@ -1,4 +1,4 @@
-const API_KEY = '2d082597ab951b3a9596ca23e71413a8'; // Inserisci qui la tua API Key TMDB
+const API_KEY = '2d082597ab951b3a9596ca23e71413a8'; // Inserisci la tua API Key TMDB
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -15,34 +15,17 @@ const categories = [
   { id: 'documentari', url: '/discover/movie?with_genres=99' },
 ];
 
-// Verifica se il film esiste su vixsrc.to
+// Verifica velocemente se il contenuto esiste su vixsrc
 async function isMovieAvailableOnVixsrc(id) {
-  return new Promise((resolve) => {
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    iframe.src = `https://vixsrc.to/movie/${id}`;
-
-    const timeout = setTimeout(() => {
-      document.body.removeChild(iframe);
-      resolve(false);
-    }, 5000);
-
-    iframe.onload = () => {
-      clearTimeout(timeout);
-      document.body.removeChild(iframe);
-      resolve(true);
-    };
-
-    iframe.onerror = () => {
-      clearTimeout(timeout);
-      document.body.removeChild(iframe);
-      resolve(false);
-    };
-
-    document.body.appendChild(iframe);
-  });
+  try {
+    const res = await fetch(`https://vixsrc.to/movie/${id}`, { method: 'HEAD' });
+    return res.status === 200;
+  } catch {
+    return false;
+  }
 }
 
+// Ottieni film da TMDB
 async function fetchMovies(endpoint) {
   const randomPage = Math.floor(Math.random() * 5) + 1;
   const fullUrl = `${BASE_URL}${endpoint}${endpoint.includes('?') ? '&' : '?'}api_key=${API_KEY}&language=it-IT&page=${randomPage}`;
@@ -51,6 +34,7 @@ async function fetchMovies(endpoint) {
   return data.results || [];
 }
 
+// Crea card HTML
 function createMovieCard(item) {
   const title = item.title || item.name || 'Titolo sconosciuto';
   const poster = item.poster_path ? `${IMAGE_URL}${item.poster_path}` : 'fallback.jpg';
@@ -65,39 +49,49 @@ function createMovieCard(item) {
       <h3>${title}</h3>
     </a>
   `;
-
   return card;
 }
 
+// Caricamento film in homepage
 async function loadMovies() {
   for (const category of categories) {
     const container = document.getElementById(category.id);
     if (!container) continue;
 
+    container.innerHTML = '<p class="loading">Caricamento...</p>';
+    
     try {
       const movies = await fetchMovies(category.url);
       container.innerHTML = '';
+      let shown = 0;
 
-      let count = 0;
       for (const movie of movies) {
-        if (!movie.poster_path) continue;
-        const available = await isMovieAvailableOnVixsrc(movie.id);
-        if (available) {
-          const card = createMovieCard(movie);
-          container.appendChild(card);
-          count++;
-        }
-        if (count >= 10) break;
+        if (!movie.poster_path || shown >= 10) continue;
+
+        // crea un placeholder visivo (opzionale)
+        const placeholder = document.createElement('div');
+        placeholder.className = 'movie-card loading';
+        container.appendChild(placeholder);
+
+        // check vixsrc in parallelo
+        isMovieAvailableOnVixsrc(movie.id).then((available) => {
+          if (available && shown < 10) {
+            const card = createMovieCard(movie);
+            container.replaceChild(card, placeholder);
+            shown++;
+          } else {
+            container.removeChild(placeholder);
+          }
+        });
       }
     } catch (err) {
       console.error(`Errore caricamento ${category.id}:`, err);
+      container.innerHTML = '<p class="error">Errore nel caricamento.</p>';
     }
   }
 }
 
-document.addEventListener('DOMContentLoaded', loadMovies);
-
-// 🔍 Ricerca
+// Ricerca
 document.getElementById('search-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const query = document.getElementById('search-input').value.trim();
@@ -105,11 +99,12 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
 
   const response = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=it-IT`);
   const data = await response.json();
+
   let results = (data.results || []).filter(item =>
     (item.media_type === 'movie' || item.media_type === 'tv') && item.poster_path
   );
 
-  // Ordina: match esatto > popolarità
+  // Ordinamento per match
   results.sort((a, b) => {
     const q = query.toLowerCase();
     const aTitle = (a.title || a.name || '').toLowerCase();
@@ -121,7 +116,7 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
     return b.popularity - a.popularity;
   });
 
-  // Dividi film e serie
+  // Dividi per tipo
   const movies = results.filter(r => r.media_type === 'movie');
   const series = results.filter(r => r.media_type === 'tv');
 
@@ -153,3 +148,5 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
     seriesContainer.appendChild(card);
   });
 });
+
+document.addEventListener('DOMContentLoaded', loadMovies);
