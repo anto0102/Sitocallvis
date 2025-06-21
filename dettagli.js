@@ -138,8 +138,9 @@ async function caricaTrailer(videosData) {
                     videosData.results.find(v => v.type === "Trailer" && v.site === "YouTube");
 
     if (trailer) {
+        // CORREZIONE QUI: URL di embedding YouTube standard
         trailerPlayerContainer.innerHTML = `
-            <iframe src="youtube.com/embed/{trailer.key}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe src="https://www.youtube.com/embed/${trailer.key}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         `;
     } else {
         trailerPlayerContainer.innerHTML = `
@@ -305,7 +306,13 @@ function scrollRight(carouselId) {
         console.error(`Carousel container not found for ID: ${carouselId}`);
         return;
     }
-    const scrollAmount = carouselContainer.querySelector("." + (carouselId === 'cast-carousel' ? 'cast-card' : (carouselId === 'episodes-carousel' ? 'episode-card' : 'movie-card')) )?.offsetWidth * 3 || 600; // Calcola in base al tipo di card
+    // Trova il carousel-track all'interno del carousel-container
+    const carouselTrack = carouselContainer.querySelector('.carousel-track');
+    if (!carouselTrack) {
+        console.error(`Carousel track not found inside ${carouselId}`);
+        return;
+    }
+    const scrollAmount = carouselTrack.offsetWidth * 0.8; // Scorre dell'80% della larghezza visibile
     carouselContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
 }
 
@@ -315,6 +322,11 @@ function scrollLeft(carouselId) {
         console.error(`Carousel container not found for ID: ${carouselId}`);
         return;
     }
-    const scrollAmount = carouselContainer.querySelector("." + (carouselId === 'cast-carousel' ? 'cast-card' : (carouselId === 'episodes-carousel' ? 'episode-card' : 'movie-card')) )?.offsetWidth * 3 || 600; // Calcola in base al tipo di card
+    const carouselTrack = carouselContainer.querySelector('.carousel-track');
+    if (!carouselTrack) {
+        console.error(`Carousel track not found inside ${carouselId}`);
+        return;
+    }
+    const scrollAmount = carouselTrack.offsetWidth * 0.8; // Scorre dell'80% della larghezza visibile
     carouselContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
 }
