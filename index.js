@@ -1,4 +1,4 @@
-const API_KEY = '2d082597ab951b3a9596ca23e71413a8'; // Sostituisci con la tua vera chiave
+const API_KEY = '2d082597ab951b3a9596ca23e71413a8'; // Inserisci qui la tua API key
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -21,11 +21,11 @@ function createMovieCard(item) {
   const type = item.media_type || 'movie';
 
   const card = document.createElement('div');
-  card.className = 'flex-shrink-0 w-36 bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform';
+  card.className = 'movie-card';
   card.innerHTML = `
-    <a href="dettagli.html?id=${item.id}&type=${type}" class="block">
-      <img src="${poster}" alt="${title}" class="w-full h-52 object-cover" />
-      <h3 class="text-center text-sm p-2">${title}</h3>
+    <a href="dettagli.html?id=${item.id}&type=${type}">
+      <img src="${poster}" alt="${title}" />
+      <h3>${title}</h3>
     </a>
   `;
   return card;
@@ -89,15 +89,15 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
   const main = document.getElementById('main-content');
   main.innerHTML = `
     <section>
-      <h2 class="text-xl font-semibold mb-2">🔍 Risultati per "${query}"</h2>
+      <h2>🔍 Risultati per "${query}"</h2>
       <div class="space-y-6">
         <div>
-          <h3 class="text-lg font-medium mb-1">🎬 Film</h3>
-          <div class="movie-container flex gap-4 overflow-x-auto" id="search-movies"></div>
+          <h3>🎬 Film</h3>
+          <div class="movie-container" id="search-movies"></div>
         </div>
         <div>
-          <h3 class="text-lg font-medium mb-1">📺 Serie TV</h3>
-          <div class="movie-container flex gap-4 overflow-x-auto" id="search-series"></div>
+          <h3>📺 Serie TV</h3>
+          <div class="movie-container" id="search-series"></div>
         </div>
       </div>
     </section>
