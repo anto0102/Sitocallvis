@@ -61,11 +61,18 @@ h2 {
   overflow-x: auto;
   gap: 1rem;
   padding-bottom: 0.5rem;
+  padding-top: 1rem; /* 👈 Fix: spazio extra sopra per non tagliare le card su hover */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE e Edge */
+}
+
+.movie-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
 }
 
 .movie-card {
   flex: 0 0 auto;
-  width: 140px; /* Aumentato un po' per equilibrio */
+  width: 140px;
   border-radius: 8px;
   overflow: hidden;
   background-color: #222;
@@ -73,15 +80,18 @@ h2 {
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative; /* 👈 Fix: necessario per z-index */
+  z-index: 1; /* 👈 Fix: fa sì che resti sopra altre card se ingrandita */
 }
 
 .movie-card:hover {
   transform: scale(1.05);
+  z-index: 10; /* 👈 Fix: porta la card in primo piano */
 }
 
 .movie-card img {
   width: 100%;
-  height: 210px; /* imposta altezza costante */
+  height: 210px;
   object-fit: cover;
   border-bottom: 1px solid #333;
 }
@@ -103,6 +113,7 @@ h2 {
 .movie-card a:hover {
   color: #ff4d4d;
 }
+
 .profile-button {
   position: absolute;
   top: 15px;
