@@ -16,9 +16,33 @@ const categories = [
   { id: 'documentari', url: '/discover/movie?with_genres=99' },
 ];
 
-// 🔄 Bypass temporaneo
-async function isMovieAvailableOnVixsrc(id) {
-  return true;
+// ✅ Controllo disponibilità vixsrc con caching locale
+async function isMovieAvailableOnVixsrc(id, type = 'movie') {
+  const key = `vixsrc_${type}_${id}`;
+  const cached = localStorage.getItem(key);
+  if (cached !== null) return cached === 'true';
+
+  return new Promise((resolve) => {
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = `https://vixsrc.to/${type}/${id}`;
+
+    const timeout = setTimeout(() => {
+      cleanup(false);
+    }, 5000); // timeout di sicurezza
+
+    function cleanup(result) {
+      clearTimeout(timeout);
+      document.body.removeChild(iframe);
+      localStorage.setItem(key, result.toString());
+      resolve(result);
+    }
+
+    iframe.onload = () => cleanup(true);
+    iframe.onerror = () => cleanup(false);
+
+    document.body.appendChild(iframe);
+  });
 }
 
 // 🔎 Fetch film
@@ -47,7 +71,7 @@ function createMovieCard(item) {
   return card;
 }
 
-// 🚀 Carica i film
+// 🚀 Carica i film per categoria
 async function loadMovies() {
   for (const category of categories) {
     const container = document.getElementById(category.id);
@@ -60,13 +84,13 @@ async function loadMovies() {
 
     try {
       const movies = await fetchMovies(category.url);
-      container.innerHTML = ''; // Svuota
+      container.innerHTML = '';
 
       let count = 0;
       for (const movie of movies) {
         if (!movie.poster_path) continue;
 
-        const available = await isMovieAvailableOnVixsrc(movie.id);
+        const available = await isMovieAvailableOnVixsrc(movie.id, 'movie');
         if (available) {
           container.appendChild(createMovieCard(movie));
           count++;
