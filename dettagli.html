@@ -6,66 +6,72 @@
     <title>Dettagli Film/Serie - StreamVerse</title>
     <link rel="stylesheet" href="dettagli.css" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="dettagli.js" defer></script> 
 </head>
-<body class="bg-gray-950 text-gray-100 font-poppins antialiased">
+<body class="bg-primary-bg text-text-color font-poppins antialiased">
 
-    <nav class="fixed top-0 left-0 w-full bg-gray-950 bg-opacity-80 backdrop-blur-sm z-50 py-4 px-8 flex justify-between items-center shadow-lg">
-        <div class="flex items-center gap-6">
-            <a href="index.html" class="text-white text-lg font-semibold hover:text-blue-400 transition-colors">Home</a>
-            <a href="#" class="text-gray-300 hover:text-white transition-colors">Serie TV</a>
-            <a href="#" class="text-gray-300 hover:text-white transition-colors">Film</a>
-            </div>
-        <div class="flex items-center gap-4">
-            <button class="text-white hover:text-blue-400 transition-colors">🔍</button>
-            <button class="text-white hover:text-blue-400 transition-colors">👤</button>
-        </div>
-    </nav>
+    <a href="index.html" class="back-home-button fixed top-6 left-6 z-50 flex items-center gap-2">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"></path></svg>
+        <span class="hidden sm:inline">Torna alla Home</span>
+    </a>
 
-    <header class="relative w-full h-[70vh] md:h-[90vh] overflow-hidden flex items-end">
-        <div id="hero-media-container" class="absolute inset-0 z-0">
-            <div id="youtube-player-div" class="absolute inset-0"></div> 
-            <img id="hero-backdrop-img" src="https://via.placeholder.com/1920x1080/1a1a1a/e0e0e0?text=Sfondo+Film" alt="Background" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500">
-        </div>
+    <section id="detail-hero-section" class="detail-hero-section relative w-full min-h-[90vh] flex items-end pb-16">
+        <div id="hero-backdrop" class="hero-backdrop absolute inset-0 bg-cover bg-center transition-all duration-700 ease-in-out"></div>
+        <div class="hero-gradient absolute inset-0 bg-gradient-to-t from-primary-bg via-black/70 to-transparent"></div>
         
-        <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/70 to-transparent z-10"></div>
-        
-        <div id="main-details-section" class="relative z-20 p-8 md:p-12 lg:p-16 w-full max-w-7xl mx-auto flex flex-col items-start text-white">
-            <h1 id="detail-title" class="text-4xl sm:text-5xl lg:text-7xl font-extrabold mb-2 drop-shadow-lg">Titolo Film/Serie</h1>
-            <p id="detail-tagline" class="text-lg sm:text-xl lg:text-2xl text-gray-300 mb-4 font-montserrat italic"></p>
+        <div id="main-details-section" class="hero-content relative z-10 max-w-7xl mx-auto px-8 lg:px-16 flex flex-col md:flex-row items-center md:items-end gap-8 lg:gap-12 text-white">
+            <img id="detail-poster" src="https://via.placeholder.com/300x450/222222/e0e0e0?text=Poster" alt="Movie Poster" class="w-48 h-auto rounded-lg shadow-2xl flex-shrink-0 transition-transform duration-300 hover:scale-105 md:w-64 lg:w-80">
             
-            <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mb-6 text-base text-gray-200">
-                <span id="detail-vote" class="flex items-center gap-1 text-yellow-400 font-semibold">⭐ N/A</span>
-                <span id="detail-release-year">Anno</span>
-                <span id="detail-runtime">Durata</span>
-                <span id="detail-genres">Generi</span>
-                <span id="detail-views" class="hidden">3.3M views</span> 
-                <span id="detail-seasons" class="hidden">X stagioni</span> 
+            <div class="movie-info-summary flex-1 text-center md:text-left">
+                <h1 id="detail-title" class="text-4xl sm:text-5xl lg:text-7xl font-bold text-white mb-2 leading-tight drop-shadow-lg">Titolo Film/Serie</h1>
+                <p id="detail-tagline" class="text-lg sm:text-xl lg:text-2xl text-gray-300 mb-4 font-montserrat italic"></p>
+                
+                <div class="flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-2 mb-6 text-base text-gray-200">
+                    <span id="detail-vote" class="flex items-center gap-1 text-yellow-400 font-semibold">⭐ N/A</span>
+                    <span id="detail-release-year">Anno</span>
+                    <span id="detail-runtime">Durata</span>
+                    <span id="detail-genres">Generi</span>
+                </div>
+                
+                <p id="detail-overview" class="text-base lg:text-lg mb-8 max-w-4xl leading-relaxed"></p>
+                
+                <div class="action-buttons flex flex-wrap gap-4 justify-center md:justify-start">
+                    <button class="btn-primary play-btn flex items-center gap-2 px-6 py-3 rounded-full text-lg font-semibold shadow-lg hover:scale-105 transition-transform duration-300">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                        Riproduci Ora
+                    </button>
+                    <button class="btn-secondary flex items-center gap-2 px-6 py-3 rounded-full text-lg font-semibold shadow-lg hover:scale-105 transition-transform duration-300">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+                        La mia lista
+                    </button>
+                </div>
             </div>
-            
-            <button class="btn-play-hero flex items-center gap-2 px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:scale-105 transition-transform duration-300">
-                <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
-                Riproduci
-            </button>
         </div>
-    </header>
+    </section>
 
-    <main class="relative z-30 bg-gray-950 pt-12 pb-12 px-8 md:px-12 lg:px-16 -mt-24 md:-mt-36 rounded-t-3xl shadow-2xl">
+    <main class="main-content-sections bg-primary-bg relative z-20 pt-10 pb-20 px-8 lg:px-16 rounded-t-3xl shadow-lg">
         
-        <section id="synopsis-section" class="mb-12 bg-gray-800/50 backdrop-blur-sm p-6 md:p-8 rounded-lg shadow-xl">
-            <h2 class="section-title">Sinossi</h2>
-            <p id="detail-overview-full" class="text-base lg:text-lg text-gray-300 leading-relaxed"></p>
+        <section id="trailer-section" class="content-block mb-12">
+            <h2 class="block-title">🎬 Trailer</h2>
+            <div id="trailer-player-container" class="iframe-container aspect-video rounded-lg overflow-hidden shadow-xl">
+                </div>
+        </section>
+
+        <section id="player-section" class="content-block mb-12">
+            <h2 class="block-title">🎥 Guarda Ora</h2>
+            <div id="main-player-container" class="iframe-container aspect-video rounded-lg overflow-hidden shadow-xl">
+                </div>
         </section>
 
         <section id="episodes-section" class="content-block mb-12 hidden group relative">
-            <h2 class="section-title flex items-center justify-between">
+            <h2 class="block-title flex items-center justify-between">
                 <span>
                     📺 Episodi 
                     <span id="current-season-display" class="text-lg text-gray-400 ml-4">(Stagione 1)</span>
                 </span>
-                <button class="btn-secondary-sm text-sm px-4 py-2 rounded-full" id="seleziona-stagione-btn">
+                <button class="btn-tertiary text-sm px-4 py-2 rounded-full" id="seleziona-stagione-btn">
                     📂 Seleziona Stagione
                 </button>
             </h2>
@@ -78,7 +84,7 @@
         </section>
 
         <section id="cast-section" class="content-block mb-12 group relative">
-            <h2 class="section-title">👥 Cast Principale</h2>
+            <h2 class="block-title">👥 Cast Principale</h2>
             <div id="cast-carousel" class="carousel-container relative">
                 <div class="carousel-track flex gap-4 overflow-x-auto hide-scrollbar py-2">
                     </div>
@@ -88,7 +94,7 @@
         </section>
 
         <section id="similar-content-section" class="content-block mb-12 group relative">
-            <h2 class="section-title">Correlati</h2>
+            <h2 class="block-title">Simili a questo</h2>
             <div id="similar-movies-carousel" class="carousel-container relative">
                 <div class="carousel-track flex gap-4 overflow-x-auto hide-scrollbar py-2">
                     </div>
