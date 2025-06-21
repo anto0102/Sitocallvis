@@ -54,7 +54,7 @@ async function caricaDettagli() {
         const posterPath = data.poster_path ? `${IMAGE_BASE_URL}w500${data.poster_path}` : 'https://via.placeholder.com/500x750/222222/e0e0e0?text=Poster';
         const backdropPath = data.backdrop_path ? `${IMAGE_BASE_URL}original${data.backdrop_path}` : posterPath; 
 
-        topBackdrop.style.backgroundImage = `url(${backdropPath})`; // Applica al nuovo top-backdrop
+        topBackdrop.style.backgroundImage = `url(${backdropPath})`; 
         detailPoster.src = posterPath;
         detailTitle.textContent = title;
         detailTagline.textContent = tagline;
@@ -109,6 +109,9 @@ async function caricaDettagli() {
             aggiungiPlayerFilm(id);
         }
 
+        // Setup listeners per le frecce dopo che i caroselli sono stati popolati
+        setupCarouselScrollListeners();
+
     } catch (error) {
         console.error("Errore nel caricamento dei dettagli:", error);
         mainDetailsSection.innerHTML = `<p class="text-center text-red-500 text-xl w-full">Impossibile caricare i dettagli del contenuto. Riprova più tardi.</p>`;
@@ -152,7 +155,7 @@ async function caricaCast(creditsData) {
 
     topCast.forEach(member => {
         const castCard = document.createElement('div');
-        castCard.className = 'cast-card'; // Assicurati che le classi CSS siano corrette
+        castCard.className = 'cast-card'; 
         castCard.innerHTML = `
             <img src="${IMAGE_BASE_URL}w185${member.profile_path}" alt="${member.name}">
             <h4>${member.name}</h4>
@@ -269,6 +272,8 @@ async function caricaEpisodi(tvId, seasonNumber) {
             firstEpisodeLoaded = true;
         }
     });
+    // Dopo aver caricato gli episodi, aggiorna la visibilità delle frecce
+    updateCarouselArrowsVisibility('episodes-carousel');
 }
 
 function aggiornaPlayerSeries(tvId, season, episode) {
@@ -295,8 +300,8 @@ function scrollRight(carouselId) {
         console.error(`Carousel track not found inside ${carouselId}`);
         return;
     }
-    const firstCard = carouselTrack.querySelector('.episode-card, .cast-card, .movie-card');
-    const scrollAmount = firstCard ? firstCard.offsetWidth * 3 + parseFloat(getComputedStyle(carouselTrack).gap) * 3 : carouselContainer.offsetWidth * 0.8;
+    // Calcola lo scroll basandosi sulla larghezza del contenitore o della prima card
+    const scrollAmount = carouselContainer.offsetWidth * 0.8; // Scorre l'80% della larghezza visibile
     carouselContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
 }
 
@@ -311,7 +316,101 @@ function scrollLeft(carouselId) {
         console.error(`Carousel track not found inside ${carouselId}`);
         return;
     }
-    const firstCard = carouselTrack.querySelector('.episode-card, .cast-card, .movie-card');
-    const scrollAmount = firstCard ? firstCard.offsetWidth * 3 + parseFloat(getComputedStyle(carouselTrack).gap) * 3 : carouselContainer.offsetWidth * 0.8;
+    // Calcola lo scroll basandosi sulla larghezza del contenitore o della prima card
+    const scrollAmount = carouselContainer.offsetWidth * 0.8; // Scorre l'80% della larghezza visibile
     carouselContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+}
+
+// Funzione per aggiornare la visibilità delle frecce
+function updateCarouselArrowsVisibility(carouselId) {
+    const carouselContainer = document.getElementById(carouselId);
+    if (!carouselContainer) return;
+
+    const scrollLeftBtn = carouselContainer.querySelector('.scroll-left');
+    const scrollRightBtn = carouselContainer.querySelector('.scroll-right');
+
+    if (!scrollLeftBtn || !scrollRightBtn) return; // Assicurati che i bottoni esistano
+
+    // Debounce per evitare che la funzione si attivi troppo spesso durante lo scroll
+    let scrollTimeout;
+    carouselContainer.addEventListener('scroll', () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            // Logica per la freccia sinistra
+            if (carouselContainer.scrollLeft > 0) {
+                scrollLeftBtn.style.opacity = '1';
+                scrollLeftBtn.style.pointerEvents = 'auto';
+            } else {
+                scrollLeftBtn.style.opacity = '0';
+                scrollLeftBtn.style.pointerEvents = 'none';
+            }
+
+            // Logica per la freccia destra
+            // Aggiungi una piccola tolleranza per i calcoli in virgola mobile
+            const scrollEnd = carouselContainer.scrollWidth - carouselContainer.clientWidth;
+            const tolerance = 1; // pixel di tolleranza
+            if (carouselContainer.scrollLeft >= scrollEnd - tolerance) {
+                scrollRightBtn.style.opacity = '0';
+                scrollRightBtn.style.pointerEvents = 'none';
+            } else {
+                scrollRightBtn.style.opacity = '1';
+                scrollRightBtn.style.pointerEvents = 'auto';
+            }
+        }, 100); // Ritardo di 100ms
+    });
+
+    // Chiamata iniziale per impostare la visibilità all'inizio
+    // La freccia sinistra è inizialmente nascosta dal CSS, qui la logica la mostra se si scorre
+    // La freccia destra è inizialmente visibile (su hover del genitore), qui la logica la nasconde se non c'è più nulla da scorrere
+    const scrollEnd = carouselContainer.scrollWidth - carouselContainer.clientWidth;
+    const tolerance = 1;
+    if (carouselContainer.scrollLeft >= scrollEnd - tolerance) {
+        scrollRightBtn.style.opacity = '0';
+        scrollRightBtn.style.pointerEvents = 'none';
+    } else {
+        // Se c'è spazio per scorrere a destra, la freccia destra dovrebbe essere visibile su hover del genitore
+        scrollRightBtn.style.opacity = '1'; // Questo è per il caso iniziale, ma il CSS group:hover lo gestisce
+        scrollRightBtn.style.pointerEvents = 'auto';
+    }
+    // La freccia sinistra è sempre nascosta all'inizio
+    scrollLeftBtn.style.opacity = '0';
+    scrollLeftBtn.style.pointerEvents = 'none';
+}
+
+
+// Inizializza i listener per tutti i caroselli
+function setupCarouselScrollListeners() {
+    const carouselIds = ['episodes-carousel', 'cast-carousel', 'similar-movies-carousel'];
+    carouselIds.forEach(id => {
+        const carouselContainer = document.getElementById(id);
+        if (carouselContainer) {
+            // Chiamata iniziale per impostare la visibilità delle frecce
+            // Questo gestisce il caso in cui un carosello non ha abbastanza elementi per scorrere
+            const scrollLeftBtn = carouselContainer.querySelector('.scroll-left');
+            const scrollRightBtn = carouselContainer.querySelector('.scroll-right');
+
+            if (carouselContainer.scrollWidth <= carouselContainer.clientWidth + 1) { // +1 per tolleranza
+                if (scrollLeftBtn) scrollLeftBtn.style.display = 'none';
+                if (scrollRightBtn) scrollRightBtn.style.display = 'none';
+            } else {
+                if (scrollLeftBtn) {
+                    scrollLeftBtn.style.opacity = '0'; // Nascosta di default
+                    scrollLeftBtn.style.pointerEvents = 'none';
+                }
+                // La freccia destra è gestita dal CSS group:hover e dalla logica di scroll
+                // Assicurati che sia visibile se c'è contenuto da scorrere
+                if (scrollRightBtn) {
+                    scrollRightBtn.style.opacity = '1'; // Visibile su hover se c'è spazio
+                    scrollRightBtn.style.pointerEvents = 'auto';
+                }
+            }
+
+            // Aggiungi il listener di scroll per la logica di visibilità dinamica
+            carouselContainer.addEventListener('scroll', () => {
+                updateCarouselArrowsVisibility(id);
+            });
+            // Esegui un aggiornamento immediato per lo stato iniziale
+            updateCarouselArrowsVisibility(id);
+        }
+    });
 }
