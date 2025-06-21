@@ -130,3 +130,32 @@ h2 {
 .profile-button:hover {
   background-color: #008dbd;
 }
+/* Fix overflow mobile & animazione card */
+html, body {
+  overflow-x: hidden;
+  overscroll-behavior-y: contain; /* blocca il rimbalzo su mobile */
+  max-height: 100vh;
+}
+
+.movie-container {
+  padding-top: 1.2rem;
+  padding-bottom: 2rem; /* 👈 aumenta per evitare taglio sotto */
+  overflow-x: auto;
+  overflow-y: hidden; /* 👈 evita scroll verticale inutile */
+}
+
+.movie-card {
+  position: relative;
+  z-index: 1;
+  will-change: transform;
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
+  z-index: 10;
+}
+
+/* Per evitare scroll "sotto" su animazione */
+body {
+  height: 100dvh; /* usa altezza viewport dinamica su mobile */
+}
