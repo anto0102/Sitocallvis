@@ -6,9 +6,9 @@ const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("id");
 const tipo = urlParams.get("type"); // 'movie' or 'tv'
 
-// Elementi della Hero Section
-const detailHeroSection = document.getElementById("detail-hero-section");
-const heroBackdrop = document.getElementById("hero-backdrop");
+// Elementi del nuovo design
+const topBackdrop = document.getElementById("top-backdrop");
+const mainDetailsSection = document.getElementById("main-details-section");
 const detailPoster = document.getElementById("detail-poster");
 const detailTitle = document.getElementById("detail-title");
 const detailTagline = document.getElementById("detail-tagline");
@@ -17,9 +17,8 @@ const detailReleaseYear = document.getElementById("detail-release-year");
 const detailRuntime = document.getElementById("detail-runtime");
 const detailGenres = document.getElementById("detail-genres");
 const detailOverview = document.getElementById("detail-overview");
-const heroPlayBtn = detailHeroSection.querySelector('.play-btn');
+const mainPlayBtn = mainDetailsSection.querySelector('.play-btn'); // Bottone play nella sezione dettagli
 
-// Elementi delle sezioni principali
 const trailerPlayerContainer = document.getElementById("trailer-player-container");
 const mainPlayerContainer = document.getElementById("main-player-container");
 const episodesSection = document.getElementById("episodes-section");
@@ -29,7 +28,6 @@ const episodesCarouselTrack = document.querySelector("#episodes-carousel .carous
 const castCarouselTrack = document.querySelector("#cast-carousel .carousel-track");
 const similarMoviesCarouselTrack = document.querySelector("#similar-movies-carousel .carousel-track");
 
-// Elementi del Modal Stagioni
 const seasonModal = document.getElementById("season-modal");
 const closeModalBtn = document.querySelector("#season-modal .close-btn");
 const seasonListModal = document.getElementById("season-list");
@@ -38,7 +36,7 @@ let allSeasons = []; // Array per memorizzare tutte le stagioni disponibili
 
 if (!id || !tipo) {
     console.error("ID o tipo mancanti nell'URL. Reindirizzamento alla homepage.");
-    window.location.href = "index.html"; // Reindirizza se i parametri sono mancanti
+    window.location.href = "index.html";
 }
 
 document.addEventListener('DOMContentLoaded', caricaDettagli);
@@ -49,23 +47,22 @@ async function caricaDettagli() {
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const data = await res.json();
 
-        // --- Popola Hero Section ---
+        // --- Popola Top Backdrop e Dettagli Principali ---
         const title = data.title || data.name || "Titolo non disponibile";
         const overview = data.overview || "Nessuna descrizione disponibile.";
         const tagline = data.tagline || "";
         const posterPath = data.poster_path ? `${IMAGE_BASE_URL}w500${data.poster_path}` : 'https://via.placeholder.com/500x750/222222/e0e0e0?text=Poster';
-        const backdropPath = data.backdrop_path ? `${IMAGE_BASE_URL}original${data.backdrop_path}` : posterPath; // Usa poster come fallback
+        const backdropPath = data.backdrop_path ? `${IMAGE_BASE_URL}original${data.backdrop_path}` : posterPath; 
 
+        topBackdrop.style.backgroundImage = `url(${backdropPath})`; // Applica al nuovo top-backdrop
+        detailPoster.src = posterPath;
         detailTitle.textContent = title;
         detailTagline.textContent = tagline;
         detailOverview.textContent = overview;
-        detailPoster.src = posterPath;
-        heroBackdrop.style.backgroundImage = `url(${backdropPath})`;
 
         detailVote.innerHTML = `⭐ ${data.vote_average ? data.vote_average.toFixed(1) : 'N/A'}`;
         detailReleaseYear.textContent = data.release_date ? data.release_date.substring(0, 4) : (data.first_air_date ? data.first_air_date.substring(0, 4) : 'Anno N/A');
         
-        // Durata/Runtime
         let runtimeText = 'N/A';
         if (tipo === 'movie' && data.runtime) {
             runtimeText = `${data.runtime} min`;
@@ -76,55 +73,46 @@ async function caricaDettagli() {
 
         detailGenres.textContent = data.genres?.map(g => g.name).join(" / ") || "Generi N/A";
 
-        // --- Logica per i pulsanti Riproduci/Aggiungi Lista (semplificati per ora) ---
-        heroPlayBtn.onclick = () => {
+        // --- Logica pulsanti Play/Add to List ---
+        mainPlayBtn.onclick = () => {
             mainPlayerContainer.scrollIntoView({ behavior: "smooth", block: "start" });
             if (tipo === 'movie') {
                 aggiungiPlayerFilm(id);
             }
-            // Per le serie TV, il player verrà aggiornato al caricamento episodi
         };
-        // Per il pulsante "La mia lista" puoi aggiungere una logica qui
         document.querySelector('.add-to-list-btn').onclick = () => {
             alert('Funzione "Aggiungi alla lista" non ancora implementata.');
         };
 
-
-        // --- Trailer ---
+        // --- Caricamento Contenuti Dinamici ---
         await caricaTrailer(data.videos);
-
-        // --- Cast ---
         await caricaCast(data.credits);
-
-        // --- Contenuti Simili ---
         await caricaSimilarContent(data.recommendations || data.similar);
-
 
         // --- Gestione Serie TV vs Film ---
         if (tipo === "tv") {
-            episodesSection.classList.remove('hidden'); // Mostra la sezione episodi
+            episodesSection.classList.remove('hidden');
             selezionaStagioneBtn.style.display = "inline-flex";
             allSeasons = data.seasons.filter(s => s.season_number > 0);
-            allSeasons.sort((a,b) => a.season_number - b.season_number); // Ordina le stagioni
+            allSeasons.sort((a,b) => a.season_number - b.season_number);
             
-            // Carica la prima stagione disponibile o la stagione 1
             const firstSeasonToLoad = allSeasons.find(s => s.season_number === 1) || allSeasons[0];
             if (firstSeasonToLoad) {
                 await caricaEpisodi(id, firstSeasonToLoad.season_number);
             } else {
-                episodesCarouselTrack.innerHTML = `<p class="text-gray-400 text-center w-full">Nessuna stagione disponibile.</p>`;
-                mainPlayerContainer.innerHTML = `<p class="text-gray-400 text-center">Nessun episodio riproducibile per questa serie.</p>`;
+                episodesCarouselTrack.innerHTML = `<p class="text-gray-400 text-center w-full py-10">Nessuna stagione disponibile.</p>`;
+                mainPlayerContainer.innerHTML = `<p class="text-gray-400 text-center py-10">Nessun episodio riproducibile per questa serie.</p>`;
             }
         } else {
-            episodesSection.classList.add('hidden'); // Nasconde la sezione episodi per i film
+            episodesSection.classList.add('hidden');
             selezionaStagioneBtn.style.display = "none";
-            aggiungiPlayerFilm(id); // Carica il player per i film immediatamente
+            aggiungiPlayerFilm(id);
         }
 
     } catch (error) {
         console.error("Errore nel caricamento dei dettagli:", error);
-        detailHeroSection.innerHTML = `<p class="text-center text-red-500 text-xl w-full">Impossibile caricare i dettagli del contenuto. Riprova più tardi.</p>`;
-        // Nascondi le altre sezioni in caso di errore critico
+        mainDetailsSection.innerHTML = `<p class="text-center text-red-500 text-xl w-full">Impossibile caricare i dettagli del contenuto. Riprova più tardi.</p>`;
+        // Nascondi le altre sezioni
         document.getElementById('trailer-section').classList.add('hidden');
         document.getElementById('player-section').classList.add('hidden');
         document.getElementById('episodes-section').classList.add('hidden');
@@ -138,7 +126,6 @@ async function caricaTrailer(videosData) {
                     videosData.results.find(v => v.type === "Trailer" && v.site === "YouTube");
 
     if (trailer) {
-        // CORREZIONE QUI: URL di embedding YouTube standard
         trailerPlayerContainer.innerHTML = `
             <iframe src="https://www.youtube.com/embed/${trailer.key}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         `;
@@ -154,9 +141,8 @@ async function caricaCast(creditsData) {
         document.getElementById('cast-section').classList.add('hidden');
         return;
     }
-    castCarouselTrack.innerHTML = ''; // Pulisci i vecchi elementi
+    castCarouselTrack.innerHTML = '';
 
-    // Prendi i primi 10-15 membri del cast con un'immagine
     const topCast = creditsData.cast.filter(member => member.profile_path).slice(0, 15);
 
     if (topCast.length === 0) {
@@ -166,7 +152,7 @@ async function caricaCast(creditsData) {
 
     topCast.forEach(member => {
         const castCard = document.createElement('div');
-        castCard.className = 'cast-card';
+        castCard.className = 'cast-card'; // Assicurati che le classi CSS siano corrette
         castCard.innerHTML = `
             <img src="${IMAGE_BASE_URL}w185${member.profile_path}" alt="${member.name}">
             <h4>${member.name}</h4>
@@ -181,9 +167,9 @@ async function caricaSimilarContent(relatedContentData) {
         document.getElementById('similar-content-section').classList.add('hidden');
         return;
     }
-    similarMoviesCarouselTrack.innerHTML = ''; // Pulisci i vecchi elementi
+    similarMoviesCarouselTrack.innerHTML = '';
 
-    const filteredContent = relatedContentData.results.filter(item => item.poster_path).slice(0, 20); // Limita a 20 simili
+    const filteredContent = relatedContentData.results.filter(item => item.poster_path).slice(0, 20);
 
     if (filteredContent.length === 0) {
         document.getElementById('similar-content-section').classList.add('hidden');
@@ -191,16 +177,15 @@ async function caricaSimilarContent(relatedContentData) {
     }
 
     filteredContent.forEach(item => {
-        const movieCard = createMovieCard(item); // Riutilizza la funzione della homepage per le card
+        const movieCard = createMovieCard(item);
         similarMoviesCarouselTrack.appendChild(movieCard);
     });
 }
 
-// Riutilizza la funzione createMovieCard dalla homepage (copiala anche qui per self-containment)
 function createMovieCard(item) {
     const title = item.title || item.name || 'Titolo sconosciuto';
     const poster = item.poster_path ? `${IMAGE_BASE_URL}w300${item.poster_path}` : 'https://via.placeholder.com/300x450/222222/e0e0e0?text=Immagine+non+disponibile';
-    const type = item.media_type || (item.title ? 'movie' : 'tv'); // Indovina il tipo se non esplicito
+    const type = item.media_type || (item.title ? 'movie' : 'tv');
 
     const card = document.createElement('div');
     card.className = 'movie-card flex-shrink-0 rounded-lg overflow-hidden shadow-lg transition-transform duration-300';
@@ -216,7 +201,6 @@ function createMovieCard(item) {
 
 // --- Funzioni per Serie TV ---
 selezionaStagioneBtn.onclick = () => {
-    // Popola la lista delle stagioni nel modal
     seasonListModal.innerHTML = '';
     allSeasons.forEach(season => {
         const btn = document.createElement('button');
@@ -228,7 +212,7 @@ selezionaStagioneBtn.onclick = () => {
         };
         seasonListModal.appendChild(btn);
     });
-    seasonModal.style.display = 'flex'; // Mostra il modal
+    seasonModal.style.display = 'flex';
 };
 
 closeModalBtn.onclick = () => {
@@ -242,12 +226,12 @@ window.onclick = (event) => {
 };
 
 async function caricaEpisodi(tvId, seasonNumber) {
-    currentSeasonDisplay.textContent = `(Stagione ${seasonNumber})`; // Aggiorna il titolo
+    currentSeasonDisplay.textContent = `(Stagione ${seasonNumber})`;
 
     const res = await fetch(`${BASE_URL}/tv/${tvId}/season/${seasonNumber}?api_key=${API_KEY}&language=it-IT`);
     const data = await res.json();
 
-    episodesCarouselTrack.innerHTML = ''; // Pulisci i vecchi episodi
+    episodesCarouselTrack.innerHTML = '';
 
     if (!data.episodes || data.episodes.length === 0) {
         episodesCarouselTrack.innerHTML = `<p class="text-gray-400 text-center w-full py-10">Nessun episodio disponibile per questa stagione.</p>`;
@@ -258,7 +242,7 @@ async function caricaEpisodi(tvId, seasonNumber) {
     let firstEpisodeLoaded = false;
     data.episodes.forEach(episode => {
         const episodeCard = document.createElement('div');
-        episodeCard.className = 'episode-card'; // Classe per lo stile
+        episodeCard.className = 'episode-card';
         
         const imgSrc = episode.still_path
             ? `${IMAGE_BASE_URL}w300${episode.still_path}`
@@ -280,7 +264,7 @@ async function caricaEpisodi(tvId, seasonNumber) {
 
         episodesCarouselTrack.appendChild(episodeCard);
 
-        if (!firstEpisodeLoaded) { // Carica il primo episodio disponibile nel player
+        if (!firstEpisodeLoaded) {
             aggiornaPlayerSeries(tvId, seasonNumber, episode.episode_number);
             firstEpisodeLoaded = true;
         }
@@ -306,13 +290,13 @@ function scrollRight(carouselId) {
         console.error(`Carousel container not found for ID: ${carouselId}`);
         return;
     }
-    // Trova il carousel-track all'interno del carousel-container
     const carouselTrack = carouselContainer.querySelector('.carousel-track');
     if (!carouselTrack) {
         console.error(`Carousel track not found inside ${carouselId}`);
         return;
     }
-    const scrollAmount = carouselTrack.offsetWidth * 0.8; // Scorre dell'80% della larghezza visibile
+    const firstCard = carouselTrack.querySelector('.episode-card, .cast-card, .movie-card');
+    const scrollAmount = firstCard ? firstCard.offsetWidth * 3 + parseFloat(getComputedStyle(carouselTrack).gap) * 3 : carouselContainer.offsetWidth * 0.8;
     carouselContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
 }
 
@@ -327,6 +311,7 @@ function scrollLeft(carouselId) {
         console.error(`Carousel track not found inside ${carouselId}`);
         return;
     }
-    const scrollAmount = carouselTrack.offsetWidth * 0.8; // Scorre dell'80% della larghezza visibile
+    const firstCard = carouselTrack.querySelector('.episode-card, .cast-card, .movie-card');
+    const scrollAmount = firstCard ? firstCard.offsetWidth * 3 + parseFloat(getComputedStyle(carouselTrack).gap) * 3 : carouselContainer.offsetWidth * 0.8;
     carouselContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
 }
