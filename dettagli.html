@@ -26,12 +26,13 @@
 
     <header class="relative w-full h-[70vh] md:h-[90vh] overflow-hidden flex items-end">
         <div id="hero-media-container" class="absolute inset-0 z-0">
-            <div id="youtube-player-div" class="absolute inset-0"></div> <img id="hero-backdrop-img" src="https://via.placeholder.com/1920x1080/1a1a1a/e0e0e0?text=Sfondo+Film" alt="Background" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500">
+            <div id="youtube-player-div" class="absolute inset-0"></div> 
+            <img id="hero-backdrop-img" src="https://via.placeholder.com/1920x1080/1a1a1a/e0e0e0?text=Sfondo+Film" alt="Background" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500">
         </div>
         
         <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/70 to-transparent z-10"></div>
         
-        <div class="relative z-20 p-8 md:p-12 lg:p-16 w-full max-w-7xl mx-auto flex flex-col items-start text-white">
+        <div id="main-details-section" class="relative z-20 p-8 md:p-12 lg:p-16 w-full max-w-7xl mx-auto flex flex-col items-start text-white">
             <h1 id="detail-title" class="text-4xl sm:text-5xl lg:text-7xl font-extrabold mb-2 drop-shadow-lg">Titolo Film/Serie</h1>
             <p id="detail-tagline" class="text-lg sm:text-xl lg:text-2xl text-gray-300 mb-4 font-montserrat italic"></p>
             
@@ -40,7 +41,9 @@
                 <span id="detail-release-year">Anno</span>
                 <span id="detail-runtime">Durata</span>
                 <span id="detail-genres">Generi</span>
-                <span id="detail-views" class="hidden">3.3M views</span> <span id="detail-seasons" class="hidden">X stagioni</span> </div>
+                <span id="detail-views" class="hidden">3.3M views</span> 
+                <span id="detail-seasons" class="hidden">X stagioni</span> 
+            </div>
             
             <button class="btn-play-hero flex items-center gap-2 px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:scale-105 transition-transform duration-300">
                 <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
@@ -98,7 +101,7 @@
 
     <div id="season-modal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="bg-gray-800 p-8 rounded-lg shadow-2xl w-11/12 max-w-md transform -translate-y-4 opacity-0 transition-all duration-300 scale-95">
-            <span class="close-btn absolute top-4 right-4 text-gray-400 text-3xl cursor-pointer hover:text-white transition-colors">&times;</span>
+            <span class="close-btn absolute top-4 right-4 text-gray-400 text-3xl cursor-pointer hover:text-white transition-colors">×</span>
             <h2 class="modal-title text-2xl font-bold text-white mb-6">📚 Seleziona una stagione</h2>
             <div id="season-list" class="modal-season-list grid grid-cols-2 sm:grid-cols-3 gap-4">
                 </div>
