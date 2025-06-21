@@ -192,8 +192,40 @@ function findTrailerKey(videosData) {
 
 // Questa funzione viene chiamata automaticamente da YouTube IFrame Player API
 window.onYouTubeIframeAPIReady = function() {
-    // Non useremo l'autoplay nel banner per questo design (era una richiesta precedente, ma per Design 2.0 non è prevista)
-    // Non c'è un elemento youtubePlayerDiv per questo scopo in questo HTML, quindi lo lascio vuoto.
+    if (trailerVideoKey && youtubePlayerDiv) {
+        // Autoplay muto e in loop nel banner dopo 2 secondi
+        setTimeout(() => {
+            youtubePlayer = new YT.Player('youtube-player-div', {
+                videoId: trailerVideoKey,
+                playerVars: {
+                    autoplay: 1,  // Autoplay
+                    mute: 1,      // Muto
+                    loop: 1,      // Loop
+                    controls: 0,  // Nascondi controlli
+                    showinfo: 0,  // Nascondi info video
+                    modestbranding: 1, // Rimuovi logo YouTube
+                    fs: 0,        // Disabilita fullscreen (per non uscire dal banner)
+                    rel: 0,       // Non mostrare video correlati alla fine
+                    playlist: trailerVideoKey // Necessario per il loop
+                },
+                events: {
+                    'onReady': (event) => {
+                        event.target.playVideo();
+                        event.target.mute(); // Assicurati che sia muto
+                        // Rendi il player visibile solo quando pronto
+                        if(youtubePlayerDiv) youtubePlayerDiv.style.opacity = '1';
+                        if(heroBackdropImg) heroBackdropImg.style.opacity = '0'; // Nascondi l'immagine quando il video è pronto
+                    },
+                    'onStateChange': (event) => {
+                        // Quando il video finisce e loop è attivo, riparte
+                        if (event.data === YT.PlayerState.ENDED) {
+                            youtubePlayer.playVideo();
+                        }
+                    }
+                }
+            });
+        }, 2000); // Avvia il trailer dopo 2 secondi
+    }
 };
 
 
@@ -358,43 +390,4 @@ async function caricaEpisodi(tvId, seasonNumber) {
         
         episodeCard.querySelector('.play-episode-btn').onclick = () => {
             aggiornaPlayerSeries(tvId, seasonNumber, episode.episode_number);
-            mainPlayerContainer.scrollIntoView({ behavior: "smooth", block: "start" });
-        };
-
-        episodesCarouselTrack.appendChild(episodeCard);
-
-        if (!firstEpisodeLoaded) {
-            aggiornaPlayerSeries(tvId, seasonNumber, episode.episode_number);
-            firstEpisodeLoaded = true;
-        }
-    });
-    updateCarouselArrowsVisibility('episodes-carousel'); 
-}
-
-function aggiornaPlayerSeries(tvId, season, episode) {
-    if (!mainPlayerContainer) { console.warn("Main Player Container non trovato."); return; }
-    mainPlayerContainer.innerHTML = `
-        <iframe src="https://vixsrc.to/tv/${tvId}/${season}/${episode}" frameborder="0" allowfullscreen></iframe>
-    `;
-}
-
-function aggiungiPlayerFilm(movieId) {
-    if (!mainPlayerContainer) { console.warn("Main Player Container non trovato."); return; }
-    mainPlayerContainer.innerHTML = `
-        <iframe src="https://vixsrc.to/movie/${movieId}" frameborder="0" allowfullscreen></iframe>
-    `;
-}
-
-// --- Funzioni di scroll per i caroselli ---
-window.scrollLeft = function(carouselId) {
-    const carouselContainer = document.getElementById(carouselId);
-    if (!carouselContainer) { console.error(`Carousel container not found for ID: ${carouselId}`); return; }
-    carouselContainer.scrollBy({
-        left: -carouselContainer.clientWidth * 0.8, 
-        behavior: 'smooth'
-    });
-};
-
-window.scrollRight = function(carouselId) {
-    const carouselContainer = document.getElementById(carouselId);
-    if (!carouselContainer) { console.error(`Carousel contai
+            mainPlayerContainer.scrollIntoVie
