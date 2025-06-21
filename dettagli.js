@@ -1,4 +1,4 @@
-const API_KEY = "2d082597ab951b3a9596ca23e71413a8"; // Inserisci la tua TMDB API key
+const API_KEY = "2d082597ab951b3a9596ca23e71413a8"; // La tua TMDB API key
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/';
 
@@ -22,8 +22,7 @@ let stagioni = [];
 let mediaDetails = null; // Per salvare i dettagli del film/serie
 
 if (!id || !tipo) {
-    console.error("ID o tipo mancanti nell'URL.");
-    // Reindirizza o mostra un messaggio di errore
+    console.error("ID o tipo mancanti nell'URL. Reindirizzamento alla homepage.");
     window.location.href = "index.html";
 }
 
@@ -42,7 +41,8 @@ async function caricaDettagli() {
         const dataUscita = mediaDetails.release_date || mediaDetails.first_air_date || "Data non disponibile";
         const voto = mediaDetails.vote_average ? `${mediaDetails.vote_average.toFixed(1)}/10` : "N/A";
         const generi = mediaDetails.genres?.map(g => g.name).join(", ") || "Non disponibili";
-        const runtime = mediaDetails.runtime ? `${mediaDetails.runtime} min` : (mediaDetails.episode_run_time ? `${mediaDetails.episode_run_time[0]} min per episodio` : 'N/A');
+        // Aggiungi runtime solo per i film, per le serie mostra null o un messaggio se non c'è run_time
+        const runtime = (tipo === 'movie' && mediaDetails.runtime) ? `${mediaDetails.runtime} min` : (tipo === 'tv' && mediaDetails.episode_run_time && mediaDetails.episode_run_time.length > 0 ? `${mediaDetails.episode_run_time[0]} min/episodio` : 'N/A');
 
         // Imposta lo sfondo dinamico
         backdropOverlay.style.backgroundImage = `url(${backdropPath})`;
@@ -56,24 +56,26 @@ async function caricaDettagli() {
                     <p class="text-xl lg:text-2xl text-gray-300 mb-4">${descrizione}</p>
                     <p class="text-lg mb-2"><strong>Data di uscita:</strong> ${dataUscita}</p>
                     <p class="text-lg mb-2"><strong>Generi:</strong> ${generi}</p>
-                    <p class="text-lg mb-2"><strong>Durata:</strong> ${runtime}</p>
+                    ${runtime !== 'N/A' ? `<p class="text-lg mb-2"><strong>Durata:</strong> ${runtime}</p>` : ''}
                     <p class="text-lg mb-6"><strong>Voto:</strong> ⭐ ${voto}</p>
                     <div class="detail-buttons flex gap-4 justify-center md:justify-start">
                         <button class="btn play-btn flex items-center gap-2">
                             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
                             Riproduci
                         </button>
-                        </div>
+                    </div>
                 </div>
             </div>
         `;
 
-        // Logica per il player (direttamente cliccando "Riproduci" nella Hero)
         const heroPlayBtn = dettagliHero.querySelector('.play-btn');
         heroPlayBtn.onclick = () => {
             playerContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+            // Per i film, avvia subito il player se non è già attivo
+            if (tipo === 'movie') {
+                aggiungiPlayerFilm(id);
+            }
         };
-
 
         await caricaTrailer();
 
@@ -84,23 +86,33 @@ async function caricaDettagli() {
             const stagione1 = stagioni.find(s => s.season_number === 1);
             if (stagione1) {
                 await caricaEpisodi(id, 1);
+            } else {
+                // Se non c'è la stagione 1, prova a caricare la prima stagione disponibile
+                if (stagioni.length > 0) {
+                    await caricaEpisodi(id, stagioni[0].season_number);
+                } else {
+                    playerContainer.innerHTML = `<p class="text-gray-400 text-center">Nessuna stagione o episodio disponibile.</p>`;
+                }
             }
         } else {
             episodiSection.classList.add('hidden'); // Nasconde la sezione episodi per i film
             selezionaStagioneBtn.style.display = "none";
-            aggiungiPlayerFilm(id);
+            aggiungiPlayerFilm(id); // Carica il player per i film immediatamente
         }
 
     } catch (error) {
         console.error("Errore nel caricamento dei dettagli:", error);
-        dettagliHero.innerHTML = `<p class="text-center text-red-500 text-xl">Errore nel caricamento dei dettagli. Riprova più tardi.</p>`;
+        dettagliHero.innerHTML = `<p class="text-center text-red-500 text-xl w-full">Errore nel caricamento dei dettagli. Riprova più tardi.</p>`;
+        // Puoi anche nascondere le altre sezioni se la hero fallisce
+        trailerBox.innerHTML = '';
+        episodiSection.classList.add('hidden');
+        playerContainer.innerHTML = '';
     }
 }
 
 async function caricaTrailer() {
     const res = await fetch(`${BASE_URL}/${tipo}/${id}/videos?api_key=${API_KEY}&language=it-IT`);
     const data = await res.json();
-    // Preferisci un trailer ufficiale se disponibile
     const trailer = data.results.find(v => v.type === "Trailer" && v.site === "YouTube" && v.official) || 
                     data.results.find(v => v.type === "Trailer" && v.site === "YouTube");
 
@@ -153,6 +165,8 @@ async function caricaEpisodi(tvId, seasonNumber) {
 
     if (!data.episodes || data.episodes.length === 0) {
         carouselTrack.innerHTML = `<p class="text-gray-400 text-center w-full">Nessun episodio disponibile per questa stagione.</p>`;
+        // In questo caso, potresti anche pulire il player o mostrare un messaggio
+        playerContainer.innerHTML = `<p class="text-gray-400 text-center">Nessun episodio riproducibile per questa stagione.</p>`;
         return;
     }
 
@@ -181,22 +195,28 @@ async function caricaEpisodi(tvId, seasonNumber) {
 
         carouselTrack.appendChild(epCard);
 
-        if (!primoCaricato && episodio.episode_number === 1) { // Carica il primo episodio della stagione
+        // Carica il primo episodio della stagione SOLO SE non è già stato caricato
+        if (!primoCaricato) {
             aggiornaPlayer(tvId, seasonNumber, episodio.episode_number, false);
             primoCaricato = true;
         }
     });
-
-    if (!primoCaricato && data.episodes.length > 0) { // Fallback se il primo episodio non è l'E1
-        aggiornaPlayer(tvId, seasonNumber, data.episodes[0].episode_number, false);
-    }
 }
 
 function aggiornaPlayer(tvId, season, episode, scroll = true) {
-    playerContainer.innerHTML = `
-        <div class="iframe-container">
-            <iframe src="https://vixsrc.to/tv/${tvId}/${season}/${episode}" frameborder="0" allowfullscreen></iframe>
-        </div>`;
+    // Controlla se il media è un film o una serie TV
+    if (tipo === 'movie') {
+        playerContainer.innerHTML = `
+            <div class="iframe-container">
+                <iframe src="https://vixsrc.to/movie/${tvId}" frameborder="0" allowfullscreen></iframe>
+            </div>`;
+    } else { // È una serie TV
+        playerContainer.innerHTML = `
+            <div class="iframe-container">
+                <iframe src="https://vixsrc.to/tv/${tvId}/${season}/${episode}" frameborder="0" allowfullscreen></iframe>
+            </div>`;
+    }
+
 
     if (scroll) {
         setTimeout(() => {
@@ -207,7 +227,7 @@ function aggiornaPlayer(tvId, season, episode, scroll = true) {
 
 // Gestione modale
 selezionaStagioneBtn.onclick = () => {
-    modal.style.display = "block";
+    modal.style.display = "flex"; // Usa flex per centrare il contenuto
 };
 
 closeModal.onclick = () => {
