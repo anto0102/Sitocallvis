@@ -20,6 +20,7 @@ html, body {
     line-height: 1.6;
     overflow-x: hidden;
     scroll-behavior: smooth;
+    min-height: 100vh; /* Assicura che il body sia alto almeno quanto la viewport */
 }
 
 /* Utility classes (simili a Tailwind per riusabilità e chiarezza) */
@@ -50,6 +51,8 @@ html, body {
 .main-details-wrapper {
     position: relative;
     width: 100%;
+    /* Altezza minima per la wrapper, si adatta al contenuto della hero */
+    min-height: 90vh; /* Aggiunto altezza minima per il caricamento */
 }
 
 .backdrop-overlay {
@@ -63,14 +66,21 @@ html, body {
     filter: brightness(0.5) blur(15px); /* Scura e sfoca l'immagine */
     transform: scale(1.05); /* Zoom leggero per coprire i bordi sfocati */
     transition: var(--hero-backdrop-transition);
+    z-index: 0; /* Assicura che sia dietro il contenuto */
 }
 
 .dettagli-hero {
+    /* Background gradient che si sovrappone al backdrop */
     background: linear-gradient(to top, var(--primary-bg) 0%, rgba(0,0,0,0.8) 20%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%);
+    position: relative; /* Per posizionarsi sopra il backdrop-overlay */
+    z-index: 1; /* Assicura che sia sopra il backdrop-overlay */
     display: flex;
     align-items: flex-end; /* Allinea il contenuto in basso */
     color: white;
     text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    min-height: 90vh; /* Altezza della hero, importante per visualizzare il contenuto */
+    padding-top: 120px; /* Spazio per la navbar fissa (se applicata anche qui) */
+    padding-bottom: 4rem; /* Padding sotto il contenuto */
 }
 
 .details-content {
@@ -78,6 +88,8 @@ html, body {
     max-width: 1200px;
     margin: 0 auto;
     align-items: flex-end; /* Allinea poster e info in basso */
+    padding-left: 2rem; /* Padding per desktop */
+    padding-right: 2rem;
 }
 
 .details-content img {
@@ -91,6 +103,7 @@ html, body {
 
 .details-content .info {
     max-width: 800px;
+    padding-left: 1.5rem; /* Spazio tra immagine e testo su desktop */
 }
 
 .details-content h1 {
@@ -127,10 +140,19 @@ html, body {
 /* --- Contenuto Sotto la Hero --- */
 .content-sections-wrapper {
     min-height: 50vh;
+    /* Margine negativo per far sovrapporre la sezione alla hero */
+    margin-top: -80px; /* Riduci per effetto sovrapposizione visibile */
+    position: relative; /* Per z-index e layout */
+    z-index: 20; /* Assicura che sia sopra la hero section */
+    background-color: var(--primary-bg);
+    border-top-left-radius: 30px; /* Angoli arrotondati superiori */
+    border-top-right-radius: 30px;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5); /* Ombra verso l'alto */
 }
 
 .section-box {
     padding: 2rem 0;
+    margin-bottom: 2rem;
 }
 
 .section-title {
@@ -140,6 +162,8 @@ html, body {
     color: white;
     border-bottom: 2px solid var(--border-color);
     padding-bottom: 0.5rem;
+    padding-left: 2rem; /* Allinea con il padding del contenitore */
+    padding-right: 2rem;
 }
 
 /* --- Trailer e Player --- */
@@ -152,6 +176,9 @@ html, body {
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    margin-left: auto; /* Centra l'iframe se c'è spazio */
+    margin-right: auto;
+    max-width: 90%; /* Limita la larghezza massima per schermi molto ampi */
 }
 
 .iframe-container iframe {
@@ -171,7 +198,10 @@ html, body {
     font-size: 1.1em;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+    display: inline-flex; /* Assicurati che sia inline-flex per icona e testo */
+    align-items: center;
+    gap: 0.5rem;
 }
 .season-selector-btn:hover {
     background-color: var(--accent-color);
@@ -185,6 +215,8 @@ html, body {
     overflow-y: hidden;
     padding-bottom: 1.5rem; /* Spazio per l'ombra */
     position: relative;
+    padding-left: 2rem; /* Allinea con il contenuto principale */
+    padding-right: 2rem;
 }
 
 .carousel-track {
@@ -274,7 +306,8 @@ html, body {
 
 /* --- MODAL Stagioni --- */
 .modal {
-    display: none;
+    /* CORREZIONE: Qui era l'errore del display. Deve essere 'none' inizialmente. */
+    display: none; /* Nascondi per default */
     position: fixed;
     z-index: 10000; /* Assicura che sia sopra tutto */
     left: 0;
@@ -284,9 +317,8 @@ html, body {
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.9); /* Sfondo più scuro per il modale */
     backdrop-filter: blur(5px);
-    display: flex; /* Centra il contenuto */
-    justify-content: center;
-    align-items: center;
+    justify-content: center; /* Centra il contenuto orizzontalmente (usa flex quando è display:flex) */
+    align-items: center; /* Centra il contenuto verticalmente (usa flex quando è display:flex) */
 }
 
 .modal-content {
@@ -414,6 +446,9 @@ html, body {
         width: 180px;
         margin-bottom: 1.5rem;
     }
+    .details-content .info {
+        padding-left: 0; /* Rimuovi il padding extra su mobile */
+    }
     .details-content h1 {
         font-size: 2.5em;
     }
@@ -435,6 +470,8 @@ html, body {
     }
     .section-title {
         font-size: 1.8em;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
     }
     .season-selector-btn {
         font-size: 0.9em;
@@ -475,13 +512,15 @@ html, body {
         font-size: 2em;
     }
     .details-content p {
-        font-size: 0.9em;
+        font-size: 0.8em;
     }
     .content-sections-wrapper {
         padding: 1.5rem 1rem;
     }
     .section-title {
         font-size: 1.5em;
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
     .episode-card {
         width: 180px;
