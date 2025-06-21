@@ -108,3 +108,10 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
   movies.forEach(movie => movieContainer.appendChild(createMovieCard(movie)));
   series.forEach(serie => seriesContainer.appendChild(createMovieCard(serie)));
 });
+function scrollRight(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const scrollAmount = container.querySelector(".movie-card")?.offsetWidth || 150;
+  container.scrollBy({ left: scrollAmount * 3, behavior: 'smooth' });
+}
