@@ -125,7 +125,7 @@ async function loadMovies() {
 document.addEventListener('DOMContentLoaded', loadMovies);
 
 
-// Gestione della ricerca
+// Gestione della ricerca - AGGIORNATA PER NUOVE CLASSI E STRUTTURA
 document.getElementById('search-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const query = document.getElementById('search-input').value.trim();
@@ -150,21 +150,24 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
     const series = results.filter(r => r.media_type === 'tv');
 
     const main = document.getElementById('main-content');
+    // Genera la nuova struttura per i risultati di ricerca
     main.innerHTML = `
-        <section class="search-results-section px-8 pt-24 pb-8">
+        <section class="search-results-section relative px-8 pt-24 pb-8">
             <h2 class="text-4xl font-bold mb-8 text-white">🔍 Risultati per "${query}"</h2>
             <div class="space-y-12">
-                <div>
-                    <h3 class="text-2xl font-semibold mb-4 text-white">🎬 Film</h3>
+                <div class="group relative"> <h3 class="text-2xl font-semibold mb-4 text-white">🎬 Film</h3>
                     <div class="carousel-container overflow-x-auto scroll-smooth hide-scrollbar pb-6">
                         <div class="carousel-track flex gap-4" id="search-movies"></div>
                     </div>
+                    <button class="scroll-btn scroll-right opacity-0 group-hover:opacity-100 right-0" onclick="scrollRight('search-movies')">❯</button>
+                    <button class="scroll-btn scroll-left opacity-0 group-hover:opacity-100 left-0" onclick="scrollLeft('search-movies')">❮</button>
                 </div>
-                <div>
-                    <h3 class="text-2xl font-semibold mb-4 text-white">📺 Serie TV</h3>
+                <div class="group relative"> <h3 class="text-2xl font-semibold mb-4 text-white">📺 Serie TV</h3>
                     <div class="carousel-container overflow-x-auto scroll-smooth hide-scrollbar pb-6">
                         <div class="carousel-track flex gap-4" id="search-series"></div>
                     </div>
+                    <button class="scroll-btn scroll-right opacity-0 group-hover:opacity-100 right-0" onclick="scrollRight('search-series')">❯</button>
+                    <button class="scroll-btn scroll-left opacity-0 group-hover:opacity-100 left-0" onclick="scrollLeft('search-series')">❮</button>
                 </div>
             </div>
         </section>
@@ -186,20 +189,25 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
     }
 });
 
-// Funzioni di scroll per i caroselli - MODIFICATE PER CORREGGERE LE FRECCE
-// La funzione dovrebbe puntare al carousel-container del genitore della sezione con l'ID
-function scrollRight(sectionId) {
-    // Trova l'elemento carousel-container all'interno della sezione specificata
-    const carouselContainer = document.getElementById(sectionId).closest('.content-row').querySelector('.carousel-container');
-    if (!carouselContainer) return;
-    const scrollAmount = carouselContainer.querySelector(".movie-card")?.offsetWidth * 3 || 600;
+// Funzioni di scroll per i caroselli - CORRETTE per puntare ai carousel-container
+function scrollRight(containerId) {
+    // Cerchiamo direttamente l'elemento che ha overflow-x: scroll, che è .carousel-container
+    const carouselContainer = document.getElementById(containerId).closest('.carousel-container');
+    if (!carouselContainer) {
+        console.error(`Carousel container not found for ID: ${containerId}`);
+        return;
+    }
+    const scrollAmount = carouselContainer.querySelector(".movie-card")?.offsetWidth * 3 || 600; // Scorre di 3 card alla volta
     carouselContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
 }
 
-function scrollLeft(sectionId) {
-    // Trova l'elemento carousel-container all'interno della sezione specificata
-    const carouselContainer = document.getElementById(sectionId).closest('.content-row').querySelector('.carousel-container');
-    if (!carouselContainer) return;
-    const scrollAmount = carouselContainer.querySelector(".movie-card")?.offsetWidth * 3 || 600;
+function scrollLeft(containerId) {
+    // Cerchiamo direttamente l'elemento che ha overflow-x: scroll, che è .carousel-container
+    const carouselContainer = document.getElementById(containerId).closest('.carousel-container');
+    if (!carouselContainer) {
+        console.error(`Carousel container not found for ID: ${containerId}`);
+        return;
+    }
+    const scrollAmount = carouselContainer.querySelector(".movie-card")?.offsetWidth * 3 || 600; // Scorre di 3 card alla volta
     carouselContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
 }
