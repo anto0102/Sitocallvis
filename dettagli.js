@@ -139,7 +139,7 @@ async function caricaTrailer(videosData) {
 
     if (trailer) {
         trailerPlayerContainer.innerHTML = `
-            <iframe src="https://www.youtube.com/embed/${trailer.key}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe src="youtube.com/embed/{trailer.key}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         `;
     } else {
         trailerPlayerContainer.innerHTML = `
@@ -202,10 +202,10 @@ function createMovieCard(item) {
     const type = item.media_type || (item.title ? 'movie' : 'tv'); // Indovina il tipo se non esplicito
 
     const card = document.createElement('div');
-    card.className = 'movie-card flex-shrink-0 w-48 rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform duration-300'; // Tailwind classes
+    card.className = 'movie-card flex-shrink-0 rounded-lg overflow-hidden shadow-lg transition-transform duration-300';
     card.innerHTML = `
         <a href="dettagli.html?id=${item.id}&type=${type}" class="block w-full">
-            <img src="${poster}" alt="${title}" class="w-full h-auto object-cover rounded-md" loading="lazy" />
+            <img src="${poster}" alt="${title}" class="w-full h-full object-cover rounded-md" loading="lazy" />
             <div class="p-2 text-center text-sm font-semibold">${title}</div>
         </a>
     `;
@@ -296,4 +296,25 @@ function aggiungiPlayerFilm(movieId) {
     mainPlayerContainer.innerHTML = `
         <iframe src="https://vixsrc.to/movie/${movieId}" frameborder="0" allowfullscreen></iframe>
     `;
+}
+
+// Funzioni di scroll per i caroselli nella pagina dettagli
+function scrollRight(carouselId) {
+    const carouselContainer = document.getElementById(carouselId);
+    if (!carouselContainer) {
+        console.error(`Carousel container not found for ID: ${carouselId}`);
+        return;
+    }
+    const scrollAmount = carouselContainer.querySelector("." + (carouselId === 'cast-carousel' ? 'cast-card' : (carouselId === 'episodes-carousel' ? 'episode-card' : 'movie-card')) )?.offsetWidth * 3 || 600; // Calcola in base al tipo di card
+    carouselContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+}
+
+function scrollLeft(carouselId) {
+    const carouselContainer = document.getElementById(carouselId);
+    if (!carouselContainer) {
+        console.error(`Carousel container not found for ID: ${carouselId}`);
+        return;
+    }
+    const scrollAmount = carouselContainer.querySelector("." + (carouselId === 'cast-carousel' ? 'cast-card' : (carouselId === 'episodes-carousel' ? 'episode-card' : 'movie-card')) )?.offsetWidth * 3 || 600; // Calcola in base al tipo di card
+    carouselContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
 }
