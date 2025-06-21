@@ -1,63 +1,61 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cinema Discovery</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
-</head>
-<body>
-  <header>
-    <a href="profilo.html" class="profile-button" title="Il mio profilo">👤</a>
-    <h1>Cinema <span>Discovery</span></h1>
-    <form id="search-form">
-      <input type="text" id="search-input" placeholder="Cerca un film o serie..." />
-      <button type="submit">🔍</button>
-    </form>
-    <div id="auth-area">
-      <button id="login-btn" onclick="location.href='auth.html'">Accedi</button>
-      <button id="logout-btn" style="display:none">Logout</button>
-    </div>
-  </header>
+<!DOCTYPE html><html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cinema Discovery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
+  </head>
+  <body class="bg-gray-950 text-white font-sans">
+    <header class="bg-black px-4 py-4 flex flex-col items-center md:flex-row md:justify-between sticky top-0 z-10">
+      <div class="flex items-center gap-2">
+        <a href="profilo.html" class="text-white text-2xl bg-cyan-600 hover:bg-cyan-700 px-3 py-1 rounded-lg" title="Il mio profilo">👤</a>
+        <h1 class="text-3xl font-bold ml-2">Cinema <span class="text-red-500">Discovery</span></h1>
+      </div>
+      <form id="search-form" class="mt-4 md:mt-0 flex gap-2">
+        <input type="text" id="search-input" placeholder="Cerca un film o serie..." class="px-3 py-2 rounded-lg text-black w-60" />
+        <button type="submit" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg">🔍</button>
+      </form>
+      <div id="auth-area" class="mt-4 md:mt-0 flex gap-2">
+        <button id="login-btn" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg">Accedi</button>
+        <button id="logout-btn" class="bg-gray-700 hover:bg-gray-800 px-4 py-2 rounded-lg hidden">Logout</button>
+      </div>
+    </header><main id="main-content" class="px-4 py-6 space-y-10">
+  <!-- Le sezioni saranno caricate dinamicamente qui -->
+  <section><h2 class="text-xl font-semibold mb-2">🍿 Consigliati</h2><div class="flex overflow-x-auto gap-4" id="consigliati"></div></section>
+  <section><h2 class="text-xl font-semibold mb-2">🔥 Titoli del momento</h2><div class="flex overflow-x-auto gap-4" id="momento"></div></section>
+  <section><h2 class="text-xl font-semibold mb-2">🎭 Drammatici</h2><div class="flex overflow-x-auto gap-4" id="drammatici"></div></section>
+  <section><h2 class="text-xl font-semibold mb-2">💥 Azione</h2><div class="flex overflow-x-auto gap-4" id="azione"></div></section>
+  <section><h2 class="text-xl font-semibold mb-2">😂 Commedie</h2><div class="flex overflow-x-auto gap-4" id="commedie"></div></section>
+  <section><h2 class="text-xl font-semibold mb-2">👻 Horror</h2><div class="flex overflow-x-auto gap-4" id="horror"></div></section>
+  <section><h2 class="text-xl font-semibold mb-2">👨‍👩‍👧 Famiglia</h2><div class="flex overflow-x-auto gap-4" id="famiglia"></div></section>
+  <section><h2 class="text-xl font-semibold mb-2">🚀 Fantascienza</h2><div class="flex overflow-x-auto gap-4" id="fantascienza"></div></section>
+  <section><h2 class="text-xl font-semibold mb-2">💖 Romantici</h2><div class="flex overflow-x-auto gap-4" id="romantici"></div></section>
+  <section><h2 class="text-xl font-semibold mb-2">🎬 Documentari</h2><div class="flex overflow-x-auto gap-4" id="documentari"></div></section>
+</main>
 
-  <main id="main-content">
-    <!-- Sezioni film -->
-    <section><h2>🍿 Consigliati</h2><div class="movie-container" id="consigliati"></div></section>
-    <section><h2>🔥 Titoli del momento</h2><div class="movie-container" id="momento"></div></section>
-    <section><h2>🎭 Drammatici</h2><div class="movie-container" id="drammatici"></div></section>
-    <section><h2>💥 Azione</h2><div class="movie-container" id="azione"></div></section>
-    <section><h2>😂 Commedie</h2><div class="movie-container" id="commedie"></div></section>
-    <section><h2>👻 Horror</h2><div class="movie-container" id="horror"></div></section>
-    <section><h2>👨‍👩‍👧 Famiglia</h2><div class="movie-container" id="famiglia"></div></section>
-    <section><h2>🚀 Fantascienza</h2><div class="movie-container" id="fantascienza"></div></section>
-    <section><h2>💖 Romantici</h2><div class="movie-container" id="romantici"></div></section>
-    <section><h2>🎬 Documentari</h2><div class="movie-container" id="documentari"></div></section>
-  </main>
+<script>
+  Clerk.configure({ publishableKey: "pk_test_b23saWdpbmctaWVyWxhLTc1LmNsZXJrLmFjY291bnRzLmRldiQ" });
+  window.Clerk.load().then(async () => {
+    const user = await Clerk.user;
+    const loginBtn = document.getElementById("login-btn");
+    const logoutBtn = document.getElementById("logout-btn");
 
-  <script>
-    Clerk.configure({ publishableKey: "pk_test_b23saWdpbmctaWVyWxhLTc1LmNsZXJrLmFjY291bnRzLmRldiQ" });
+    if (user) {
+      loginBtn.classList.add("hidden");
+      logoutBtn.classList.remove("hidden");
+    } else {
+      loginBtn.classList.remove("hidden");
+      logoutBtn.classList.add("hidden");
+    }
 
-    window.Clerk.load().then(async () => {
-      const user = await Clerk.user;
-      const loginBtn = document.getElementById("login-btn");
-      const logoutBtn = document.getElementById("logout-btn");
-
-      if (user) {
-        loginBtn.style.display = "none";
-        logoutBtn.style.display = "inline-block";
-      } else {
-        loginBtn.style.display = "inline-block";
-        logoutBtn.style.display = "none";
-      }
-
-      logoutBtn.addEventListener("click", async () => {
-        await Clerk.signOut();
-        window.location.reload();
-      });
+    logoutBtn.addEventListener("click", async () => {
+      await Clerk.signOut();
+      window.location.reload();
     });
-  </script>
+  });
+</script>
+<script src="index.js"></script>
 
-  <script src="index.js"></script>
-</body>
+  </body>
 </html>
