@@ -1,181 +1,221 @@
 const API_KEY = "2d082597ab951b3a9596ca23e71413a8"; // Inserisci la tua TMDB API key
+const BASE_URL = 'https://api.themoviedb.org/3';
+const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/';
 
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("id");
-const tipo = urlParams.get("type");
+const tipo = urlParams.get("type"); // 'movie' or 'tv'
 
-const dettagli = document.getElementById("dettagli");
+const dettagliHero = document.getElementById("dettagli-hero");
+const backdropOverlay = document.getElementById("backdrop-overlay");
 const trailerBox = document.getElementById("trailer");
-const episodiBox = document.getElementById("episodi-carosello");
-const playerBox = document.getElementById("player-container");
+const episodiSection = document.getElementById("episodes-section"); // Nuova sezione per episodi
+const episodiCarosello = document.getElementById("episodi-carosello");
+const playerContainer = document.getElementById("player-container");
 const modal = document.getElementById("modal-stagioni");
-const closeModal = document.querySelector(".close");
+const closeModal = document.querySelector(".close-btn");
 const selezionaStagioneBtn = document.getElementById("seleziona-stagione");
-const listaStagioni = document.getElementById("lista-stagioni");
+const listaStagioniModal = document.getElementById("lista-stagioni");
+const currentSeasonTitle = document.getElementById("current-season-title");
 
 let stagioni = [];
+let mediaDetails = null; // Per salvare i dettagli del film/serie
 
-if (!id || !tipo) throw new Error("Parametro mancante");
+if (!id || !tipo) {
+    console.error("ID o tipo mancanti nell'URL.");
+    // Reindirizza o mostra un messaggio di errore
+    window.location.href = "index.html";
+}
 
 caricaDettagli();
 
 async function caricaDettagli() {
-  const res = await fetch(`https://api.themoviedb.org/3/${tipo}/${id}?api_key=${API_KEY}&language=it-IT`);
-  const data = await res.json();
+    try {
+        const res = await fetch(`${BASE_URL}/${tipo}/${id}?api_key=${API_KEY}&language=it-IT`);
+        if (!res.ok) throw new Error(`Errore HTTP! status: ${res.status}`);
+        mediaDetails = await res.json(); // Salva i dettagli
 
-  const titolo = data.title || data.name;
-  const descrizione = data.overview || "Nessuna descrizione disponibile.";
-  const img = data.poster_path ? `https://image.tmdb.org/t/p/w500${data.poster_path}` : "";
-  const dataUscita = data.release_date || data.first_air_date || "Data non disponibile";
-  const voto = data.vote_average ? `${data.vote_average}/10` : "N/A";
-  const generi = data.genres?.map(g => g.name).join(", ") || "Non disponibili";
+        const titolo = mediaDetails.title || mediaDetails.name;
+        const descrizione = mediaDetails.overview || "Nessuna descrizione disponibile.";
+        const posterPath = mediaDetails.poster_path ? `${IMAGE_BASE_URL}w500${mediaDetails.poster_path}` : 'https://via.placeholder.com/500x750/222222/e0e0e0?text=Poster+non+disponibile';
+        const backdropPath = mediaDetails.backdrop_path ? `${IMAGE_BASE_URL}original${mediaDetails.backdrop_path}` : posterPath; // Usa il poster come fallback
+        const dataUscita = mediaDetails.release_date || mediaDetails.first_air_date || "Data non disponibile";
+        const voto = mediaDetails.vote_average ? `${mediaDetails.vote_average.toFixed(1)}/10` : "N/A";
+        const generi = mediaDetails.genres?.map(g => g.name).join(", ") || "Non disponibili";
+        const runtime = mediaDetails.runtime ? `${mediaDetails.runtime} min` : (mediaDetails.episode_run_time ? `${mediaDetails.episode_run_time[0]} min per episodio` : 'N/A');
 
-  dettagli.innerHTML = `
-    <img src="${img}" alt="${titolo}">
-    <div class="info">
-      <h2>${titolo}</h2>
-      <p><strong>Data di uscita:</strong> ${dataUscita}</p>
-      <p><strong>Generi:</strong> ${generi}</p>
-      <p><strong>Voto:</strong> ${voto}</p>
-      <p><strong>Descrizione:</strong> ${descrizione}</p>
-    </div>
-  `;
+        // Imposta lo sfondo dinamico
+        backdropOverlay.style.backgroundImage = `url(${backdropPath})`;
 
-  await caricaTrailer();
+        // Popola la Hero Section di dettaglio
+        dettagliHero.innerHTML = `
+            <div class="details-content flex flex-col md:flex-row items-center md:items-start gap-8 lg:gap-12">
+                <img src="${posterPath}" alt="${titolo}" class="w-48 h-auto rounded-lg shadow-2xl md:w-64 lg:w-80 flex-shrink-0">
+                <div class="info text-center md:text-left">
+                    <h1 class="text-5xl lg:text-7xl font-bold mb-4 leading-tight">${titolo}</h1>
+                    <p class="text-xl lg:text-2xl text-gray-300 mb-4">${descrizione}</p>
+                    <p class="text-lg mb-2"><strong>Data di uscita:</strong> ${dataUscita}</p>
+                    <p class="text-lg mb-2"><strong>Generi:</strong> ${generi}</p>
+                    <p class="text-lg mb-2"><strong>Durata:</strong> ${runtime}</p>
+                    <p class="text-lg mb-6"><strong>Voto:</strong> ⭐ ${voto}</p>
+                    <div class="detail-buttons flex gap-4 justify-center md:justify-start">
+                        <button class="btn play-btn flex items-center gap-2">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                            Riproduci
+                        </button>
+                        </div>
+                </div>
+            </div>
+        `;
 
-  if (tipo === "tv") {
-    selezionaStagioneBtn.style.display = "inline-block";
-    await caricaStagioni(id);
-    const stagione1 = stagioni.find(s => s.season_number === 1);
-    if (stagione1) {
-      await caricaEpisodi(id, 1); // <-- già carica il primo episodio
+        // Logica per il player (direttamente cliccando "Riproduci" nella Hero)
+        const heroPlayBtn = dettagliHero.querySelector('.play-btn');
+        heroPlayBtn.onclick = () => {
+            playerContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+        };
+
+
+        await caricaTrailer();
+
+        if (tipo === "tv") {
+            episodiSection.classList.remove('hidden'); // Mostra la sezione episodi
+            selezionaStagioneBtn.style.display = "inline-flex"; // Mostra il bottone per le stagioni
+            await caricaStagioni(id);
+            const stagione1 = stagioni.find(s => s.season_number === 1);
+            if (stagione1) {
+                await caricaEpisodi(id, 1);
+            }
+        } else {
+            episodiSection.classList.add('hidden'); // Nasconde la sezione episodi per i film
+            selezionaStagioneBtn.style.display = "none";
+            aggiungiPlayerFilm(id);
+        }
+
+    } catch (error) {
+        console.error("Errore nel caricamento dei dettagli:", error);
+        dettagliHero.innerHTML = `<p class="text-center text-red-500 text-xl">Errore nel caricamento dei dettagli. Riprova più tardi.</p>`;
     }
-  } else {
-    selezionaStagioneBtn.style.display = "none";
-    aggiungiPlayerFilm(id);
-  }
 }
 
 async function caricaTrailer() {
-  const res = await fetch(`https://api.themoviedb.org/3/${tipo}/${id}/videos?api_key=${API_KEY}&language=it-IT`);
-  const data = await res.json();
-  const trailer = data.results.find(v => v.type === "Trailer" && v.site === "YouTube");
+    const res = await fetch(`${BASE_URL}/${tipo}/${id}/videos?api_key=${API_KEY}&language=it-IT`);
+    const data = await res.json();
+    // Preferisci un trailer ufficiale se disponibile
+    const trailer = data.results.find(v => v.type === "Trailer" && v.site === "YouTube" && v.official) || 
+                    data.results.find(v => v.type === "Trailer" && v.site === "YouTube");
 
-  if (trailer) {
-    trailerBox.innerHTML = `
-      <h2>🎬 Trailer</h2>
-      <div class="iframe-container">
-        <iframe src="https://www.youtube.com/embed/${trailer.key}" allowfullscreen></iframe>
-      </div>`;
-  } else {
-    trailerBox.innerHTML = `
-      <h2>🎬 Trailer</h2>
-      <p class="messaggio">Nessun trailer disponibile.</p>
-    `;
-  }
+    if (trailer) {
+        trailerBox.innerHTML = `
+            <div class="iframe-container">
+                <iframe src="https://www.youtube.com/embed/${trailer.key}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>`;
+    } else {
+        trailerBox.innerHTML = `
+            <p class="text-gray-400 text-center">Nessun trailer disponibile.</p>
+        `;
+    }
 }
 
 function aggiungiPlayerFilm(id) {
-  playerBox.innerHTML = `
-    <div class="box-player">
-      <h2>🎥 Guarda ora</h2>
-      <div class="iframe-container">
-        <iframe src="https://vixsrc.to/movie/${id}" allowfullscreen></iframe>
-      </div>
-    </div>`;
+    playerContainer.innerHTML = `
+        <div class="iframe-container">
+            <iframe src="https://vixsrc.to/movie/${id}" frameborder="0" allowfullscreen></iframe>
+        </div>`;
 }
 
 async function caricaStagioni(tvId) {
-  const res = await fetch(`https://api.themoviedb.org/3/tv/${tvId}?api_key=${API_KEY}&language=it-IT`);
-  const data = await res.json();
-  stagioni = data.seasons.filter(s => s.season_number > 0);
+    const res = await fetch(`${BASE_URL}/tv/${tvId}?api_key=${API_KEY}&language=it-IT`);
+    const data = await res.json();
+    stagioni = data.seasons.filter(s => s.season_number > 0);
 
-  listaStagioni.innerHTML = "";
-  stagioni.forEach(stagione => {
-    const btn = document.createElement("button");
-    btn.className = "stagione-selector";
-    btn.textContent = `Stagione ${stagione.season_number}`;
-    btn.onclick = () => {
-      modal.style.display = "none";
-      caricaEpisodi(tvId, stagione.season_number);
-    };
-    listaStagioni.appendChild(btn);
-  });
+    listaStagioniModal.innerHTML = "";
+    stagioni.sort((a,b) => a.season_number - b.season_number); // Ordina le stagioni
+    stagioni.forEach(stagione => {
+        const btn = document.createElement("button");
+        btn.className = "season-modal-button";
+        btn.textContent = `Stagione ${stagione.season_number}`;
+        btn.onclick = () => {
+            modal.style.display = "none";
+            caricaEpisodi(tvId, stagione.season_number);
+        };
+        listaStagioniModal.appendChild(btn);
+    });
 }
 
 async function caricaEpisodi(tvId, seasonNumber) {
-  episodiBox.innerHTML = `
-    <div id="titolo-stagione">Stagione ${seasonNumber}</div>
-    <div class="carousel-wrapper"></div>
-  `;
-  const wrapper = episodiBox.querySelector(".carousel-wrapper");
+    currentSeasonTitle.textContent = `(Stagione ${seasonNumber})`; // Aggiorna il titolo della stagione corrente
 
-  const res = await fetch(`https://api.themoviedb.org/3/tv/${tvId}/season/${seasonNumber}?api_key=${API_KEY}&language=it-IT`);
-  const data = await res.json();
+    const res = await fetch(`${BASE_URL}/tv/${tvId}/season/${seasonNumber}?api_key=${API_KEY}&language=it-IT`);
+    const data = await res.json();
 
-  if (!data.episodes || data.episodes.length === 0) {
-    wrapper.innerHTML = `<p>Nessun episodio disponibile per questa stagione.</p>`;
-    return;
-  }
+    const carouselTrack = episodiCarosello.querySelector(".carousel-track");
+    carouselTrack.innerHTML = ''; // Pulisci i vecchi episodi
 
-  let primoCaricato = false;
-
-  data.episodes.forEach(episodio => {
-    const ep = document.createElement("div");
-    ep.className = "episodio-card";
-
-    const imgSrc = episodio.still_path
-      ? `https://image.tmdb.org/t/p/w300${episodio.still_path}`
-      : "https://via.placeholder.com/300x169?text=Episodio+non+disponibile";
-
-    ep.innerHTML = `
-      <div class="episodio-link" style="cursor:pointer">
-        <img src="${imgSrc}" alt="Episodio">
-        <p><strong>${episodio.episode_number}. ${episodio.name}</strong></p>
-        <p>${episodio.overview || "Nessuna descrizione."}</p>
-      </div>
-    `;
-
-    ep.onclick = () => {
-      aggiornaPlayer(tvId, seasonNumber, episodio.episode_number, true);
-    };
-
-    wrapper.appendChild(ep);
-
-    if (!primoCaricato) {
-      aggiornaPlayer(tvId, seasonNumber, episodio.episode_number, false);
-      primoCaricato = true;
+    if (!data.episodes || data.episodes.length === 0) {
+        carouselTrack.innerHTML = `<p class="text-gray-400 text-center w-full">Nessun episodio disponibile per questa stagione.</p>`;
+        return;
     }
-  });
+
+    let primoCaricato = false; // Flag per caricare il primo episodio nel player
+
+    data.episodes.forEach(episodio => {
+        const epCard = document.createElement("div");
+        epCard.className = "episode-card";
+
+        const imgSrc = episodio.still_path
+            ? `${IMAGE_BASE_URL}w300${episodio.still_path}`
+            : "https://via.placeholder.com/300x169/222222/e0e0e0?text=Immagine+non+disponibile";
+
+        epCard.innerHTML = `
+            <img src="${imgSrc}" alt="Episodio ${episodio.episode_number}">
+            <div class="episode-info">
+                <h3>E${episodio.episode_number}: ${episodio.name}</h3>
+                <p>${episodio.overview || "Nessuna descrizione."}</p>
+                <button class="play-episode-btn">▶ Guarda</button>
+            </div>
+        `;
+
+        epCard.querySelector('.play-episode-btn').onclick = () => {
+            aggiornaPlayer(tvId, seasonNumber, episodio.episode_number, true);
+        };
+
+        carouselTrack.appendChild(epCard);
+
+        if (!primoCaricato && episodio.episode_number === 1) { // Carica il primo episodio della stagione
+            aggiornaPlayer(tvId, seasonNumber, episodio.episode_number, false);
+            primoCaricato = true;
+        }
+    });
+
+    if (!primoCaricato && data.episodes.length > 0) { // Fallback se il primo episodio non è l'E1
+        aggiornaPlayer(tvId, seasonNumber, data.episodes[0].episode_number, false);
+    }
 }
 
 function aggiornaPlayer(tvId, season, episode, scroll = true) {
-  playerBox.innerHTML = `
-    <div class="box-player">
-      <h2>🎥 S${season} | Episodio ${episode}</h2>
-      <div class="iframe-container">
-        <iframe src="https://vixsrc.to/tv/${tvId}/${season}/${episode}" allowfullscreen></iframe>
-      </div>
-    </div>`;
+    playerContainer.innerHTML = `
+        <div class="iframe-container">
+            <iframe src="https://vixsrc.to/tv/${tvId}/${season}/${episode}" frameborder="0" allowfullscreen></iframe>
+        </div>`;
 
-  if (scroll) {
-    setTimeout(() => {
-      playerBox.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 100);
-  }
+    if (scroll) {
+        setTimeout(() => {
+            playerContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
+    }
 }
 
 // Gestione modale
 selezionaStagioneBtn.onclick = () => {
-  modal.style.display = "block";
+    modal.style.display = "block";
 };
 
 closeModal.onclick = () => {
-  modal.style.display = "none";
+    modal.style.display = "none";
 };
 
 window.onclick = (event) => {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-}
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+};
