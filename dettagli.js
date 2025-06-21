@@ -8,7 +8,7 @@ const tipo = urlParams.get("type"); // 'movie' or 'tv'
 
 // Elementi del nuovo design
 const topBackdrop = document.getElementById("top-backdrop");
-const mainDetailsSection = document.getElementById("main-details-section"); // QUI L'ERRORE: QUESTA PUÒ ESSERE NULL
+const mainDetailsSection = document.getElementById("main-details-section"); 
 const detailPoster = document.getElementById("detail-poster");
 const detailTitle = document.getElementById("detail-title");
 const detailTagline = document.getElementById("detail-tagline");
@@ -17,10 +17,9 @@ const detailReleaseYear = document.getElementById("detail-release-year");
 const detailRuntime = document.getElementById("detail-runtime");
 const detailGenres = document.getElementById("detail-genres");
 const detailOverview = document.getElementById("detail-overview");
-// Aggiungo un controllo subito qui, se mainDetailsSection non esiste, gli elementi al suo interno non potranno essere trovati
 let mainPlayBtn = null;
 if (mainDetailsSection) {
-    mainPlayBtn = mainDetailsSection.querySelector('.play-btn'); // Bottone play nella sezione dettagli
+    mainPlayBtn = mainDetailsSection.querySelector('.play-btn'); 
 }
 
 
@@ -44,23 +43,22 @@ let allSeasons = []; // Array per memorizzare tutte le stagioni disponibili
 
 if (!id || !tipo) {
     console.error("ID o tipo mancanti nell'URL. Reindirizzamento alla homepage.");
-    window.location.href = "index.html"; // Reindirizza se i parametri sono mancanti
-    return; // Ferma l'esecuzione dello script
+    window.location.href = "index.html"; 
+    // RIMOSSO IL "return;" QUI - ERA LA CAUSA DELL'ERRORE DI SINTASSI!
 }
 
 document.addEventListener('DOMContentLoaded', caricaDettagli);
 
 async function caricaDettagli() {
-    // Controllo iniziale per gli elementi critici del DOM
+    // Questo controllo ora è efficace perché lo script non si blocca prima
     if (!mainDetailsSection || !detailPoster || !detailTitle || !mainPlayBtn) {
         console.error("Elementi HTML essenziali non trovati. Assicurati che l'ID e la struttura HTML siano corretti.");
-        // Mostra un messaggio di errore sulla pagina se gli elementi non sono lì
         document.body.innerHTML = `<div style="color: red; text-align: center; margin-top: 100px;">
                                     <h1>Errore: Contenuto non disponibile</h1>
                                     <p>Assicurati che il file HTML sia completo e corretto.</p>
                                     <a href="index.html" style="color: blue;">Torna alla Home</a>
                                   </div>`;
-        return; // Ferma l'esecuzione della funzione
+        return; 
     }
 
 
@@ -76,7 +74,6 @@ async function caricaDettagli() {
         const title = data.title || data.name || "Titolo non disponibile";
         const overview = data.overview || "Nessuna descrizione disponibile.";
         const tagline = data.tagline || "";
-        // Fallback robusto per le immagini
         const posterPath = data.poster_path ? `${IMAGE_BASE_URL}w500${data.poster_path}` : 'https://via.placeholder.com/500x750/222222/e0e0e0?text=Poster+Non+Trovato';
         const backdropPath = data.backdrop_path ? `${IMAGE_BASE_URL}original${data.backdrop_path}` : posterPath; 
 
@@ -241,7 +238,7 @@ function createMovieCard(item) {
     card.className = 'similar-card flex-shrink-0 rounded-lg overflow-hidden shadow-md transition-transform duration-300 hover:scale-105 cursor-pointer'; 
     card.innerHTML = `
         <a href="dettagli.html?id=${item.id}&type=${type}" class="block w-full">
-            <img src="${poster}" alt="${title}" class="w-full h-auto object-cover rounded-md" loading="lazy" />
+            <img src="${poster}" alt="${title}" class="w-full h-full object-cover rounded-md" loading="lazy" />
             <div class="p-2 text-center text-sm font-semibold">${title}</div>
         </a>
     `;
@@ -440,5 +437,199 @@ function updateCarouselArrowsVisibility(carouselId) {
             scrollRightBtn.classList.add('show-arrow');
             scrollRightBtn.style.pointerEvents = 'auto';
         }
+    }
+}
+
+dettagli.css
+
+/* dettagli.css */
+
+/* Variabili CSS per colori e font */
+:root {
+    --primary-bg: #0a0a0a; /* Quasi nero */
+    --secondary-bg: #1a1a1a; /* Grigio scuro per blocchi */
+    --text-color: #e0e0e0; /* Grigio chiaro per testo */
+    --accent-color: #3b82f6; /* Blu per bottoni/highlights */
+    --hover-color: #60a5fa; /* Blu più chiaro per hover */
+    --font-poppins: 'Poppins', sans-serif;
+    --font-montserrat: 'Montserrat', sans-serif;
+}
+
+body {
+    font-family: var(--font-poppins);
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    /* box-sizing: border-box;  <-- Questo dovrebbe essere globale o su html */
+}
+html {
+    box-sizing: border-box; /* Aggiunto qui per consistenza */
+}
+*, *::before, *::after {
+    box-sizing: inherit; /* Tutti gli elementi ereditano il box-sizing */
+}
+
+
+/* Stili per la Hero Section */
+#hero-backdrop {
+    filter: brightness(0.7); /* Rende lo sfondo leggermente più scuro */
+}
+
+/* Stili per i bottoni */
+.btn-primary {
+    background-color: var(--accent-color);
+    color: white;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+.btn-primary:hover {
+    background-color: var(--hover-color);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    border: 2px solid var(--accent-color);
+    color: var(--accent-color);
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+.btn-secondary:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.btn-tertiary {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.btn-tertiary:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+
+/* Stili per i blocchi di contenuto */
+.content-block {
+    margin-bottom: 3rem; /* Spazio tra le sezioni */
+}
+
+.block-title {
+    font-family: var(--font-montserrat);
+    font-size: 2.5rem; /* Dimensione del titolo del blocco */
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.5rem;
+}
+
+/* Stili per i contenitori degli iframe (trailer, player) */
+.iframe-container {
+    position: relative;
+    width: 100%;
+    /* aspect-ratio: 16 / 9;  Tailwind 'aspect-video' fa già questo */
+}
+.iframe-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 0.5rem; /* Arrotonda gli angoli */
+}
+
+/* Caroselli */
+.carousel-container {
+    position: relative;
+    /* Rimuovi overflow-hidden qui, sarà sul track */
+}
+
+.carousel-track {
+    display: flex;
+    overflow-x: scroll; /* Rendi scrollabile */
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* Per uno scrolling più fluido su iOS */
+    padding-bottom: 1rem; /* Spazio per la scrollbar se visibile */
+}
+
+/* Nascondi la scrollbar ma mantieni la funzionalità */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.hide-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Stili per le frecce del carosello (minimali) */
+.carousel-container:hover .scroll-btn {
+    opacity: 1; /* Le frecce appaiono al hover sul contenitore */
+}
+
+.scroll-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; /* Dimensione delle frecce */
+    height: 40px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    transition: opacity 0.3s ease, background-color 0.3s ease;
+    /* Le classi Tailwind opacity-0 e group-hover:opacity-100 sono già nell'HTML */
+}
+
+/* Stili per il modale */
+#season-modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#season-modal.active .modal-content {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.modal-content {
+    position: relative;
+}
+
+.close-btn {
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+.modal-season-list button {
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.modal-season-list button:hover {
+    background-color: var(--accent-color);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Media Queries per responsività */
+@media (max-width: 768px) {
+    .block-title {
+        font-size: 2rem;
+    }
+    #detail-title {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .action-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    .action-buttons button {
+        width: 100%;
+        justify-content: center;
     }
 }
