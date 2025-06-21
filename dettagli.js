@@ -1,8 +1,7 @@
-const API_KEY = '2d082597ab951b3a9596ca23e71413a8'; // La tua TMDB API key
+const API_KEY = "2d082597ab951b3a9596ca23e71413a8"; // La tua TMDB API key
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/';
 
-// URLSearchParams deve essere chiamato una sola volta
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("id");
 const tipo = urlParams.get("type"); // 'movie' or 'tv'
@@ -11,7 +10,7 @@ const tipo = urlParams.get("type"); // 'movie' or 'tv'
 const heroMediaContainer = document.getElementById("hero-media-container");
 const youtubePlayerDiv = document.getElementById("youtube-player-div");
 const heroBackdropImg = document.getElementById("hero-backdrop-img");
-const mainDetailsSection = document.getElementById("main-details-section"); // Questo ID è sul DIV interno all'HEADER
+const mainDetailsSection = document.getElementById("main-details-section"); 
 const detailPoster = document.getElementById("detail-poster");
 const detailTitle = document.getElementById("detail-title");
 const detailTagline = document.getElementById("detail-tagline");
@@ -19,14 +18,12 @@ const detailVote = document.getElementById("detail-vote");
 const detailReleaseYear = document.getElementById("detail-release-year");
 const detailRuntime = document.getElementById("detail-runtime");
 const detailGenres = document.getElementById("detail-genres");
-// Questi sono elementi specifici del design Ginny & Georgia, nel "Design 2.0" non esistono
-// Quindi il JS cercherà di accedervi e fallirà se non gestito con cautela o se gli elementi non sono nel DOM
-// Li dichiaro comunque ma il loro uso sarà condizionale
+// Controllo esistenza per elementi opzionali del design
 const detailViews = document.getElementById("detail-views"); 
 const detailSeasons = document.getElementById("detail-seasons"); 
 const detailOverviewFull = document.getElementById("detail-overview-full"); // Sinossi completa
 
-const btnPlayHero = mainDetailsSection ? mainDetailsSection.querySelector('.play-btn') : null; // Bottone Riproduci nel banner
+const btnPlayHero = mainDetailsSection ? mainDetailsSection.querySelector('.btn-play-hero') : null; // Bottone Riproduci nel banner
 
 const mainPlayerContainer = document.getElementById("main-player-container"); // Contenitore per il player principale
 const episodesSection = document.getElementById("episodes-section");
@@ -40,21 +37,18 @@ const seasonModal = document.getElementById("season-modal");
 const closeModalBtn = seasonModal ? seasonModal.querySelector('.close-btn') : null;
 const seasonListModal = document.getElementById("season-list");
 
-let allSeasons = []; // Array per memorizzare tutte le stagioni disponibili
-let youtubePlayer; // Variabile globale per il player YouTube
-let trailerVideoKey = null; // Key del trailer da YouTube
+let allSeasons = []; 
+let youtubePlayer; 
+let trailerVideoKey = null; 
 
-// Controllo iniziale per ID e Tipo nell'URL
 if (!id || !tipo) {
     console.error("ID o tipo mancanti nell'URL. Reindirizzamento alla homepage.");
     window.location.href = "index.html"; 
 }
 
-// Chiamata all'API TMDb per i dettagli del contenuto
 document.addEventListener('DOMContentLoaded', caricaDettagli);
 
 async function caricaDettagli() {
-    // Controllo robusto degli elementi HTML essenziali (dopo la correzione dell'HTML)
     if (!mainDetailsSection || !detailPoster || !detailTitle || !btnPlayHero) {
         console.error("Elementi HTML essenziali non trovati. Assicurati che l'ID 'main-details-section' e altri ID siano corretti nell'HTML.");
         document.body.innerHTML = `<div style="color: red; text-align: center; margin-top: 100px;">
@@ -83,7 +77,7 @@ async function caricaDettagli() {
         if(detailPoster) detailPoster.src = posterPath;
         if(detailTitle) detailTitle.textContent = title;
         if(detailTagline) detailTagline.textContent = tagline;
-        if(detailOverview) detailOverview.textContent = overview; // Sinossi breve nella Hero
+        if(detailOverview) detailOverview.textContent = overview; // Sinossi breve nella Hero (se presente nel Design 2.0)
         if(detailOverviewFull) detailOverviewFull.textContent = overview; // Sinossi completa nella sezione Sinossi
 
         if(detailVote) detailVote.innerHTML = `⭐ ${data.vote_average ? data.vote_average.toFixed(1) : 'N/A'}`;
@@ -98,53 +92,61 @@ async function caricaDettagli() {
         if(detailRuntime) detailRuntime.textContent = runtimeText;
         if(detailGenres) detailGenres.textContent = data.genres?.map(g => g.name).join(" / ") || "Generi N/A";
 
-        // Popola campi specifici che potrebbero non esserci nel design 2.0, quindi controllo
-        if (detailViews && data.vote_count) { // Usiamo vote_count come proxy per le views
-            detailViews.textContent = `${(data.vote_count / 1000000).toFixed(1)}M views`;
-            detailViews.classList.remove('hidden');
-        } else if (detailViews) { // Assicurati che sia nascosto se l'elemento esiste ma non ci sono dati
-            detailViews.classList.add('hidden');
+        // Campi specifici del design Ginny & Georgia (nel Design 2.0 potrebbero non esserci, gestisco la loro assenza)
+        if (detailViews) {
+            if (data.vote_count) { // Usiamo vote_count come proxy per le views
+                detailViews.textContent = `${(data.vote_count / 1000000).toFixed(1)}M views`;
+                detailViews.classList.remove('hidden');
+            } else {
+                detailViews.classList.add('hidden');
+            }
+        }
+        if (detailSeasons) {
+            if (tipo === 'tv' && data.number_of_seasons) {
+                detailSeasons.textContent = `${data.number_of_seasons} stagioni`;
+                detailSeasons.classList.remove('hidden');
+            } else {
+                detailSeasons.classList.add('hidden');
+            }
         }
 
-        if (detailSeasons && tipo === 'tv' && data.number_of_seasons) {
-            detailSeasons.textContent = `${data.number_of_seasons} stagioni`;
-            detailSeasons.classList.remove('hidden');
-        } else if (detailSeasons) { // Assicurati che sia nascosto
-            detailSeasons.classList.add('hidden');
-        }
 
-
-        // --- Caricamento Trailer nel Banner (Autoplay non YouTube) ---
+        // --- Caricamento Trailer nella Sezione Trailer ---
         trailerVideoKey = findTrailerKey(data.videos); // Trova la key del trailer YT
         
-        if (trailerVideoKey && youtubePlayerDiv) {
-            if(heroBackdropImg) heroBackdropImg.style.opacity = '0'; // Nascondi l'immagine iniziale
-            // La creazione del player YT è gestita da onYouTubeIframeAPIReady
+        if (trailerVideoKey && document.getElementById('trailer-player-container')) {
+            // Se c'è un trailer, lo carichiamo nella sezione trailer (se esiste)
+            document.getElementById('trailer-section').classList.remove('hidden'); // Mostra la sezione trailer
+            document.getElementById('trailer-player-container').innerHTML = `
+                <iframe src="http://www.youtube.com/embed/${trailerVideoKey}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            `;
         } else {
-            // Nessun trailer, mostra solo l'immagine di sfondo
-            if(heroBackdropImg) heroBackdropImg.src = backdropPath;
-            if(heroBackdropImg) heroBackdropImg.style.opacity = '1';
-            if(youtubePlayerDiv) youtubePlayerDiv.style.display = 'none'; // Assicurati che il div del player sia nascosto
+            // Se non c'è trailer o la sezione non esiste, nascondila
+            if(document.getElementById('trailer-section')) document.getElementById('trailer-section').classList.add('hidden');
         }
 
-        // Click sul bottone "Riproduci" nel banner
+        // Click sul bottone "Riproduci" nel banner (non auto-play nel banner per questo design)
         if(btnPlayHero) {
             btnPlayHero.onclick = () => {
-                // Avvia il player principale (o scrolla se è già caricato per i film)
                 if(mainPlayerContainer) {
                     mainPlayerContainer.scrollIntoView({ behavior: "smooth", block: "start" });
-                    if (tipo === 'movie') {
-                        aggiungiPlayerFilm(id);
-                    } else {
-                        // Per le serie TV, il player viene caricato con il primo episodio di default
-                        // Se clicca riproduci, lo portiamo al player
+                    // Solo carica il player se non è già lì
+                    if(mainPlayerContainer.innerHTML.trim() === "") { // Se il player non è ancora stato inserito
+                        if (tipo === 'movie') {
+                            aggiungiPlayerFilm(id);
+                        } else if (allSeasons.length > 0) {
+                            // Carica il primo episodio della prima stagione se è una serie TV
+                            const firstSeasonToLoad = allSeasons.find(s => s.season_number === 1) || allSeasons[0];
+                            if (firstSeasonToLoad) {
+                                caricaEpisodi(id, firstSeasonToLoad.season_number);
+                            }
+                        }
                     }
                 }
             };
         }
         
         // --- Caricamento Contenuti Dinamici (Cast, Simili, Episodi per TV) ---
-        await caricaTrailer(data.videos); // Questa carica il trailer nella sezione trailer, non nel banner
         await caricaCast(data.credits);
         await caricaSimilarContent(data.recommendations || data.similar);
 
@@ -164,6 +166,7 @@ async function caricaDettagli() {
         } else {
             if(episodesSection) episodesSection.classList.add('hidden');
             if(selezionaStagioneBtn) selezionaStagioneBtn.style.display = "none";
+            // Per i film, il player principale viene caricato subito, non solo al click su Riproduci Hero
             aggiungiPlayerFilm(id); 
         }
 
@@ -173,6 +176,7 @@ async function caricaDettagli() {
         console.error("Errore nel caricamento dei dettagli:", error);
         if(mainDetailsSection) mainDetailsSection.innerHTML = `<p class="text-center text-red-500 text-xl w-full py-12">Impossibile caricare i dettagli del contenuto. <br>Errore: ${error.message}. <br>Assicurati che la tua API key TMDb sia corretta e che tu sia connesso a Internet.</p>`;
         // Nascondi le altre sezioni in caso di errore
+        if(document.getElementById('overview-section')) document.getElementById('overview-section').classList.add('hidden'); // Nascondo la sinossi
         if(document.getElementById('trailer-section')) document.getElementById('trailer-section').classList.add('hidden');
         if(document.getElementById('player-section')) document.getElementById('player-section').classList.add('hidden');
         if(document.getElementById('episodes-section')) document.getElementById('episodes-section').classList.add('hidden');
@@ -183,52 +187,14 @@ async function caricaDettagli() {
 
 // Funzione per trovare la key del trailer più adatto da TMDb videos
 function findTrailerKey(videosData) {
-    if (!videosData || !videosData.results || videosData.results.length === 0) {
-        return null;
-    }
-    // Cerca Trailer ufficiale, altrimenti un Teaser, altrimenti un Clip, solo da YouTube
-    const trailer = videosData.results.find(v => v.type === "Trailer" && v.site === "YouTube" && v.official) ||
-                    videosData.results.find(v => v.type === "Teaser" && v.site === "YouTube") ||
-                    videosData.results.find(v => v.type === "Clip" && v.site === "YouTube");
-    return trailer ? trailer.key : null;
+    // Non useremo l'autoplay nel banner per questo design
+    return null; // Restituisce null per disabilitare il trailer nel banner
 }
 
-// Questa funzione viene chiamata automaticamente da YouTube IFrame Player API
+// onYouTubeIframeAPIReady non è più usato per l'autoplay nel banner in questo design
+// Ma lo mantengo qui per compatibilità se dovessi riabilitare YouTube Player API in futuro
 window.onYouTubeIframeAPIReady = function() {
-    if (trailerVideoKey && youtubePlayerDiv) {
-        // Autoplay muto e in loop nel banner dopo 2 secondi
-        setTimeout(() => {
-            youtubePlayer = new YT.Player('youtube-player-div', {
-                videoId: trailerVideoKey,
-                playerVars: {
-                    autoplay: 1,  // Autoplay
-                    mute: 1,      // Muto
-                    loop: 1,      // Loop
-                    controls: 0,  // Nascondi controlli
-                    showinfo: 0,  // Nascondi info video
-                    modestbranding: 1, // Rimuovi logo YouTube
-                    fs: 0,        // Disabilita fullscreen (per non uscire dal banner)
-                    rel: 0,       // Non mostrare video correlati alla fine
-                    playlist: trailerVideoKey // Necessario per il loop
-                },
-                events: {
-                    'onReady': (event) => {
-                        event.target.playVideo();
-                        event.target.mute(); // Assicurati che sia muto
-                        // Rendi il player visibile solo quando pronto
-                        if(youtubePlayerDiv) youtubePlayerDiv.style.opacity = '1';
-                        if(heroBackdropImg) heroBackdropImg.style.opacity = '0'; // Nascondi l'immagine quando il video è pronto
-                    },
-                    'onStateChange': (event) => {
-                        // Quando il video finisce e loop è attivo, riparte
-                        if (event.data === YT.PlayerState.ENDED) {
-                            youtubePlayer.playVideo();
-                        }
-                    }
-                }
-            });
-        }, 2000); // Avvia il trailer dopo 2 secondi
-    }
+    // Funzione vuota per questo design
 };
 
 
@@ -304,8 +270,7 @@ function createMovieCard(item) {
         <a href="dettagli.html?id=${item.id}&type=${type}" class="block w-full">
             <img src="${poster}" alt="${title}" class="w-full h-auto object-cover rounded-md" loading="lazy" />
             <div class="p-2">
-                <h3 class="font-semibold text-sm text-white truncate">${title}</h3>
-            </div>
+                <h3>${title}</h3> </div>
         </a>
     `;
     return card;
@@ -379,4 +344,46 @@ async function caricaEpisodi(tvId, seasonNumber) {
         episodeCard.className = 'episode-card flex-shrink-0 w-64 bg-gray-800 rounded-lg shadow-md overflow-hidden transition-transform duration-200 hover:scale-[1.02] cursor-pointer'; 
         
         const imgSrc = episode.still_path
-            ? `${IMAGE_BASE_URL}w300${episode.still_pa
+            ? `${IMAGE_BASE_URL}w300${episode.still_path}`
+            : 'https://via.placeholder.com/300x168/333333/e0e0e0?text=Episodio+non+disponibile';
+
+        episodeCard.innerHTML = `
+            <img src="${imgSrc}" alt="Episodio ${episode.episode_number}" class="w-full h-36 object-cover">
+            <div class="p-3">
+                <h3 class="font-semibold text-lg text-white truncate">E${episode.episode_number}: ${episode.name || 'Senza Titolo'}</h3>
+                <p class="text-sm text-gray-400 line-clamp-2">${episode.overview || 'Nessuna descrizione disponibile.'}</p>
+                <button class="play-episode-btn btn-primary text-sm mt-3 px-3 py-1.5 rounded-full">▶ Guarda</button>
+            </div>
+        `;
+        
+        episodeCard.querySelector('.play-episode-btn').onclick = () => {
+            aggiornaPlayerSeries(tvId, seasonNumber, episode.episode_number);
+            mainPlayerContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+        };
+
+        episodesCarouselTrack.appendChild(episodeCard);
+
+        if (!firstEpisodeLoaded) {
+            aggiornaPlayerSeries(tvId, seasonNumber, episode.episode_number);
+            firstEpisodeLoaded = true;
+        }
+    });
+    updateCarouselArrowsVisibility('episodes-carousel'); 
+}
+
+function aggiornaPlayerSeries(tvId, season, episode) {
+    if (!mainPlayerContainer) { console.warn("Main Player Container non trovato."); return; }
+    mainPlayerContainer.innerHTML = `
+        <iframe src="https://vixsrc.to/tv/${tvId}/${season}/${episode}" frameborder="0" allowfullscreen></iframe>
+    `;
+}
+
+function aggiungiPlayerFilm(movieId) {
+    if (!mainPlayerContainer) { console.warn("Main Player Container non trovato."); return; }
+    mainPlayerContainer.innerHTML = `
+        <iframe src="https://vixsrc.to/movie/${movieId}" frameborder="0" allowfullscreen></iframe>
+    `;
+}
+
+// --- Funzioni di scroll per i caroselli ---
+window.
