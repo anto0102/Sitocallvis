@@ -7,26 +7,99 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
     <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        background-color: #111;
+        height: 100dvh;
+        max-height: 100dvh;
+        overscroll-behavior: none;
+        touch-action: manipulation;
+      }
+
+      body {
+        font-family: 'Segoe UI', sans-serif;
+        color: white;
+      }
+
+      main {
+        overflow-y: auto;
+        overflow-x: hidden;
+        height: 100%;
+        padding-bottom: 4rem;
+      }
+
+      section {
+        margin-top: 1.5rem;
+      }
+
+      .movie-container {
+        display: flex;
+        overflow-x: auto;
+        gap: 1rem;
+        padding: 1rem 0 2.5rem;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
       .movie-container::-webkit-scrollbar {
         display: none;
       }
 
       .movie-card {
-        transition: transform 0.2s ease;
+        flex: 0 0 auto;
+        width: 140px;
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: #222;
+        transition: transform 0.25s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        scroll-snap-align: start;
+        position: relative;
       }
 
       .movie-card:hover {
         transform: scale(1.05);
-        z-index: 10;
+        z-index: 5;
       }
 
-      .movie-container {
-        padding-top: 1rem; /* spazio extra per evitare taglio durante animazione */
-        scrollbar-width: none;
-        -ms-overflow-style: none;
+      .movie-card img {
+        width: 100%;
+        height: 210px;
+        object-fit: cover;
+        border-bottom: 1px solid #333;
+      }
+
+      .movie-card h3 {
+        font-size: 0.8rem;
+        text-align: center;
+        margin: 0.5rem;
+        color: #fff;
+      }
+
+      .movie-card a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 0.8rem;
+      }
+
+      .movie-card a:hover {
+        color: #ff4d4d;
+      }
+
+      /* No scrollbar rendering */
+      main::-webkit-scrollbar,
+      body::-webkit-scrollbar {
+        display: none;
       }
     </style>
   </head>
+
   <body class="bg-gray-950 text-white font-sans">
     <header class="bg-black px-4 py-4 flex flex-col items-center md:flex-row md:justify-between sticky top-0 z-10">
       <div class="flex items-center gap-2">
@@ -44,56 +117,16 @@
     </header>
 
     <main id="main-content" class="px-4 py-6 space-y-10">
-      <!-- Sezioni dinamiche -->
-      <section>
-        <h2 class="text-xl font-semibold mb-2">🍿 Consigliati</h2>
-        <div class="flex overflow-x-auto gap-4 movie-container" id="consigliati"></div>
-      </section>
-
-      <section>
-        <h2 class="text-xl font-semibold mb-2">🔥 Titoli del momento</h2>
-        <div class="flex overflow-x-auto gap-4 movie-container" id="momento"></div>
-      </section>
-
-      <section>
-        <h2 class="text-xl font-semibold mb-2">🎭 Drammatici</h2>
-        <div class="flex overflow-x-auto gap-4 movie-container" id="drammatici"></div>
-      </section>
-
-      <section>
-        <h2 class="text-xl font-semibold mb-2">💥 Azione</h2>
-        <div class="flex overflow-x-auto gap-4 movie-container" id="azione"></div>
-      </section>
-
-      <section>
-        <h2 class="text-xl font-semibold mb-2">😂 Commedie</h2>
-        <div class="flex overflow-x-auto gap-4 movie-container" id="commedie"></div>
-      </section>
-
-      <section>
-        <h2 class="text-xl font-semibold mb-2">👻 Horror</h2>
-        <div class="flex overflow-x-auto gap-4 movie-container" id="horror"></div>
-      </section>
-
-      <section>
-        <h2 class="text-xl font-semibold mb-2">👨‍👩‍👧 Famiglia</h2>
-        <div class="flex overflow-x-auto gap-4 movie-container" id="famiglia"></div>
-      </section>
-
-      <section>
-        <h2 class="text-xl font-semibold mb-2">🚀 Fantascienza</h2>
-        <div class="flex overflow-x-auto gap-4 movie-container" id="fantascienza"></div>
-      </section>
-
-      <section>
-        <h2 class="text-xl font-semibold mb-2">💖 Romantici</h2>
-        <div class="flex overflow-x-auto gap-4 movie-container" id="romantici"></div>
-      </section>
-
-      <section>
-        <h2 class="text-xl font-semibold mb-2">🎬 Documentari</h2>
-        <div class="flex overflow-x-auto gap-4 movie-container" id="documentari"></div>
-      </section>
+      <section><h2 class="text-xl font-semibold mb-2">🍿 Consigliati</h2><div class="movie-container" id="consigliati"></div></section>
+      <section><h2 class="text-xl font-semibold mb-2">🔥 Titoli del momento</h2><div class="movie-container" id="momento"></div></section>
+      <section><h2 class="text-xl font-semibold mb-2">🎭 Drammatici</h2><div class="movie-container" id="drammatici"></div></section>
+      <section><h2 class="text-xl font-semibold mb-2">💥 Azione</h2><div class="movie-container" id="azione"></div></section>
+      <section><h2 class="text-xl font-semibold mb-2">😂 Commedie</h2><div class="movie-container" id="commedie"></div></section>
+      <section><h2 class="text-xl font-semibold mb-2">👻 Horror</h2><div class="movie-container" id="horror"></div></section>
+      <section><h2 class="text-xl font-semibold mb-2">👨‍👩‍👧 Famiglia</h2><div class="movie-container" id="famiglia"></div></section>
+      <section><h2 class="text-xl font-semibold mb-2">🚀 Fantascienza</h2><div class="movie-container" id="fantascienza"></div></section>
+      <section><h2 class="text-xl font-semibold mb-2">💖 Romantici</h2><div class="movie-container" id="romantici"></div></section>
+      <section><h2 class="text-xl font-semibold mb-2">🎬 Documentari</h2><div class="movie-container" id="documentari"></div></section>
     </main>
 
     <script>
