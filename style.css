@@ -1,10 +1,18 @@
-body {
+/* Reset e struttura base */
+html, body {
   margin: 0;
+  padding: 0;
   font-family: 'Segoe UI', sans-serif;
   background-color: #111;
   color: #fff;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  height: 100dvh;
+  max-height: 100dvh;
+  touch-action: manipulation;
 }
 
+/* Header */
 header {
   display: flex;
   flex-direction: column;
@@ -12,6 +20,13 @@ header {
   background-color: #000;
   padding: 1rem;
   text-align: center;
+}
+
+@media (min-width: 768px) {
+  header {
+    flex-direction: row;
+    justify-content: space-between;
+  }
 }
 
 header h1 {
@@ -23,6 +38,7 @@ header h1 span {
   color: #ff4d4d;
 }
 
+/* Form di ricerca */
 form {
   display: flex;
   gap: 0.5rem;
@@ -45,48 +61,52 @@ form button {
   cursor: pointer;
 }
 
+/* Sezioni */
 section {
   margin: 2rem 1rem;
 }
 
 h2 {
-  color: #fff;
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
   font-weight: 600;
+  color: #fff;
 }
 
+/* Container film */
 .movie-container {
   display: flex;
   overflow-x: auto;
+  overflow-y: hidden;
   gap: 1rem;
-  padding-bottom: 0.5rem;
-  padding-top: 1rem; /* 👈 Fix: spazio extra sopra per non tagliare le card su hover */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE e Edge */
+  padding: 1.2rem 0 2rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .movie-container::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Edge */
+  display: none;
 }
 
+/* Card film */
 .movie-card {
   flex: 0 0 auto;
   width: 140px;
   border-radius: 8px;
   overflow: hidden;
   background-color: #222;
-  transition: transform 0.3s;
+  transition: transform 0.25s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative; /* 👈 Fix: necessario per z-index */
-  z-index: 1; /* 👈 Fix: fa sì che resti sopra altre card se ingrandita */
+  position: relative;
+  z-index: 1;
+  will-change: transform;
 }
 
 .movie-card:hover {
   transform: scale(1.05);
-  z-index: 10; /* 👈 Fix: porta la card in primo piano */
+  z-index: 10;
 }
 
 .movie-card img {
@@ -100,13 +120,11 @@ h2 {
   font-size: 0.8rem;
   text-align: center;
   margin: 0.5rem;
-  color: #fff;
 }
 
 .movie-card a {
   color: #fff;
   text-decoration: none;
-  display: block;
   font-size: 0.8rem;
 }
 
@@ -114,6 +132,7 @@ h2 {
   color: #ff4d4d;
 }
 
+/* Pulsante profilo */
 .profile-button {
   position: absolute;
   top: 15px;
@@ -129,33 +148,4 @@ h2 {
 
 .profile-button:hover {
   background-color: #008dbd;
-}
-/* Fix overflow mobile & animazione card */
-html, body {
-  overflow-x: hidden;
-  overscroll-behavior-y: contain; /* blocca il rimbalzo su mobile */
-  max-height: 100vh;
-}
-
-.movie-container {
-  padding-top: 1.2rem;
-  padding-bottom: 2rem; /* 👈 aumenta per evitare taglio sotto */
-  overflow-x: auto;
-  overflow-y: hidden; /* 👈 evita scroll verticale inutile */
-}
-
-.movie-card {
-  position: relative;
-  z-index: 1;
-  will-change: transform;
-}
-
-.movie-card:hover {
-  transform: scale(1.05);
-  z-index: 10;
-}
-
-/* Per evitare scroll "sotto" su animazione */
-body {
-  height: 100dvh; /* usa altezza viewport dinamica su mobile */
 }
