@@ -14,11 +14,12 @@
 html, body {
     margin: 0;
     padding: 0;
+    box-sizing: border-box; /* IMPORTANTE: Assicura che padding e border siano inclusi nella dimensione */
     font-family: 'Poppins', sans-serif;
     background-color: var(--primary-bg);
     color: var(--text-color);
     line-height: 1.6;
-    overflow-x: hidden;
+    overflow-x: hidden; /* Nasconde scrollbar orizzontale di troppo */
     scroll-behavior: smooth;
     min-height: 100vh;
 }
@@ -42,12 +43,14 @@ html, body {
 /* --- Backdrop Fisso in Alto --- */
 .top-backdrop {
     background-size: cover;
-    background-position: center top; /* Allinea in alto */
-    filter: brightness(0.4) blur(10px); /* Scura e sfoca */
-    transform: scale(1.05); /* Zoom per coprire i bordi sfocati */
+    background-position: center top;
+    filter: brightness(0.4) blur(10px);
+    transform: scale(1.05);
+    z-index: 0; /* Sotto tutti gli altri contenuti */
 }
 .top-backdrop-gradient {
     background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.5) 50%, var(--primary-bg) 100%);
+    z-index: 1; /* Sopra il backdrop, sotto il contenuto principale */
 }
 
 /* --- Pulsante "Torna alla Home" --- */
@@ -70,25 +73,25 @@ html, body {
 
 /* --- Contenuto Principale Scrollabile --- */
 .content-wrapper {
-    max-width: 1400px; /* Larghezza massima per il contenuto centrale */
-    margin: 0 auto; /* Centra il wrapper */
-    position: relative; /* Necessario per lo z-index */
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
     background-color: var(--primary-bg); /* Sfondo solido per coprire il backdrop sotto */
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8); /* Ombra per staccare dal backdrop */
-    border-radius: 12px; /* Piccoli bordi arrotondati per il wrapper generale */
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+    border-radius: 12px;
     min-height: calc(100vh - 40px); /* Assicurati che sia visibile */
+    padding-top: 20px; /* Padding sopra, sotto il backdrop */
 }
 
 /* --- Sezione Dettagli (Poster e Info) --- */
 .main-details-section {
-    /* Tailwind classes: flex flex-col md:flex-row items-center md:items-start gap-8 lg:gap-12 */
     /* mt-16 md:mt-24 mb-12 bg-secondary-bg p-6 md:p-8 rounded-lg shadow-lg */
     z-index: 30; /* Assicura che sia sopra tutto il resto nella Hero area */
     position: relative; /* Per lo z-index */
 }
 
 .movie-info-block h1 {
-    font-size: 3.5em; /* Titolo più contenuto per un look più pulito */
+    font-size: 3.5em;
     line-height: 1.1;
     text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
 }
@@ -133,10 +136,10 @@ html, body {
 
 /* --- Blocchi di Contenuto (Trailer, Player, etc.) --- */
 .content-block {
-    padding: 2rem 0; /* Padding verticale per i blocchi di contenuto */
+    padding: 2rem 0;
     margin-bottom: 2rem;
     position: relative;
-    overflow: visible; /* Permette alle card ingrandite di non essere tagliate */
+    overflow: visible;
 }
 .block-title {
     font-size: 2em;
@@ -159,8 +162,8 @@ html, body {
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    max-width: 900px; /* Larghezza massima, per non essere troppo grandi */
-    margin: 0 auto; /* Centra */
+    max-width: 900px;
+    margin: 0 auto;
 }
 .iframe-container iframe {
     position: absolute;
@@ -173,8 +176,8 @@ html, body {
 .carousel-container {
     overflow-x: auto;
     overflow-y: hidden;
-    padding-bottom: 1.5rem; /* Spazio per l'ombra */
-    padding-top: 0.5rem; /* Spazio per l'ombra della card superiore */
+    padding-bottom: 1.5rem;
+    padding-top: 0.5rem;
     position: relative;
     padding-left: 0;
     padding-right: 0;
@@ -270,7 +273,7 @@ html, body {
     padding-bottom: 0.5rem;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    height: 190px; /* Altezza fissa */
+    height: 190px; /* Altezza fissa per mantenere allineamento */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -371,6 +374,17 @@ html, body {
     opacity: 1;
     pointer-events: auto;
 }
+
+/* Controllo visibilità con JS (le classi .show-arrow verranno aggiunte/rimosse da JS) */
+.scroll-btn.show-arrow {
+    opacity: 1;
+    pointer-events: auto;
+}
+.scroll-btn.hide-arrow {
+    opacity: 0;
+    pointer-events: none;
+}
+
 
 .scroll-btn.scroll-right {
     right: 0;
