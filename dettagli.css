@@ -350,11 +350,11 @@ html, body {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.5); /* Meno opaco */
     color: white;
-    font-size: 3rem;
+    font-size: 2rem; /* Più piccole */
     border: none;
-    width: 50px;
+    width: 40px; /* Più strette */
     height: calc(100% - 2rem);
     display: flex;
     align-items: center;
@@ -362,7 +362,16 @@ html, body {
     cursor: pointer;
     transition: background-color 0.3s ease, opacity 0.3s ease;
     z-index: 30;
+    opacity: 0; /* Inizialmente nascoste */
+    pointer-events: none; /* Non intercettano click quando nascoste */
 }
+
+/* Rendi visibili solo su hover del contenitore genitore (.group) */
+.group:hover .scroll-btn {
+    opacity: 1;
+    pointer-events: auto;
+}
+
 .scroll-btn.scroll-right {
     right: 0;
     border-top-right-radius: 8px;
@@ -374,7 +383,7 @@ html, body {
     border-bottom-left-radius: 8px;
 }
 .scroll-btn:hover {
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: rgba(0, 0, 0, 0.8); /* Più scuro su hover */
 }
 
 
@@ -455,6 +464,7 @@ html, body {
     .episode-card { width: 250px; }
     .cast-card { width: 100px; height: 160px; } /* Adatta altezza cast */
     .movie-card { width: 180px; }
+    .scroll-btn { width: 35px; font-size: 1.8rem; } /* Più piccole su tablet */
 }
 
 @media (max-width: 768px) {
@@ -473,6 +483,7 @@ html, body {
     .cast-card { width: 90px; height: 140px; } /* Adatta altezza cast mobile */
     .movie-card { width: 150px; }
     .carousel-track { padding: 0 0.25rem; }
+    .scroll-btn { width: 30px; font-size: 1.5rem; } /* Più piccole su mobile */
 }
 
 @media (max-width: 480px) {
