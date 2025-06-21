@@ -61,7 +61,7 @@ html, body {
 .detail-hero-section {
     min-height: 90vh; /* Altezza minima per un impatto visivo */
     padding-top: 100px; /* Spazio per il back button */
-    padding-bottom: 10rem; /* AUMENTATO ANCORA: Spazio sotto il contenuto per evitare overlap */
+    padding-bottom: 18rem; /* AUMENTATO DRASICAMENTE: Spazio sotto il contenuto per GARANTIRE nessun overlap */
     box-sizing: border-box; /* Include padding nel calcolo dell'altezza */
     display: flex;
     align-items: flex-end; /* Allinea il contenuto in basso */
@@ -135,7 +135,7 @@ html, body {
 /* --- Contenuto Principale (sotto la hero) --- */
 .main-content-sections {
     /* Tailwind classes: bg-primary-bg relative z-20 -mt-20 pt-10 pb-20 px-8 lg:px-16 rounded-t-3xl shadow-lg */
-    margin-top: -120px; /* AUMENTATO ANCORA: Riduci il margine negativo per minor sovrapposizione */
+    margin-top: 2rem; /* CAMBIATO: Margine positivo per separare completamente dalla hero */
     box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.7); /* Ombra più pronunciata verso l'alto */
 }
 
@@ -161,13 +161,13 @@ html, body {
 .iframe-container {
     position: relative;
     width: 100%;
-    padding-bottom: 56.25%; /* Rapporto 16:9 */
+    padding-bottom: 42%; /* CAMBIATO: Circa 21:9 o un po' più basso di 16:9 (56.25%) */
     height: 0;
     background-color: black;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    max-width: 900px; /* RIDOTTO: Limita la larghezza massima del trailer/player */
+    max-width: 700px; /* RIDOTTO ANCORA: Limita la larghezza massima del trailer/player */
     margin: 0 auto; /* Centra il contenitore */
 }
 .iframe-container iframe {
@@ -451,13 +451,18 @@ html, body {
     .movie-card img { height: 270px; }
     .scroll-btn { width: 40px; font-size: 2.5rem; }
     .carousel-track { padding: 0 1.5rem; } /* Adatta padding laterale */
+
+    /* Dimensione trailer su schermi medi */
+    .iframe-container {
+        max-width: 80%; /* Ancora più piccolo */
+    }
 }
 
 @media (max-width: 768px) {
     .detail-hero-section {
         min-height: auto;
         padding-top: 80px;
-        padding-bottom: 4rem; /* AUMENTATO: per mobile */
+        padding-bottom: 6rem; /* AUMENTATO: per mobile, assicura spazio */
         align-items: center;
     }
     .hero-content {
@@ -474,7 +479,7 @@ html, body {
     .movie-info-summary p { font-size: 0.95em; }
     .action-buttons { flex-direction: column; width: 100%; max-width: 300px; margin: 0 auto; }
     .action-buttons .btn { width: 100%; }
-    .main-content-sections { padding-left: 1.5rem; padding-right: 1.5rem; margin-top: -80px; } /* Riduci margine negativo */
+    .main-content-sections { padding-left: 1.5rem; padding-right: 1.5rem; margin-top: 1rem; } /* CAMBIATO: Margine positivo su mobile */
     .section-title { font-size: 1.8em; padding-left: 0; }
     .carousel-track { padding: 0 0.5rem; }
     .episode-card { width: 180px; }
@@ -483,11 +488,17 @@ html, body {
     .cast-card img { width: 70px; height: 70px; }
     .movie-card { width: 150px; }
     .movie-card img { height: 225px; }
+
+    /* Dimensione trailer su schermi piccoli */
+    .iframe-container {
+        max-width: 95%; /* Lascia un po' di margine */
+        padding-bottom: 50%; /* Aspect ratio leggermente meno "lungo" */
+    }
 }
 
 @media (max-width: 480px) {
     .back-home-button { padding: 6px 12px; font-size: 0.9em; top: 10px; left: 10px; }
-    .detail-hero-section { padding-top: 60px; padding-bottom: 2.5rem; }
+    .detail-hero-section { padding-top: 60px; padding-bottom: 4rem; }
     .detail-poster { width: 150px; }
     .movie-info-summary h1 { font-size: 2.2em; }
     .movie-info-summary p { font-size: 0.85em; }
@@ -500,4 +511,9 @@ html, body {
     .cast-card img { width: 60px; height: 60px; }
     .movie-card { width: 120px; }
     .movie-card img { height: 180px; }
+
+    /* Dimensione trailer su schermi molto piccoli */
+    .iframe-container {
+        padding-bottom: 60%; /* Aspect ratio più "quadrato" */
+    }
 }
