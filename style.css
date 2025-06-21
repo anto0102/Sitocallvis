@@ -161,25 +161,41 @@ html, body {
     padding-top: 50px; /* Spazio aggiuntivo dopo la hero */
 }
 
+/* Importante: Imposta overflow:visible sul genitore delle card per evitare clipping */
+.content-row {
+    position: relative; /* Necessario per posizionare le frecce di scorrimento */
+    margin-bottom: 3rem; /* Spazio tra le sezioni */
+    /* Assicurati che i genitori non abbiano overflow: hidden; che blocchi la scalatura */
+    overflow: visible; /* PERMETTE ALLE CARD DI ESPANDERSI FUORI DALLA SEZIONE */
+    padding-left: 0; /* Assicura che il padding sia gestito dai wrapper interni */
+    padding-right: 0;
+}
+
+
 .content-row h2 {
-    position: sticky; /* Per mantenere il titolo visibile durante lo scroll orizzontale */
+    /* Rimuovi sticky se crea problemi con l'overflow visibile */
+    /* position: sticky; */
     left: 0;
-    background-color: var(--primary-bg); /* Per nascondere lo scroll sotto il titolo */
-    padding-right: 20px; /* Spazio per la sfumatura */
+    background-color: var(--primary-bg);
+    padding-right: 20px;
     margin-bottom: 25px;
     z-index: 20;
+    padding-left: 2rem; /* Allineati al contenuto */
 }
 
 .carousel-container {
-    padding-left: 0; /* Rimuove il padding di default */
-    padding-right: 0; /* Rimuove il padding di default */
+    padding-left: 2rem; /* Padding per l'inizio del carosello */
+    padding-right: 2rem; /* Padding per la fine del carosello */
     overflow-x: scroll;
+    /* overflow-y: visible; /* Potrebbe aiutare per le ombre superiori se necessario */
+    padding-top: 1rem; /* Spazio sopra le card per l'ombra superiore */
+    padding-bottom: 2rem; /* Spazio sotto le card per l'ombra inferiore */
+    position: relative; /* Per le frecce di scorrimento assolute */
 }
 
 .carousel-track {
     display: flex;
     gap: 1rem; /* Spazio tra le card */
-    padding: 0 0 1rem 0; /* Aggiungi padding sotto per l'ombra */
     min-width: max-content; /* Assicura che le card non si restringano */
 }
 
@@ -188,13 +204,14 @@ html, body {
     flex-shrink: 0;
     width: 200px; /* Aumentato per un look più impattante */
     border-radius: 12px; /* Angoli più arrotondati */
-    overflow: hidden;
+    overflow: hidden; /* Mantiene il contenuto all'interno della card */
     background-color: var(--card-bg);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Ombra più pronunciata */
     cursor: pointer;
     position: relative;
     transform-origin: center center;
     transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease; /* Animazione più fluida */
+    z-index: 1; /* Default z-index */
 }
 
 .movie-card:hover {
@@ -283,7 +300,7 @@ html, body {
     font-size: 3rem;
     border: none;
     width: 50px;
-    height: 100%; /* Occupa l'altezza della sezione */
+    height: calc(100% - 2rem); /* Altezza della carousel-container - padding verticale */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -340,6 +357,11 @@ footer {
     }
     .content-row h2 {
         font-size: 2.5em;
+        padding-left: 30px; /* Adatta il padding del titolo */
+    }
+    .carousel-container {
+        padding-left: 30px;
+        padding-right: 30px;
     }
     .movie-card {
         width: 180px;
@@ -405,6 +427,11 @@ footer {
     }
     .content-row h2 {
         font-size: 2em;
+        padding-left: 20px; /* Adatta il padding del titolo */
+    }
+    .carousel-container {
+        padding-left: 20px;
+        padding-right: 20px;
     }
     .movie-card {
         width: 140px; /* Riduci la larghezza delle card su mobile */
@@ -412,6 +439,12 @@ footer {
     }
     .movie-card img {
         height: 210px; /* Adatta l'altezza dell'immagine */
+    }
+    .movie-card .card-info h3 {
+        font-size: 1em;
+    }
+    .movie-card .card-info p {
+        font-size: 0.8em;
     }
     .scroll-btn {
         width: 30px;
@@ -434,17 +467,12 @@ footer {
     }
     .content-row h2 {
         font-size: 1.8em;
+        padding-left: 20px; /* Adatta il padding del titolo */
     }
     .movie-card {
         width: 120px;
     }
     .movie-card img {
         height: 180px;
-    }
-    .movie-card .card-info h3 {
-        font-size: 1em;
-    }
-    .movie-card .card-info p {
-        font-size: 0.8em;
     }
 }
