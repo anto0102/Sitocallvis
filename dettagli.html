@@ -1,34 +1,58 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dettagli</title>
-  <link rel="stylesheet" href="dettagli.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Dettagli Film/Serie - StreamVerse</title>
+    <link rel="stylesheet" href="dettagli.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-  <div class="container">
-    <a href="index.html" class="home-button">🔙 Torna alla Home</a>
-    
-    <div id="contenitore">
-      <div id="dettagli" class="dettagli-card"></div>
-      <div id="trailer" class="box-trailer"></div>
-      
-      <button class="stagione-selector" id="seleziona-stagione">📂 Seleziona Stagione</button>
-      <div id="episodi-carosello" class="carousel-container"></div>
-      <div id="player-container"></div>
-    </div>
-  </div>
+<body class="bg-primary-bg text-text-color font-poppins">
+    <a href="index.html" class="back-home-button fixed top-6 left-6 z-50 flex items-center gap-2">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"></path></svg>
+        Torna alla Home
+    </a>
 
-  <!-- MODAL -->
-  <div id="modal-stagioni" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>📚 Seleziona una stagione</h2>
-      <div id="lista-stagioni"></div>
+    <div class="main-details-wrapper relative overflow-hidden">
+        <div id="backdrop-overlay" class="backdrop-overlay"></div>
+        <div id="dettagli-hero" class="dettagli-hero relative z-10 flex items-end w-full h-[90vh] pb-16 px-8 lg:px-16">
+            </div>
     </div>
-  </div>
 
-  <script src="dettagli.js"></script>
+    <div class="content-sections-wrapper relative z-20 bg-primary-bg -mt-20 pt-10 pb-20 px-8 lg:px-16 rounded-t-3xl shadow-lg">
+        <section id="trailer-section" class="section-box mb-12">
+            <h2 class="section-title">🎬 Trailer</h2>
+            <div id="trailer" class="box-trailer"></div>
+        </section>
+
+        <section id="episodes-section" class="section-box mb-12 hidden"> <h2 class="section-title flex items-center justify-between">
+                <span>
+                    📺 Episodi
+                    <span id="current-season-title" class="text-lg text-gray-400 ml-4"></span>
+                </span>
+                <button class="btn-primary season-selector-btn" id="seleziona-stagione">
+                    📂 Seleziona Stagione
+                </button>
+            </h2>
+            <div id="episodi-carosello" class="carousel-container hide-scrollbar">
+                <div class="carousel-track"></div>
+            </div>
+        </section>
+
+        <section id="player-section" class="section-box mb-12">
+            <h2 class="section-title">🎥 Guarda ora</h2>
+            <div id="player-container" class="box-player"></div>
+        </section>
+    </div>
+
+    <div id="modal-stagioni" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2 class="modal-title">📚 Seleziona una stagione</h2>
+            <div id="lista-stagioni" class="modal-season-list grid grid-cols-2 sm:grid-cols-3 gap-4 mt-6"></div>
+        </div>
+    </div>
+
+    <script src="dettagli.js"></script>
 </body>
 </html>
