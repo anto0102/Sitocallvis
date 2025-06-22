@@ -158,20 +158,20 @@ ul {
     position: relative;
     width: 100%;
     height: 80vh; 
-    padding-top: 180px; /* AUMENTATO SIGNIFICATIVAMENTE: Spazio da sopra */
+    padding-top: 180px; 
     background-image: url('https://via.placeholder.com/1920x1080/000000/FFFFFF?text=IMMAGINE+EROE'); 
     background-size: cover;
     background-position: center;
     display: flex;
-    align-items: flex-end; /* Allinea il contenuto in basso */
+    align-items: flex-end; 
     padding-left: 60px;
     color: white;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); 
-    padding-bottom: 180px; /* AUMENTATO SIGNIFICATIVAMENTE: Spazio sotto il contenuto hero per i bottoni e la sezione successiva */
+    padding-bottom: 180px; 
     z-index: 10; 
 }
 
-.hero-section::before { /* Gradiente overlay */
+.hero-section::before { 
     content: '';
     position: absolute;
     top: 0;
@@ -183,8 +183,10 @@ ul {
 }
 .hero-section .hero-content {
     position: relative;
-    z-index: 2; /* Sopra l'overlay del gradiente */
+    z-index: 2; 
     max-width: 600px;
+    text-align: left;
+    align-items: flex-start;
 }
 
 .hero-content h1 {
@@ -236,13 +238,13 @@ ul {
 .content-wrapper {
     padding-top: 0; 
     position: relative; 
-    z-index: 20; /* Più alto della hero per coprirla durante lo scroll */
-    background-color: var(--primary-bg); /* Sfondo solido per coprire la hero */
+    z-index: 20; 
+    background-color: var(--primary-bg); 
 }
 
 .content-row {
     padding: 40px 60px; 
-    margin-top: 0px; /* CAMBIATO: Nessun margine negativo per evitare sovrapposizioni iniziali */
+    margin-top: 0px; 
     position: relative;
     z-index: 1; 
     overflow: visible; 
@@ -252,6 +254,8 @@ ul {
     font-size: 2em;
     margin-bottom: 25px;
     color: white;
+    text-align: left; 
+    padding-left: 0; 
 }
 
 .carousel-container {
@@ -259,6 +263,8 @@ ul {
     -webkit-overflow-scrolling: touch; 
     scrollbar-width: none; 
     -ms-overflow-style: none;  
+    padding-left: 0; 
+    padding-right: 0;
 }
 
 .carousel-container::-webkit-scrollbar {
@@ -269,6 +275,10 @@ ul {
     display: flex;
     gap: 15px; 
     padding-bottom: 20px; 
+    padding-left: 0px; 
+    padding-right: 0px;
+    padding-top: 20px; /* AGGIUNTO: Spazio sopra le card per l'ingrandimento */
+    padding-bottom: 20px; /* AGGIUNTO: Spazio sotto le card per l'ingrandimento e scroll */
 }
 
 .movie-card {
@@ -387,7 +397,7 @@ footer {
     }
 }
 
-@media (min-width: 769px) { /* Per desktop e tablet large, assicura che il main content inizi sotto la hero */
+@media (min-width: 769px) { 
     .main-content-sections {
         padding-top: 200px; 
         margin-top: -150px; 
@@ -432,17 +442,19 @@ footer {
     .hero-section {
         height: 60vh;
         padding-left: 20px;
-        text-align: center;
-        justify-content: center;
+        text-align: left; 
+        justify-content: flex-start; 
         background-position: center top; 
-        padding-top: 120px; /* AUMENTATO per mobile */
-        padding-bottom: 120px; /* AUMENTATO per mobile */
+        padding-top: 120px; 
+        padding-bottom: 120px; 
     }
     .hero-section::before {
         background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.9) 100%);
     }
     .hero-content {
         max-width: 90%;
+        text-align: left; 
+        align-items: flex-start; 
     }
     .hero-content h1 {
         font-size: 2.2em;
@@ -454,14 +466,28 @@ footer {
         display: flex;
         flex-direction: column;
         gap: 10px;
+        align-items: flex-start; 
     }
     .hero-buttons .btn {
         width: 100%;
         margin-right: 0;
     }
     .content-row {
-        padding: 20px;
+        padding: 20px 0px; 
         margin-top: 2rem; 
+    }
+    .content-row h2 {
+        padding-left: 20px; 
+    }
+    .carousel-container {
+        padding-left: 0px; 
+        padding-right: 0px;
+    }
+    .carousel-track {
+        padding-left: 20px; 
+        padding-right: 20px; 
+        padding-top: 15px; /* AGGIUNTO per mobile */
+        padding-bottom: 15px; /* AGGIUNTO per mobile */
     }
     .movie-card {
         width: 150px; 
@@ -504,6 +530,13 @@ footer {
     }
     .content-row h2 {
         font-size: 1.8em;
+        padding-left: 15px; 
+    }
+    .carousel-track {
+        padding-left: 15px; 
+        padding-right: 15px;
+        padding-top: 10px; /* AGGIUNTO per mobile molto piccolo */
+        padding-bottom: 10px; /* AGGIUNTO per mobile molto piccolo */
     }
     .movie-card {
         width: 120px;
@@ -517,8 +550,8 @@ footer {
     }
     /* Mobile molto piccolo */
     .hero-section {
-        padding-top: 100px; /* AUMENTATO */
-        padding-bottom: 80px; /* AUMENTATO */
+        padding-top: 100px; 
+        padding-bottom: 80px; 
     }
     .main-content-sections {
         margin-top: -40px; 
