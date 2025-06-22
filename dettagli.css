@@ -1,44 +1,53 @@
-/* dettagli.css */
-
-/* Variabili CSS per colori e font (compatibili con il design precedente) */
+/* Variabili CSS Globali (le stesse della homepage) */
 :root {
-    --primary-bg: #141414; /* Sfondo scuro principale */
-    --secondary-bg: #222222; /* Sfondo per blocchi come la sinossi */
-    --text-color: #e0e0e0; /* Colore testo chiaro */
-    --accent-color: #e50914; /* Rosso vibrante (tipo Netflix) */
-    --hover-color: #f40612; /* Rosso più acceso per hover */
-    --card-bg: #1c1c1c; /* Sfondo per le card */
-    --border-color: #333; /* Colore per bordi sottili */
-    
-    --font-poppins: 'Poppins', sans-serif;
-    --font-montserrat: 'Montserrat', sans-serif;
+    --primary-bg: #141414;
+    --secondary-bg: #222222;
+    --text-color: #e0e0e0;
+    --accent-color: #e50914; /* Rosso Netflix */
+    --hover-color: #f40612;
+    --card-bg: #1c1c1c;
+    --border-color: #333;
+    --backdrop-transition: all 0.7s ease-in-out;
 }
 
-/* Reset Box-Sizing per consistenza */
-html {
-    box-sizing: border-box; 
-}
-*, *::before, *::after {
-    box-sizing: inherit; 
-}
-
-body {
-    font-family: var(--font-poppins);
+/* Base styles and resets */
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
     background-color: var(--primary-bg);
     color: var(--text-color);
     line-height: 1.6;
-    overflow-x: hidden; /* Nasconde scrollbar orizzontale di troppo */
+    overflow-x: hidden;
     scroll-behavior: smooth;
     min-height: 100vh;
 }
 
-/* Nascondi la scrollbar ma mantieni la funzionalità */
-.hide-scrollbar::-webkit-scrollbar {
-    display: none;
-}
+/* Utility classes (from Tailwind, but custom colors for clarity) */
+.bg-primary-bg { background-color: var(--primary-bg); }
+.bg-secondary-bg { background-color: var(--secondary-bg); }
+.text-text-color { color: var(--text-color); }
+.text-accent-color { color: var(--accent-color); }
+.border-border-color { border-color: var(--border-color); }
+
+/* Custom Scrollbar Hiding */
 .hide-scrollbar {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none;    /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+/* --- Backdrop Fisso in Alto --- */
+.top-backdrop {
+    background-size: cover;
+    background-position: center top; /* Allinea in alto */
+    filter: brightness(0.4) blur(10px); /* Scura e sfoca */
+    transform: scale(1.05); /* Zoom per coprire i bordi sfocati */
+}
+.top-backdrop-gradient {
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.5) 50%, var(--primary-bg) 100%);
 }
 
 /* --- Pulsante "Torna alla Home" --- */
@@ -46,7 +55,7 @@ body {
     background-color: rgba(0, 0, 0, 0.6);
     color: white;
     padding: 10px 20px;
-    border-radius: 9999px; /* Pill shape */
+    border-radius: 9999px;
     text-decoration: none;
     font-weight: 600;
     font-size: 1.1em;
@@ -59,56 +68,35 @@ body {
     border-color: var(--accent-color);
 }
 
-/* --- Hero Section del Film/Serie --- */
-.detail-hero-section {
-    min-height: 90vh; /* Altezza minima per un impatto visivo */
-    padding-top: 100px; /* Spazio per il back button */
-    padding-bottom: 8rem; /* AUMENTATO: Spazio sotto il contenuto per evitare overlap */
-    display: flex;
-    align-items: flex-end; /* Allinea il contenuto in basso */
-    position: relative;
-    z-index: 10; 
-    overflow: hidden; /* IMPORTANTE: Controlla che il backdrop non esca */
+/* --- Contenuto Principale Scrollabile --- */
+.content-wrapper {
+    max-width: 1400px; /* Larghezza massima per il contenuto centrale */
+    margin: 0 auto; /* Centra il wrapper */
+    position: relative; /* Necessario per lo z-index */
+    background-color: var(--primary-bg); /* Sfondo solido per coprire il backdrop sotto */
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8); /* Ombra per staccare dal backdrop */
+    border-radius: 12px; /* Piccoli bordi arrotondati per il wrapper generale */
+    min-height: calc(100vh - 40px); /* Assicurati che sia visibile */
 }
 
-#hero-backdrop {
-    position: absolute;
-    inset: 0; /* Copre completamente il genitore */
-    background-size: cover;
-    background-position: center;
-    filter: brightness(0.5) blur(15px); /* Scura e sfoca */
-    transform: scale(1.05); /* Zoom leggero per coprire i bordi sfocati */
-    z-index: 0;
+/* --- Sezione Dettagli (Poster e Info) --- */
+.main-details-section {
+    /* Tailwind classes: flex flex-col md:flex-row items-center md:items-start gap-8 lg:gap-12 */
+    /* mt-16 md:mt-24 mb-12 bg-secondary-bg p-6 md:p-8 rounded-lg shadow-lg */
+    z-index: 30; /* Assicura che sia sopra tutto il resto nella Hero area */
+    position: relative; /* Per lo z-index */
 }
 
-.hero-gradient {
-    position: absolute;
-    inset: 0; /* Copre completamente il genitore */
-    background: linear-gradient(to top, var(--primary-bg) 0%, rgba(0,0,0,0.8) 20%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%);
-    z-index: 0; /* Dietro il contenuto, sopra il backdrop */
-}
-
-.hero-content {
-    /* Tailwind classes: flex flex-col md:flex-row items-center md:items-end gap-8 lg:gap-12 */
-    /* text-white */
-    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
-    z-index: 1; /* Sopra i gradienti e backdrop */
-    max-width: 1200px;
-    margin: 0 auto; /* Centra il contenuto della hero */
-    width: 100%; /* Occupa la larghezza disponibile */
-    padding: 0 2rem; /* Padding laterale */
-}
-
-.movie-info-summary h1 {
-    font-size: 4.5em;
+.movie-info-block h1 {
+    font-size: 3.5em; /* Titolo più contenuto per un look più pulito */
     line-height: 1.1;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
 }
-
-.movie-info-summary p {
+.movie-info-block p {
     line-height: 1.5;
 }
 
-.movie-info-summary .flex span {
+.movie-info-block .flex span {
     background-color: rgba(255, 255, 255, 0.1);
     padding: 4px 10px;
     border-radius: 5px;
@@ -124,68 +112,41 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
 }
-.btn-primary {
+.action-buttons .play-btn {
     background-color: white;
     color: var(--primary-bg);
 }
-.btn-primary:hover {
+.action-buttons .play-btn:hover {
     background-color: rgba(255, 255, 255, 0.9);
     transform: scale(1.05);
     box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
 }
-.btn-secondary {
+.action-buttons .add-to-list-btn {
     background-color: rgba(109, 109, 110, 0.7);
     color: white;
 }
-.btn-secondary:hover {
+.action-buttons .add-to-list-btn:hover {
     background-color: rgba(109, 109, 110, 0.9);
     transform: scale(1.05);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
 }
-.btn-tertiary { /* Bottone per selezione stagione */
-    background-color: rgba(255, 255, 255, 0.1);
-    color: var(--text-color);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-.btn-tertiary:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.3);
-}
 
-
-/* --- Contenuto Principale (sotto la hero) --- */
-.main-content-sections {
-    background-color: var(--primary-bg);
-    position: relative;
-    z-index: 20; /* Assicura che sia SOPRA la hero */
-    margin-top: -60px; /* Margine negativo per creare l'effetto di sovrapposizione visiva */
-    padding-top: 2rem; /* Padding interno */
-    padding-bottom: 4rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    border-top-left-radius: 30px; /* Angoli arrotondati */
-    border-top-right-radius: 30px;
-    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.7); /* Ombra verso l'alto */
-    max-width: 1400px; /* Limita la larghezza come il content-wrapper */
-    margin-left: auto;
-    margin-right: auto;
-}
-
+/* --- Blocchi di Contenuto (Trailer, Player, etc.) --- */
 .content-block {
-    padding: 2rem 0;
+    padding: 2rem 0; /* Padding verticale per i blocchi di contenuto */
     margin-bottom: 2rem;
     position: relative;
     overflow: visible; /* Permette alle card ingrandite di non essere tagliate */
 }
 .block-title {
-    font-family: var(--font-montserrat);
-    font-size: 2.5em;
+    font-size: 2em;
     font-weight: 700;
     margin-bottom: 1.5rem;
     color: white;
     border-bottom: 2px solid var(--border-color);
     padding-bottom: 0.5rem;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 /* --- Iframes (Trailer e Player) --- */
@@ -198,13 +159,11 @@ body {
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    max-width: 900px; /* Larghezza massima */
-    margin: 0 auto;
+    max-width: 900px; /* Larghezza massima, per non essere troppo grandi */
+    margin: 0 auto; /* Centra */
 }
 .iframe-container iframe {
     position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     border: none;
@@ -212,82 +171,20 @@ body {
 
 /* --- Caroselli (Episodi, Cast, Simili) --- */
 .carousel-container {
-    position: relative;
-    overflow-x: auto; /* Rende scrollabile */
-    overflow-y: hidden; /* Nasconde scrollbar verticale */
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch; /* Per uno scrolling più fluido su iOS */
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 1.5rem; /* Spazio per l'ombra */
     padding-top: 0.5rem; /* Spazio per l'ombra della card superiore */
-    padding-bottom: 1.5rem; /* Spazio per la scrollbar se visibile */
-    margin-left: -2rem; /* Contraccolpo per allineare il contenuto col bordo pagina */
-    margin-right: -2rem; /* Contraccolpo per allineare il contenuto col bordo pagina */
-    padding-left: 2rem; /* Padding interno per la prima card */
-    padding-right: 2rem; /* Padding interno per l'ultima card */
+    position: relative;
+    padding-left: 0;
+    padding-right: 0;
 }
-
 .carousel-track {
     display: flex;
     gap: 1rem;
+    padding: 0 0.5rem; /* Padding laterale interno per le card */
     min-width: max-content; /* Impedisce il wrap delle card */
 }
-
-/* Nascondi la scrollbar ma mantieni la funzionalità */
-.hide-scrollbar::-webkit-scrollbar {
-    display: none;
-}
-.hide-scrollbar {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-}
-
-/* --- Stili per le frecce del carosello (MINIMALI) --- */
-.scroll-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.5); /* Sfondo semi-trasparente */
-    color: white;
-    font-size: 2rem; /* Dimensione del simbolo della freccia */
-    border: none;
-    width: 40px; /* Larghezza della freccia */
-    height: calc(100% - 2rem); /* Altezza uguale al carosello meno i padding */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background-color 0.3s ease, opacity 0.3s ease;
-    z-index: 30; /* Assicura che siano sopra le card */
-    opacity: 0; /* NASCOSTA INIZIALMENTE (gestita da JS) */
-    pointer-events: none; /* Disabilita i click quando invisibile */
-}
-
-/* La visibilità on hover è gestita da JS con show-arrow/hide-arrow */
-/* .group:hover .scroll-btn { opacity: 1; pointer-events: auto; } */
-
-.scroll-btn.show-arrow { /* Classe aggiunta da JS quando la freccia deve essere visibile */
-    opacity: 1;
-    pointer-events: auto;
-}
-.scroll-btn.hide-arrow { /* Classe aggiunta da JS quando la freccia deve essere nascosta */
-    opacity: 0;
-    pointer-events: none;
-}
-
-
-.scroll-btn.scroll-right {
-    right: 0;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-}
-.scroll-btn.scroll-left {
-    left: 0;
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-}
-.scroll-btn:hover {
-    background-color: rgba(0, 0, 0, 0.8); /* Più scuro su hover */
-}
-
 
 /* --- Card Episodio --- */
 .episode-card {
@@ -299,6 +196,7 @@ body {
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
     display: flex;
     flex-direction: column;
 }
@@ -310,6 +208,7 @@ body {
     width: 100%;
     height: 160px; /* 16:9 */
     object-fit: cover;
+    display: block;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
 }
@@ -344,8 +243,7 @@ body {
     -webkit-box-orient: vertical;
 }
 .episode-info .play-episode-btn {
-    /* Style button for episode card */
-    background-color: var(--accent-color); /* Red from Netflix */
+    background-color: var(--accent-color);
     color: white;
     padding: 8px 15px;
     border: none;
@@ -361,7 +259,6 @@ body {
     transform: translateY(-2px);
 }
 
-
 /* --- Card Cast --- */
 .cast-card {
     flex-shrink: 0;
@@ -373,7 +270,7 @@ body {
     padding-bottom: 0.5rem;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    height: 190px; /* Altezza fissa per mantenere allineamento */
+    height: 190px; /* Altezza fissa */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -411,7 +308,7 @@ body {
 }
 
 /* --- Card Film Simili (riutilizzate dalla homepage) --- */
-.similar-card { /* Rinomina da .movie-card a .similar-card per evitare conflitti */
+.movie-card {
     flex-shrink: 0;
     width: 200px;
     border-radius: 12px;
@@ -426,18 +323,18 @@ body {
     display: flex;
     flex-direction: column;
 }
-.similar-card:hover {
+.movie-card:hover {
     transform: scale(1.1);
     z-index: 20;
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
 }
-.similar-card img {
+.movie-card img {
     width: 100%;
     height: 300px;
     object-fit: cover;
     display: block;
 }
-.similar-card .p-2 {
+.movie-card .p-2 {
     padding: 0.5rem;
     text-align: center;
     font-weight: 600;
@@ -445,6 +342,39 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+
+/* --- Pulsanti di Scorrimento (per Caroselli) --- */
+.scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: 3rem;
+    border: none;
+    width: 50px;
+    height: calc(100% - 2rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+    z-index: 30;
+}
+.scroll-btn.scroll-right {
+    right: 0;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+.scroll-btn.scroll-left {
+    left: 0;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+.scroll-btn:hover {
+    background-color: rgba(0, 0, 0, 0.9);
 }
 
 
@@ -519,88 +449,42 @@ body {
 
 /* Media Queries per la Reattività */
 @media (max-width: 1024px) {
-    .movie-info-summary h1 { font-size: 3.5em; }
-    .movie-info-summary p { font-size: 1em; }
-    .movie-info-summary .flex span { font-size: 0.9em; padding: 3px 8px; }
-    .block-title { font-size: 2em; }
+    .movie-info-block h1 { font-size: 3em; }
+    .movie-info-block p { font-size: 0.9em; }
     .iframe-container { max-width: 90%; }
     .episode-card { width: 250px; }
-    .cast-card { width: 100px; height: 160px; }
-    .similar-card { width: 180px; }
-    .similar-card img { height: 270px; }
-    .scroll-btn { width: 35px; font-size: 1.8rem; }
-    .carousel-container {
-        margin-left: -1.5rem;
-        margin-right: -1.5rem;
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
-    }
+    .cast-card { width: 100px; height: 160px; } /* Adatta altezza cast */
+    .movie-card { width: 180px; }
 }
 
 @media (max-width: 768px) {
-    .detail-hero-section {
-        min-height: auto;
-        padding-top: 80px;
-        padding-bottom: 4rem; /* Adatta per mobile */
-        align-items: center;
-        flex-direction: column; /* Impila su mobile */
-    }
-    .hero-content {
-        text-align: center;
-        padding: 0 1rem;
-        margin-top: 0; /* Rimuovi margine negativo su mobile */
-    }
-    .detail-poster {
-        width: 180px;
-        margin-bottom: 1.5rem;
-    }
-    .movie-info-summary h1 { font-size: 2.8em; }
-    .movie-info-summary p { font-size: 0.95em; }
-    .action-buttons { flex-direction: column; width: 100%; max-width: 300px; margin: 0 auto; }
+    .top-backdrop, .top-backdrop-gradient { height: 40vh; }
+    .back-home-button { top: 15px; left: 15px; padding: 8px 15px; font-size: 1em; }
+    .main-details-section { flex-direction: column; text-align: center; padding: 1.5rem; }
+    .detail-poster { width: 150px; margin-bottom: 1.5rem; }
+    .movie-info-block h1 { font-size: 2.5em; }
+    .movie-info-block p { font-size: 0.85em; }
+    .action-buttons { flex-direction: column; width: 100%; max-width: 250px; margin: 0 auto; }
     .action-buttons .btn { width: 100%; }
-
-    .main-content-sections {
-        margin-top: -60px; /* Più aggressivo per mobile */
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
-    }
     .content-block { padding: 1.5rem 0; }
     .block-title { font-size: 1.8em; }
-    .iframe-container { padding-bottom: 56.25%; max-width: 95%; }
+    .iframe-container { padding-bottom: 56.25%; max-width: 95%; } /* Standard 16:9 su mobile */
     .episode-card { width: 200px; }
-    .cast-card { width: 90px; height: 140px; }
-    .similar-card { width: 150px; }
-    .similar-card img { height: 225px; }
-    .carousel-container {
-        margin-left: -1rem;
-        margin-right: -1rem;
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
-    .scroll-btn { width: 30px; font-size: 1.5rem; }
+    .cast-card { width: 90px; height: 140px; } /* Adatta altezza cast mobile */
+    .movie-card { width: 150px; }
+    .carousel-track { padding: 0 0.25rem; }
 }
 
 @media (max-width: 480px) {
-    .detail-hero-section {
-        padding-top: 60px;
-        padding-bottom: 2rem;
-    }
-    .hero-content {
-        padding: 0 1rem;
-    }
-    .detail-poster { width: 150px; }
-    .movie-info-summary h1 { font-size: 2.2em; }
-    .movie-info-summary p { font-size: 0.8em; }
+    .top-backdrop, .top-backdrop-gradient { height: 35vh; }
+    .main-details-section { padding: 1rem; }
+    .detail-poster { width: 120px; }
+    .movie-info-block h1 { font-size: 2em; }
+    .movie-info-block p { font-size: 0.8em; }
     .block-title { font-size: 1.5em; }
-    .iframe-container { padding-bottom: 65%; max-width: 98%; }
+    .iframe-container { padding-bottom: 65%; max-width: 98%; } /* Più "quadrato" su schermi molto piccoli */
     .episode-card { width: 160px; }
-    .cast-card { width: 70px; height: 120px; }
-    .similar-card { width: 100px; }
-    .similar-card img { height: 150px; }
-    .carousel-container {
-        margin-left: -0.5rem;
-        margin-right: -0.5rem;
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-    }
+    .cast-card { width: 80px; height: 120px; } /* Adatta altezza cast molto piccolo */
+    .movie-card { width: 120px; }
+    .carousel-track { padding: 0 0.1rem; }
 }
