@@ -125,7 +125,7 @@ async function loadMovies() {
             container.innerHTML = '<p class="text-red-500">Errore nel caricamento dei contenuti.</p>';
         }
     }
-    setupCarouselArrowVisibilityListeners(); // <--- CHIAMATA PER INIZIALIZZARE LE FRECCE
+    setupCarouselArrowVisibilityListeners(); // <--- CHIAMATA IMPORTANTE PER INIZIALIZZARE LE FRECCE DOPO IL CARICAMENTO
 }
 
 document.addEventListener('DOMContentLoaded', loadMovies);
@@ -192,7 +192,6 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
     } else {
         series.forEach(serie => seriesContainer.appendChild(createMovieCard(serie)));
     }
-    // Inizializza listener per le frecce dei risultati di ricerca
     setupCarouselArrowVisibilityListeners(); // <--- CHIAMATA PER INIZIALIZZARE LE FRECCE SUI RISULTATI DI RICERCA
 });
 
@@ -234,22 +233,23 @@ function updateCarouselArrowsVisibility(carouselContainer) {
         if (carouselContainer.scrollLeft > tolerance) {
             scrollLeftBtn.classList.remove('hide-arrow');
             scrollLeftBtn.classList.add('show-arrow');
-            scrollLeftBtn.style.pointerEvents = 'auto';
+            // scrollLeftBtn.style.pointerEvents = 'auto'; // Gestito da CSS :hover
         } else {
             scrollLeftBtn.classList.remove('show-arrow');
             scrollLeftBtn.classList.add('hide-arrow');
-            scrollLeftBtn.style.pointerEvents = 'none';
+            // scrollLeftBtn.style.pointerEvents = 'none'; // Gestito da CSS :hover
         }
 
         // Freccia destra (avanti)
-        if (carouselContainer.scrollLeft >= scrollEnd - tolerance) {
-            scrollRightBtn.classList.remove('show-arrow');
-            scrollRightBtn.classList.add('hide-arrow');
-            scrollRightBtn.style.pointerEvents = 'none';
-        } else {
+        // Mostra solo se c'è contenuto scorrevole e non siamo alla fine
+        if (carouselContainer.scrollWidth > carouselContainer.clientWidth + tolerance && carouselContainer.scrollLeft < scrollEnd - tolerance) {
             scrollRightBtn.classList.remove('hide-arrow');
             scrollRightBtn.classList.add('show-arrow');
-            scrollRightBtn.style.pointerEvents = 'auto';
+            // scrollRightBtn.style.pointerEvents = 'auto'; // Gestito da CSS :hover
+        } else {
+            scrollRightBtn.classList.remove('show-arrow');
+            scrollRightBtn.classList.add('hide-arrow');
+            // scrollRightBtn.style.pointerEvents = 'none'; // Gestito da CSS :hover
         }
     };
 
