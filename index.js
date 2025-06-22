@@ -1,4 +1,4 @@
-const API_KEY = '2d082597ab951b3a9596ca23e71413a8'; // La tua chiave TMDb
+const API_KEY = '2d082597ab951b3a9596ca23e71413a8'; // La tua chiave TMDb - RICORDATI DI METTERE QUI LA TUA VERA CHIAVE API
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/';
 
@@ -65,9 +65,17 @@ async function setHeroSection() {
 
         if (featuredMovie && featuredMovie.backdrop_path) {
             heroBackdrop.style.backgroundImage = `url(${IMAGE_BASE_URL}original${featuredMovie.backdrop_path})`;
-            heroBackdrop.style.transition = 'var(--hero-backdrop-transition)'; // Applica la transizione
+            heroBackdrop.style.transition = 'var(--hero-backdrop-transition)'; 
             heroTitle.textContent = featuredMovie.title || featuredMovie.name;
-            heroSinopsis.textContent = featuredMovie.overview || 'Una breve sinossi accattivante per il film in evidenza.';
+            
+            // --- MODIFICA QUI: TRONCAMENTO DESCRIZIONE HERO ---
+            let synopsis = featuredMovie.overview || 'Una breve sinossi accattivante che introduce il film o la serie del momento. Azione, avventura, dramma e tanto altro ti aspettano!';
+            const MAX_HERO_SYNOPSIS_LENGTH = 180; // Definisci un limite di caratteri, puoi adattarlo
+            if (synopsis.length > MAX_HERO_SYNOPSIS_LENGTH) {
+                synopsis = synopsis.substring(0, MAX_HERO_SYNOPSIS_LENGTH) + '...';
+            }
+            heroSinopsis.textContent = synopsis;
+            // --- FINE MODIFICA ---
 
             // Aggiorna i link dei bottoni
             playBtn.onclick = () => window.location.href = `dettagli.html?id=${featuredMovie.id}&type=${featuredMovie.media_type || 'movie'}`;
@@ -83,7 +91,7 @@ async function setHeroSection() {
 
 // Funzione per caricare i film nelle varie categorie
 async function fetchMovies(endpoint) {
-    const page = Math.floor(Math.random() * 5) + 1; // Pagine casuali per varietà
+    const page = Math.floor(Math.random() * 5) + 1; 
     const url = `${BASE_URL}${endpoint}${endpoint.includes('?') ? '&' : '?'}api_key=${API_KEY}&language=it-IT&page=${page}`;
     const response = await fetch(url);
     if (!response.ok) {
@@ -94,7 +102,7 @@ async function fetchMovies(endpoint) {
 }
 
 async function loadMovies() {
-    await setHeroSection(); // Carica la Hero Section per prima
+    await setHeroSection(); 
 
     for (const category of categories) {
         const container = document.getElementById(category.id);
@@ -104,11 +112,11 @@ async function loadMovies() {
 
         try {
             const movies = await fetchMovies(category.url);
-            container.innerHTML = ''; // Pulisci il "Caricamento..."
+            container.innerHTML = ''; 
 
             const filteredMovies = movies
                 .filter(movie => movie.poster_path)
-                .slice(0, 15); // Limita il numero di film per riga per performance
+                .slice(0, 15); 
 
             if (filteredMovies.length === 0) {
                 container.innerHTML = '<p class="text-gray-500">Nessun contenuto disponibile.</p>';
