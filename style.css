@@ -243,7 +243,7 @@ ul {
 }
 
 .content-row {
-    padding: 40px 60px; 
+    padding: 40px 60px; /* Desktop */
     margin-top: 0px; 
     position: relative;
     z-index: 1; 
@@ -277,8 +277,8 @@ ul {
     padding-bottom: 20px; 
     padding-left: 0px; 
     padding-right: 0px;
-    padding-top: 20px; /* AGGIUNTO: Spazio sopra le card per l'ingrandimento */
-    padding-bottom: 20px; /* AGGIUNTO: Spazio sotto le card per l'ingrandimento e scroll */
+    padding-top: 20px; 
+    padding-bottom: 20px; 
 }
 
 .movie-card {
@@ -486,8 +486,8 @@ footer {
     .carousel-track {
         padding-left: 20px; 
         padding-right: 20px; 
-        padding-top: 15px; /* AGGIUNTO per mobile */
-        padding-bottom: 15px; /* AGGIUNTO per mobile */
+        padding-top: 15px; 
+        padding-bottom: 15px; 
     }
     .movie-card {
         width: 150px; 
@@ -535,8 +535,8 @@ footer {
     .carousel-track {
         padding-left: 15px; 
         padding-right: 15px;
-        padding-top: 10px; /* AGGIUNTO per mobile molto piccolo */
-        padding-bottom: 10px; /* AGGIUNTO per mobile molto piccolo */
+        padding-top: 10px; 
+        padding-bottom: 10px; 
     }
     .movie-card {
         width: 120px;
