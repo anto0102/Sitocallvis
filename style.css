@@ -256,6 +256,8 @@ ul {
     color: white;
     text-align: left; 
     padding-left: 0; 
+    position: relative; /* Per lo z-index */
+    z-index: 5; /* Sopra le card */
 }
 
 .carousel-container {
@@ -277,8 +279,8 @@ ul {
     padding-bottom: 20px; 
     padding-left: 0px; 
     padding-right: 0px;
-    padding-top: 20px; /* Spazio sopra le card per l'ingrandimento */
-    padding-bottom: 20px; /* Spazio sotto le card per l'ingrandimento e scroll */
+    padding-top: 20px; 
+    padding-bottom: 20px; 
 }
 
 .movie-card {
@@ -346,18 +348,18 @@ ul {
 }
 
 .movie-card:hover {
-    transform: scale(1.08); /* Aumentato leggermente l'ingrandimento */
+    transform: scale(1.08); 
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
     z-index: 10; 
 }
 
-.movie-card .card-info p { /* Stili per testo dentro card-info (voto, overview) */
+.movie-card .card-info p { 
     font-size: 0.9em;
     color: var(--text-color);
     margin-bottom: 5px;
 }
 
-.movie-card .card-info p:last-of-type { /* Margine per l'ultima p (overview) */
+.movie-card .card-info p:last-of-type { 
     margin-bottom: 15px; 
 }
 
@@ -372,16 +374,13 @@ ul {
     font-size: 2.5rem; 
     border: none;
     width: 45px; 
-    height: calc(100% - 40px); /* Regola altezza per non sovrapporsi al padding del track */
+    height: 100%; 
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: background-color 0.3s ease, opacity 0.3s ease;
     z-index: 60; 
-    /* Margine superiore e inferiore per centrare con il padding del track */
-    margin-top: 20px; 
-    margin-bottom: 20px;
 }
 
 .scroll-btn.scroll-right {
@@ -506,14 +505,14 @@ footer {
         margin-top: 2rem; 
     }
     .content-row h2 {
-        padding-left: 15px; /* CAMBIATO: Più a sinistra */
+        padding-left: 15px; 
     }
     .carousel-container {
         padding-left: 0px; 
         padding-right: 0px;
     }
     .carousel-track {
-        padding-left: 15px; /* CAMBIATO: Più a sinistra */
+        padding-left: 15px; 
         padding-right: 15px; 
         padding-top: 15px; 
         padding-bottom: 15px; 
@@ -559,10 +558,10 @@ footer {
     }
     .content-row h2 {
         font-size: 1.8em;
-        padding-left: 10px; /* CAMBIATO: Ancora più a sinistra */
+        padding-left: 10px; 
     }
     .carousel-track {
-        padding-left: 10px; /* CAMBIATO: Ancora più a sinistra */
+        padding-left: 10px; 
         padding-right: 10px;
         padding-top: 10px; 
         padding-bottom: 10px; 
