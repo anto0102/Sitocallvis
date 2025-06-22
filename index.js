@@ -125,7 +125,7 @@ async function loadMovies() {
             container.innerHTML = '<p class="text-red-500">Errore nel caricamento dei contenuti.</p>';
         }
     }
-    setupCarouselArrowVisibilityListeners(); // <--- CHIAMATA IMPORTANTE PER INIZIALIZZARE LE FRECCE DOPO IL CARICAMENTO
+    setupCarouselArrowVisibilityListeners(); // CHIAMATA IMPORTANTE PER INIZIALIZZARE LE FRECCE DOPO IL CARICAMENTO
 }
 
 document.addEventListener('DOMContentLoaded', loadMovies);
@@ -192,7 +192,7 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
     } else {
         series.forEach(serie => seriesContainer.appendChild(createMovieCard(serie)));
     }
-    setupCarouselArrowVisibilityListeners(); // <--- CHIAMATA PER INIZIALIZZARE LE FRECCE SUI RISULTATI DI RICERCA
+    setupCarouselArrowVisibilityListeners(); // CHIAMATA PER INIZIALIZZARE LE FRECCE SUI RISULTATI DI RICERCA
 });
 
 // Funzioni di scroll per i caroselli
@@ -223,7 +223,11 @@ function updateCarouselArrowsVisibility(carouselContainer) {
     const scrollLeftBtn = carouselContainer.querySelector('.scroll-btn.scroll-left');
     const scrollRightBtn = carouselContainer.querySelector('.scroll-btn.scroll-right');
 
-    if (!scrollLeftBtn || !scrollRightBtn) return;
+    // Se i pulsanti non esistono (es. su mobile o se il carosello non è scorrevole), non fare nulla
+    if (!scrollLeftBtn || !scrollRightBtn) {
+        // console.warn("Pulsanti di scorrimento non trovati per il contenitore:", carouselContainer);
+        return;
+    }
 
     const toggleArrows = () => {
         const tolerance = 5; // Pixels di tolleranza per l'inizio/fine dello scroll
@@ -233,34 +237,38 @@ function updateCarouselArrowsVisibility(carouselContainer) {
         if (carouselContainer.scrollLeft > tolerance) {
             scrollLeftBtn.classList.remove('hide-arrow');
             scrollLeftBtn.classList.add('show-arrow');
-            // scrollLeftBtn.style.pointerEvents = 'auto'; // Gestito da CSS :hover
         } else {
             scrollLeftBtn.classList.remove('show-arrow');
             scrollLeftBtn.classList.add('hide-arrow');
-            // scrollLeftBtn.style.pointerEvents = 'none'; // Gestito da CSS :hover
         }
 
         // Freccia destra (avanti)
-        // Mostra solo se c'è contenuto scorrevole e non siamo alla fine
+        // Mostra solo se c'è contenuto scorrevole e non siamo alla fine completa
         if (carouselContainer.scrollWidth > carouselContainer.clientWidth + tolerance && carouselContainer.scrollLeft < scrollEnd - tolerance) {
             scrollRightBtn.classList.remove('hide-arrow');
             scrollRightBtn.classList.add('show-arrow');
-            // scrollRightBtn.style.pointerEvents = 'auto'; // Gestito da CSS :hover
         } else {
             scrollRightBtn.classList.remove('show-arrow');
             scrollRightBtn.classList.add('hide-arrow');
-            // scrollRightBtn.style.pointerEvents = 'none'; // Gestito da CSS :hover
         }
     };
 
     // Imposta la visibilità iniziale
-    toggleArrows(); 
+    // Usa un piccolo ritardo per assicurare che il rendering sia completato
+    setTimeout(toggleArrows, 100); 
 
-    // Aggiungi un listener di scroll con debounce
+    // Aggiungi un listener di scroll con debounce per ottimizzare le performance
     let scrollTimeout;
     carouselContainer.addEventListener('scroll', () => {
         clearTimeout(scrollTimeout);
         scrollTimeout = setTimeout(toggleArrows, 150); 
+    });
+
+    // Aggiungi un resize listener per aggiornare la visibilità se la finestra cambia dimensione
+    // (es. rotazione telefono o ridimensionamento browser)
+    window.addEventListener('resize', () => {
+        clearTimeout(scrollTimeout); // Pulisci qualsiasi timeout precedente
+        scrollTimeout = setTimeout(toggleArrows, 150); // Debounce il resize anche
     });
 }
 
