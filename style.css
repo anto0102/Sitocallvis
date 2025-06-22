@@ -383,7 +383,23 @@ ul {
     cursor: pointer;
     transition: background-color 0.3s ease, opacity 0.3s ease;
     z-index: 60; 
+    /* Le frecce sono inizialmente nascoste e gestite da JS */
+    opacity: 0; 
+    pointer-events: none;
 }
+
+/* La visibilità on hover è gestita da JS con show-arrow/hide-arrow */
+/* Le classi group:hover non sono più usate direttamente per l'opacità delle frecce qui, ma JS le controlla */
+
+.scroll-btn.show-arrow { /* Classe aggiunta da JS quando la freccia deve essere visibile */
+    opacity: 1;
+    pointer-events: auto;
+}
+.scroll-btn.hide-arrow { /* Classe aggiunta da JS quando la freccia deve essere nascosta */
+    opacity: 0;
+    pointer-events: none;
+}
+
 
 .scroll-btn.scroll-right {
     right: 0;
