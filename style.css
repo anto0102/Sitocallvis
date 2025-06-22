@@ -366,56 +366,70 @@ ul {
 }
 
 
-/* Scroll Buttons for Carosels */
+/* Scroll Buttons for Carosels - DESIGN E FUNZIONALITA' RAFFINATA */
 .scroll-btn {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(30, 30, 30, 0.8); /* Sfondo più scuro e leggermente trasparente */
     color: white;
-    font-size: 2.5rem; 
+    font-size: 1.8rem; /* Dimensione freccia elegante */
     border: none;
-    width: 45px; 
-    height: 100%; 
+    width: 50px;   /* Larghezza fissa per renderla circolare */
+    height: 50px;  /* Altezza fissa per renderla circolare */
+    border-radius: 50%; /* Rendila circolare */
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background-color 0.3s ease, opacity 0.3s ease;
+    transition: background-color 0.3s ease, opacity 0.3s ease, transform 0.2s ease; 
     z-index: 60; 
-    /* Le frecce sono inizialmente nascoste e gestite da JS */
-    opacity: 0; 
-    pointer-events: none;
+    opacity: 0; /* Inizialmente nascosta, gestita da JS */
+    pointer-events: none; /* Inizialmente non cliccabile */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5); /* Ombra sottile */
 }
 
-/* La visibilità on hover è gestita da JS con show-arrow/hide-arrow */
-/* Le classi group:hover non sono più usate direttamente per l'opacità delle frecce qui, ma JS le controlla */
-
-.scroll-btn.show-arrow { /* Classe aggiunta da JS quando la freccia deve essere visibile */
+/* Classi gestite da JavaScript per la visibilità */
+.scroll-btn.show-arrow { 
     opacity: 1;
-    pointer-events: auto;
+    pointer-events: auto; /* Rendila cliccabile */
 }
-.scroll-btn.hide-arrow { /* Classe aggiunta da JS quando la freccia deve essere nascosta */
+.scroll-btn.hide-arrow { 
     opacity: 0;
-    pointer-events: none;
-}
-
-
-.scroll-btn.scroll-right {
-    right: 0;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-}
-
-.scroll-btn.scroll-left {
-    left: 0;
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
+    pointer-events: none; /* Rendila non cliccabile */
 }
 
 .scroll-btn:hover {
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: rgba(50, 50, 50, 0.95); /* Effetto hover più scuro */
+    transform: translateY(-50%) scale(1.1); /* Leggero ingrandimento al hover */
 }
+
+/* Posizionamento frecce */
+.scroll-btn.scroll-right {
+    right: 5px; /* Più vicina al bordo destro */
+}
+
+.scroll-btn.scroll-left {
+    left: 5px; /* Più vicina al bordo sinistro */
+}
+
+/* Media Queries per la reattività delle frecce */
+@media (max-width: 768px) {
+    .scroll-btn {
+        width: 40px; 
+        height: 40px; 
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .scroll-btn {
+        width: 35px; 
+        height: 35px; 
+        font-size: 1.2rem;
+    }
+}
+
 
 /* Footer */
 footer {
@@ -427,7 +441,7 @@ footer {
     font-size: 0.9em;
 }
 
-/* Media Queries per la reattività */
+/* Media Queries generali */
 @media (max-width: 1024px) {
     .hero-content h1 {
         font-size: 2.8em;
@@ -541,10 +555,8 @@ footer {
     .movie-card img {
         height: 225px; 
     }
-    .scroll-btn {
-        width: 35px; 
-        font-size: 2rem;
-    }
+    /* .scroll-btn è gestito dalle sue classi principali e media query specifiche */
+    /* Nessun override qui per i pulsanti di scorrimento */
     /* Mobile specific adjustment for main content */
     .main-content-sections {
         margin-top: -80px; 
@@ -589,10 +601,8 @@ footer {
     .movie-card img {
         height: 180px;
     }
-    .scroll-btn {
-        width: 30px; 
-        font-size: 1.5rem;
-    }
+    /* .scroll-btn è gestito dalle sue classi principali e media query specifiche */
+    /* Nessun override qui per i pulsanti di scorrimento */
     /* Mobile molto piccolo */
     .hero-section {
         padding-top: 120px; 
