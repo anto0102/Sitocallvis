@@ -23,7 +23,7 @@ body {
     line-height: 1.6;
     overflow-x: hidden; 
     overscroll-behavior-y: contain; 
-    height: 100%; /* CAMBIATO: usa 100% per altezza del body e min-height per contenuto */
+    height: 100%; /* Altezza del body */
     min-height: 100vh; /* Assicura che il body sia alto almeno quanto la viewport */
 }
 
@@ -46,16 +46,16 @@ ul {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 40px;
-    background-color: var(--primary-bg); /* CAMBIATO: Colore di sfondo solido per non mostrare trasparenze */
-    /* background-color: rgba(0, 0, 0, 0.7); */ /* Vecchio valore */
+    padding: 25px 40px; /* AUMENTATO: Padding superiore/inferiore per dare più spazio */
+    background-color: var(--primary-bg); /* Colore di sfondo solido */
     position: fixed;
     width: 100%;
     top: 0;
     left: 0;
-    z-index: 1000; /* Molto alto per essere sopra tutto */
+    z-index: 1000; 
     transition: background-color 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.5); /* Aggiungi un'ombra sottile */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5); 
+    min-height: 80px; /* Assicura un'altezza minima per la navbar */
 }
 
 .navbar .logo {
@@ -158,7 +158,7 @@ ul {
     position: relative;
     width: 100%;
     height: 80vh; 
-    padding-top: 80px; /* CAMBIATO: Spazio per la navbar fissa */
+    padding-top: 120px; /* AUMENTATO: Spazio per la navbar e per non compenetrare il titolo */
     background-image: url('https://via.placeholder.com/1920x1080/000000/FFFFFF?text=IMMAGINE+EROE'); 
     background-size: cover;
     background-position: center;
@@ -167,8 +167,8 @@ ul {
     padding-left: 60px;
     color: white;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); 
-    padding-bottom: 120px; /* AUMENTATO: Spazio sotto il contenuto hero per i bottoni */
-    z-index: 10; /* Per essere sotto la navbar ma sopra le sezioni del main */
+    padding-bottom: 150px; /* AUMENTATO: Spazio sotto il contenuto hero per i bottoni e la sezione successiva */
+    z-index: 10; 
 }
 
 .hero-section::before { /* Gradiente overlay */
@@ -211,7 +211,7 @@ ul {
     transition: all 0.3s ease;
 }
 
-.btn.play-btn { /* per i bottoni della Hero */
+.btn.play-btn { 
     background-color: white;
     color: var(--primary-bg);
 }
@@ -222,7 +222,7 @@ ul {
     box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
 }
 
-.btn.info-btn { /* per i bottoni della Hero */
+.btn.info-btn { 
     background-color: rgba(109, 109, 110, 0.7);
     color: white;
 }
@@ -236,14 +236,17 @@ ul {
 /* Content Wrapper e Rows (Caroselli) */
 .content-wrapper {
     padding-top: 0; 
+    position: relative; /* Per lo z-index */
+    z-index: 20; /* Più alto della hero per coprirla durante lo scroll */
+    background-color: var(--primary-bg); /* Sfondo solido per coprire la hero */
 }
 
 .content-row {
     padding: 40px 60px; /* Padding sui lati */
-    margin-top: 3rem; /* CAMBIATO: Margine positivo per separare dalla Hero */
+    margin-top: -100px; /* CAMBIATO: Riduci il margine negativo per non compenetrare troppo all'inizio */
     position: relative;
-    z-index: 20; /* Sotto il main content sections se scrolla */
-    overflow: visible; /* Per l'ingrandimento delle card */
+    z-index: 1; /* All'interno del content-wrapper, per stacking corretto */
+    overflow: visible; 
 }
 
 .content-row h2 {
@@ -331,16 +334,16 @@ ul {
     transform: translateY(-50%);
     background-color: rgba(0, 0, 0, 0.7);
     color: white;
-    font-size: 2.5rem; /* Riduci dimensione freccia */
+    font-size: 2.5rem; 
     border: none;
-    width: 45px; /* Riduci larghezza freccia */
-    height: 100%; /* Copri tutta l'altezza del carosello */
+    width: 45px; 
+    height: 100%; 
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: background-color 0.3s ease, opacity 0.3s ease;
-    z-index: 60; /* Assicurati che siano sopra le card */
+    z-index: 60; 
 }
 
 .scroll-btn.scroll-right {
@@ -385,12 +388,27 @@ footer {
     }
 }
 
+@media (min-width: 769px) { /* Per desktop e tablet large, assicura che il main content inizi sotto la hero */
+    .main-content-sections {
+        padding-top: 200px; /* Aumenta il padding top di main per non sovrapporsi mai */
+        margin-top: -150px; /* Alza la sezione main dal fondo della hero per l'effetto */
+        border-top-left-radius: 30px;
+        border-top-right-radius: 30px;
+        box-shadow: 0 -10px 40px rgba(0,0,0,0.7);
+    }
+    .content-row {
+        margin-top: 3rem; /* Margine positivo standard */
+    }
+}
+
+
 @media (max-width: 768px) {
     .navbar {
         flex-direction: column;
         align-items: flex-start;
         padding: 15px 20px;
         background-color: var(--primary-bg); /* Sfondo solido */
+        min-height: auto; /* Rimuovi altezza minima su mobile */
     }
     .navbar nav {
         margin-top: 15px;
@@ -418,7 +436,8 @@ footer {
         text-align: center;
         justify-content: center;
         background-position: center top; 
-        padding-bottom: 80px; 
+        padding-top: 100px; /* AUMENTATO per mobile */
+        padding-bottom: 100px; /* AUMENTATO per mobile */
     }
     .hero-section::before {
         background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.9) 100%);
@@ -443,7 +462,7 @@ footer {
     }
     .content-row {
         padding: 20px;
-        margin-top: 1.5rem; 
+        margin-top: 2rem; /* AUMENTATO per mobile */
     }
     .movie-card {
         width: 150px; 
@@ -454,6 +473,13 @@ footer {
     .scroll-btn {
         width: 35px; 
         font-size: 2rem;
+    }
+    /* Mobile specific adjustment for main content */
+    .main-content-sections {
+        margin-top: -80px; /* Più aggressivo per mobile */
+        padding-top: 2rem; /* Meno padding se l'effetto overlay è più visibile */
+        border-top-left-radius: 20px; /* Riduci raggio per mobile */
+        border-top-right-radius: 20px;
     }
 }
 
@@ -489,5 +515,14 @@ footer {
     .scroll-btn {
         width: 30px; 
         font-size: 1.5rem;
+    }
+    /* Mobile molto piccolo */
+    .hero-section {
+        padding-top: 80px;
+        padding-bottom: 60px;
+    }
+    .main-content-sections {
+        margin-top: -40px; 
+        padding-top: 1.5rem;
     }
 }
