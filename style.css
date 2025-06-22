@@ -1,62 +1,82 @@
-/* Variabili CSS Globali */
+/* Stili Globali e Reset */
 :root {
     --primary-bg: #141414;
     --secondary-bg: #222222;
     --text-color: #e0e0e0;
-    --accent-color: #e50914; /* Rosso Netflix */
+    --accent-color: #e50914; /* Tipico rosso Netflix */
     --hover-color: #f40612;
     --card-bg: #1c1c1c;
     --border-color: #333;
-    --hero-backdrop-transition: all 1s ease-in-out;
+    --hero-backdrop-transition: all 0.3s ease-in-out;
 }
 
-/* Base styles and resets */
-html, body {
+* {
     margin: 0;
     padding: 0;
-    font-family: 'Poppins', sans-serif; /* Usiamo Poppins per un look più moderno */
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif; /* Cambiato a Poppins per coerenza */
     background-color: var(--primary-bg);
     color: var(--text-color);
     line-height: 1.6;
-    overflow-x: hidden;
-    scroll-behavior: smooth; /* Per uno scroll più fluido */
+    overflow-x: hidden; 
+    overscroll-behavior-y: contain; /* Mantiene lo scroll più controllato */
+    height: 100vh; /* Altezza viewport */
 }
 
-/* Utility classes for Tailwind */
-.bg-primary-bg { background-color: var(--primary-bg); }
-.bg-secondary-bg { background-color: var(--secondary-bg); }
-.text-text-color { color: var(--text-color); }
-.text-accent-color { color: var(--accent-color); }
-.border-border-color { border-color: var(--border-color); }
-
-/* Custom Scrollbar Hiding */
-.hide-scrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none;    /* Firefox */
+a {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
-.hide-scrollbar::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+
+a:hover {
+    color: var(--accent-color);
+}
+
+ul {
+    list-style: none;
 }
 
 /* Navbar */
 .navbar {
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(10px); /* Effetto vetro smerigliato */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: rgba(0, 0, 0, 0.7);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    transition: background-color 0.3s ease;
 }
 
-.navbar .nav-link {
+.navbar .logo {
+    font-size: 2em;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+.navbar nav ul {
+    display: flex;
+}
+
+.navbar nav ul li {
+    margin-right: 30px;
+}
+
+.navbar nav ul li a {
     font-weight: 600;
     font-size: 1.1em;
     padding: 5px 0;
     position: relative;
-    transition: color 0.3s ease;
 }
 
-.navbar .nav-link:hover {
-    color: var(--accent-color);
-}
-
-.navbar .nav-link.active::after {
+.navbar nav ul li a.active::after {
     content: '';
     position: absolute;
     bottom: -5px;
@@ -64,75 +84,128 @@ html, body {
     width: 100%;
     height: 3px;
     background-color: var(--accent-color);
-    border-radius: 2px;
 }
 
-.search-input::placeholder {
-    color: #a0a0a0;
+.user-actions {
+    display: flex;
+    align-items: center;
 }
 
-.btn-primary {
+.user-actions input {
+    padding: 8px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+    margin-right: 15px;
+    transition: all 0.3s ease;
+}
+
+.user-actions input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.3);
+}
+
+.btn-primary { /* Usato anche per Login/Accedi */
     background-color: var(--accent-color);
     color: white;
-    padding: 8px 18px;
+    padding: 8px 15px;
+    border: none;
     border-radius: 5px;
+    cursor: pointer;
     font-weight: 600;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-.btn-primary:hover {
-    background-color: var(--hover-color);
-    transform: translateY(-2px);
+    transition: background-color 0.3s ease;
 }
 
-.btn-secondary {
+.btn-primary:hover {
+    background-color: var(--hover-color);
+}
+
+.btn-secondary { /* Usato per Logout */
     background-color: rgba(109, 109, 110, 0.7);
     color: white;
-    padding: 8px 18px;
+    padding: 8px 15px;
+    border: none;
     border-radius: 5px;
+    cursor: pointer;
     font-weight: 600;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.3s ease;
 }
 .btn-secondary:hover {
     background-color: rgba(109, 109, 110, 0.9);
-    transform: translateY(-2px);
 }
 
 .profile-icon {
-    font-size: 1.8em;
-    color: var(--accent-color); /* Colore icona profilo */
-    transition: transform 0.2s ease;
+    font-size: 1.4em;
+    text-decoration: none;
+    color: white;
+    background-color: var(--accent-color); /* Per un look più coerente */
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
 }
 .profile-icon:hover {
-    transform: scale(1.1);
+    background-color: var(--hover-color);
 }
+
 
 /* Hero Section */
 .hero-section {
-    padding-top: 120px; /* Spazio per la navbar fissa */
+    position: relative;
+    width: 100%;
+    height: 80vh; 
+    background-image: url('https://via.placeholder.com/1920x1080/000000/FFFFFF?text=IMMAGINE+EROE'); 
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end; /* Allinea il contenuto in basso */
+    padding-left: 60px;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); 
+    padding-bottom: 120px; /* AUMENTATO: Spazio sotto il contenuto hero per i bottoni */
 }
 
-.hero-backdrop {
-    background-image: url('https://image.tmdb.org/t/p/original/t5zCBSB5xMDKcDqe91ehtzXuHWN.jpg'); /* Immagine di fallback */
-    filter: brightness(0.7); /* Rendi l'immagine un po' più scura */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%);
+    z-index: 1;
 }
-
-.hero-overlay {
-    background: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.7) 40%, rgba(0,0,0,0) 100%);
+.hero-section .hero-content {
+    position: relative;
+    z-index: 2; /* Sopra l'overlay del gradiente */
+    max-width: 600px;
 }
 
 .hero-content h1 {
-    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+    font-size: 3.5em;
+    margin-bottom: 20px;
+    line-height: 1.2;
 }
+
 .hero-content p {
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    font-size: 1.2em;
+    margin-bottom: 30px; /* Spazio tra descrizione e bottoni */
+    max-width: 500px;
+    /* Opzionale: per forzare una singola riga o numero limitato di righe con ellipsis */
+    /* white-space: nowrap; */
+    /* overflow: hidden; */
+    /* text-overflow: ellipsis; */
 }
 
 .hero-buttons .btn {
-    padding: 12px 30px;
-    border-radius: 9999px; /* Pill shape */
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
     font-size: 1.1em;
-    font-weight: 700;
+    font-weight: 600;
     cursor: pointer;
+    margin-right: 15px;
     transition: all 0.3s ease;
 }
 
@@ -140,89 +213,79 @@ html, body {
     background-color: white;
     color: var(--primary-bg);
 }
+
 .btn.play-btn:hover {
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.8);
     transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
 }
 
 .btn.info-btn {
     background-color: rgba(109, 109, 110, 0.7);
     color: white;
 }
+
 .btn.info-btn:hover {
     background-color: rgba(109, 109, 110, 0.9);
     transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 0 2px rgba(109, 109, 110, 0.3);
 }
 
-/* Content Rows and Carousels */
+/* Content Rows (Carousels) */
 .content-wrapper {
-    padding-top: 50px; /* Spazio aggiuntivo dopo la hero */
+    padding-top: 0; /* Rimosso padding-top qui */
 }
 
-/* Importante: Imposta overflow:visible sul genitore delle card per evitare clipping */
 .content-row {
-    position: relative; /* Necessario per posizionare le frecce di scorrimento */
-    margin-bottom: 3rem; /* Spazio tra le sezioni */
-    overflow: visible; /* PERMETTE ALLE CARD DI ESPANDERSI FUORI DALLA SEZIONE */
-    padding-left: 0; /* Assicura che il padding sia gestito dai wrapper interni */
-    padding-right: 0;
+    padding: 40px 60px; /* Mantieni padding sui lati */
+    margin-top: 2rem; /* CAMBIATO: Margine positivo per separare dalla hero */
+    position: relative;
+    z-index: 50; 
+    overflow: visible; /* Per l'ingrandimento delle card */
 }
 
-
-.content-row h2,
-.search-results-section h2 { /* Applica lo stile anche ai titoli della ricerca */
-    left: 0;
-    background-color: var(--primary-bg);
-    padding-right: 20px;
+.content-row h2 {
+    font-size: 2em;
     margin-bottom: 25px;
-    z-index: 20;
-    padding-left: 2rem; /* Allineati al contenuto */
+    color: white;
 }
 
 .carousel-container {
-    padding-left: 2rem; /* Padding per l'inizio del carosello */
-    padding-right: 2rem; /* Padding per la fine del carosello */
-    overflow-x: scroll;
-    padding-top: 1rem; /* Spazio sopra le card per l'ombra superiore */
-    padding-bottom: 2rem; /* Spazio sotto le card per l'ombra inferiore */
-    position: relative; /* Per le frecce di scorrimento assolute */
+    overflow-x: scroll; 
+    -webkit-overflow-scrolling: touch; 
+    scrollbar-width: none; 
+    -ms-overflow-style: none;  
+}
+
+.carousel-container::-webkit-scrollbar {
+    display: none; 
 }
 
 .carousel-track {
     display: flex;
-    gap: 1rem; /* Spazio tra le card */
-    min-width: max-content; /* Assicura che le card non si restringano */
+    gap: 15px; 
+    padding-bottom: 20px; 
 }
 
-/* Movie Card */
 .movie-card {
-    flex-shrink: 0;
-    width: 200px; /* Aumentato per un look più impattante */
-    border-radius: 12px; /* Angoli più arrotondati */
-    overflow: hidden; /* Mantiene il contenuto all'interno della card */
+    flex-shrink: 0; 
+    width: 200px; 
     background-color: var(--card-bg);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Ombra più pronunciata */
+    border-radius: 8px;
+    overflow: hidden;
     cursor: pointer;
     position: relative;
-    transform-origin: center center;
-    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease; /* Animazione più fluida */
-    z-index: 1; /* Default z-index */
-}
-
-.movie-card:hover {
-    transform: scale(1.1); /* Ingrandimento maggiore */
-    z-index: 20; /* Assicura che la card in hover sia in primo piano */
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1; /* Per l'ordinamento in hover */
 }
 
 .movie-card img {
     width: 100%;
-    height: 300px; /* Aumentato per riempire meglio la card */
+    height: 300px; 
     object-fit: cover;
     display: block;
-    border-bottom: none; /* Rimuovi il bordo inferiore */
+    transition: transform 0.3s ease;
 }
 
 .movie-card .card-info {
@@ -230,61 +293,33 @@ html, body {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 100%; /* Copre l'intera card al hover */
-    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0) 100%);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-start;
-    padding: 1rem;
-    opacity: 0;
-    transition: opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+    padding: 15px;
+    color: white;
+    opacity: 0; 
+    transform: translateY(100%); 
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .movie-card:hover .card-info {
-    opacity: 1;
+    opacity: 1; 
+    transform: translateY(0); 
 }
 
-.movie-card .card-info h3 {
-    font-size: 1.2em;
-    margin-bottom: 0.5rem;
-    text-align: left;
-    white-space: normal; /* Permette il wrap del testo */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2; /* Limita a 2 righe */
-    -webkit-box-orient: vertical;
+.movie-card:hover {
+    transform: scale(1.05); 
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+    z-index: 10; 
 }
 
-.movie-card .card-info p {
+.movie-card h3 {
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+
+.movie-card p {
     font-size: 0.9em;
-    color: #b0b0b0;
-    margin-bottom: 0.5rem;
-}
-
-.movie-card .card-actions {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-}
-
-.movie-card .card-action-btn {
-    background-color: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 35px;
-    height: 35px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.2em;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-.movie-card .card-action-btn:hover {
-    background-color: rgba(255, 255, 255, 0.4);
+    color: var(--text-color);
 }
 
 /* Scroll Buttons for Carousels */
@@ -294,16 +329,16 @@ html, body {
     transform: translateY(-50%);
     background-color: rgba(0, 0, 0, 0.7);
     color: white;
-    font-size: 3rem;
+    font-size: 2.5rem; /* Riduci dimensione freccia */
     border: none;
-    width: 50px;
-    height: calc(100% - 2rem); /* Altezza della carousel-container - padding verticale */
+    width: 45px; /* Riduci larghezza freccia */
+    height: 100%; /* Copri tutta l'altezza del carosello */
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: background-color 0.3s ease, opacity 0.3s ease;
-    z-index: 30; /* Per essere sopra le card e l'ombra */
+    z-index: 60; /* Assicurati che siano sopra le card */
 }
 
 .scroll-btn.scroll-right {
@@ -324,72 +359,27 @@ html, body {
 
 /* Footer */
 footer {
-    padding: 40px 60px;
     text-align: center;
+    padding: 30px 40px;
     background-color: var(--secondary-bg);
+    color: var(--text-color);
+    margin-top: 50px;
+    font-size: 0.9em;
 }
 
-/* --- NUOVI STILI PER LA SEZIONE DI RICERCA --- */
-.search-results-section {
-    padding-top: 120px; /* Per compensare la navbar fissa */
-    padding-bottom: 40px;
-    min-height: calc(100vh - 200px); /* Assicura che sia abbastanza alta */
-}
-
-.search-results-section h2 {
-    margin-bottom: 2rem;
-    padding-left: 2rem; /* Allinea con il padding del carousel */
-}
-
-.search-results-section h3 {
-    font-size: 1.8em;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    padding-left: 2rem; /* Allinea con il padding del carousel */
-}
-
-
-/* Media Queries for Responsiveness */
+/* Media Queries per la reattività */
 @media (max-width: 1024px) {
-    .navbar {
-        padding: 15px 30px;
-    }
-    .navbar .logo {
-        font-size: 2.5em;
-    }
-    .hero-section {
-        padding-left: 40px;
-        height: 70vh;
-    }
     .hero-content h1 {
-        font-size: 4em;
+        font-size: 2.8em;
     }
     .hero-content p {
         font-size: 1.1em;
     }
-    .content-wrapper {
-        padding-left: 30px;
-        padding-right: 30px;
+    .navbar {
+        padding: 15px 30px;
     }
-    .content-row h2,
-    .search-results-section h2,
-    .search-results-section h3 {
-        padding-left: 30px; /* Adatta il padding del titolo */
-    }
-    .carousel-container {
-        padding-left: 30px;
-        padding-right: 30px;
-    }
-    .movie-card {
-        width: 180px;
-        height: auto;
-    }
-    .movie-card img {
-        height: 270px;
-    }
-    .scroll-btn {
-        width: 40px;
-        font-size: 2.5rem;
+    .content-row {
+        padding: 30px;
     }
 }
 
@@ -400,98 +390,101 @@ footer {
         padding: 15px 20px;
     }
     .navbar nav {
-        display: none; /* Nascondi la nav su mobile, puoi aggiungere un menu hamburger */
+        margin-top: 15px;
+        width: 100%;
+    }
+    .navbar nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .navbar nav ul li {
+        margin: 5px 15px;
     }
     .user-actions {
         width: 100%;
         justify-content: center;
         margin-top: 15px;
     }
-    .search-input {
-        width: 180px;
-        font-size: 0.9em;
+    .user-actions input {
+        width: 60%;
+        margin-right: 10px;
     }
     .hero-section {
-        height: 50vh;
+        height: 60vh;
         padding-left: 20px;
         text-align: center;
         justify-content: center;
+        background-position: center top; 
+        padding-bottom: 80px; /* Adatta per mobile */
     }
-    .hero-overlay {
+    .hero-section::before {
         background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.9) 100%);
     }
     .hero-content {
         max-width: 90%;
     }
     .hero-content h1 {
-        font-size: 2.8em;
+        font-size: 2.2em;
     }
     .hero-content p {
-        font-size: 0.9em;
+        font-size: 1em;
     }
     .hero-buttons {
+        display: flex;
         flex-direction: column;
         gap: 10px;
     }
     .hero-buttons .btn {
         width: 100%;
-        font-size: 1em;
-        padding: 10px 20px;
+        margin-right: 0;
     }
-    .content-wrapper {
-        padding-left: 20px;
-        padding-right: 20px;
-    }
-    .content-row h2,
-    .search-results-section h2,
-    .search-results-section h3 {
-        padding-left: 20px; /* Adatta il padding del titolo */
-    }
-    .carousel-container {
-        padding-left: 20px;
-        padding-right: 20px;
+    .content-row {
+        padding: 20px;
+        margin-top: 1.5rem; /* Adatta per mobile */
     }
     .movie-card {
-        width: 140px; /* Riduci la larghezza delle card su mobile */
-        height: auto;
+        width: 150px; 
     }
     .movie-card img {
-        height: 210px; /* Adatta l'altezza dell'immagine */
-    }
-    .movie-card .card-info h3 {
-        font-size: 1em;
-    }
-    .movie-card .card-info p {
-        font-size: 0.8em;
+        height: 225px; 
     }
     .scroll-btn {
-        width: 30px;
+        width: 35px; /* Riduci dimensione freccia */
         font-size: 2rem;
     }
 }
 
 @media (max-width: 480px) {
     .navbar .logo {
-        font-size: 2em;
+        font-size: 1.8em;
     }
-    .search-input {
-        width: 150px;
+    .navbar nav ul li a {
+        font-size: 0.9em;
+    }
+    .user-actions input {
+        font-size: 0.9em;
     }
     .hero-content h1 {
-        font-size: 2.2em;
+        font-size: 1.8em;
     }
     .hero-content p {
-        font-size: 0.8em;
+        font-size: 0.9em;
     }
-    .content-row h2,
-    .search-results-section h2,
-    .search-results-section h3 {
-        padding-left: 20px; /* Adatta il padding del titolo */
+    .hero-buttons .btn {
+        font-size: 1em;
+        padding: 10px 20px;
+    }
+    .content-row h2 {
+        font-size: 1.8em;
     }
     .movie-card {
         width: 120px;
     }
     .movie-card img {
         height: 180px;
+    }
+    .scroll-btn {
+        width: 30px; /* Riduci dimensione freccia */
+        font-size: 1.5rem;
     }
 }
