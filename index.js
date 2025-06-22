@@ -4,7 +4,7 @@ const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/';
 
 const categories = [
     { id: 'consigliati', url: '/movie/top_rated', title: '🍿 Consigliati' },
-    { id: 'momento', url: '/trending/movie/day', title: '🔥 Titoli del momento' },
+    { id: 'momento', url: '/trending/movie/week', title: '🔥 Titoli del momento' }, // Cambiato a week per maggiore consistenza
     { id: 'drammatici', url: '/discover/movie?with_genres=18', title: '🎭 Drammatici' },
     { id: 'azione', url: '/discover/movie?with_genres=28', title: '💥 Azione' },
     { id: 'commedie', url: '/discover/movie?with_genres=35', title: '😂 Commedie' },
@@ -15,28 +15,29 @@ const categories = [
     { id: 'documentari', url: '/discover/movie?with_genres=99', title: '🎬 Documentari' },
 ];
 
-// Funzione per creare una card film aggiornata con lo stile al hover
+// Funzione per creare una card film aggiornata con il titolo sotto
 function createMovieCard(item) {
     const title = item.title || item.name || 'Titolo sconosciuto';
-    // Utilizza w300 per le miniature per un buon equilibrio tra qualità e performance
     const poster = item.poster_path ? `${IMAGE_BASE_URL}w300${item.poster_path}` : 'https://via.placeholder.com/300x450/222222/e0e0e0?text=Immagine+non+disponibile';
     const type = item.media_type || 'movie';
     const overview = item.overview && item.overview.length > 150 ? item.overview.substring(0, 147) + '...' : item.overview || 'Nessuna descrizione disponibile.';
     const voteAverage = item.vote_average ? item.vote_average.toFixed(1) : 'N/A';
 
     const card = document.createElement('div');
-    card.className = 'movie-card'; // Applica la nuova classe CSS
+    card.className = 'movie-card'; 
     card.innerHTML = `
-        <a href="dettagli.html?id=${item.id}&type=${type}" class="block w-full h-full relative">
-            <img src="${poster}" alt="${title}" class="w-full h-full object-cover rounded-md" loading="lazy" />
+        <a href="dettagli.html?id=${item.id}&type=${type}" class="block w-full h-full">
+            <img src="${poster}" alt="${title}" class="w-full h-auto object-cover rounded-md" loading="lazy" />
+            <div class="movie-card-title-section p-2">
+                <h3 class="font-semibold text-sm text-white truncate">${title}</h3>
+            </div>
             <div class="card-info">
-                <h3>${title}</h3>
                 <p>⭐ ${voteAverage} | ${type === 'movie' ? 'Film' : 'Serie TV'}</p>
                 <p class="text-sm text-gray-400 mt-2">${overview}</p>
                 <div class="card-actions mt-4">
                     <button class="card-action-btn play-card-btn" title="Riproduci">▶</button>
                     <button class="card-action-btn info-card-btn" title="Maggiori info">ℹ</button>
-                    </div>
+                </div>
             </div>
         </a>
     `;
@@ -53,13 +54,12 @@ async function setHeroSection() {
     const infoBtn = heroSection.querySelector('.info-btn');
 
     try {
-        const trendingMovies = await fetchMovies('/trending/movie/week'); // Prendiamo i trending della settimana
+        const trendingMovies = await fetchMovies('/trending/movie/week'); 
         if (trendingMovies.length === 0) {
             console.warn("Nessun film in tendenza trovato per la Hero Section.");
             return;
         }
         
-        // Scegli un film casuale tra i primi 5 per la Hero
         const randomIndex = Math.floor(Math.random() * Math.min(5, trendingMovies.length));
         const featuredMovie = trendingMovies[randomIndex];
 
@@ -68,16 +68,13 @@ async function setHeroSection() {
             heroBackdrop.style.transition = 'var(--hero-backdrop-transition)'; 
             heroTitle.textContent = featuredMovie.title || featuredMovie.name;
             
-            // --- MODIFICA QUI: TRONCAMENTO DESCRIZIONE HERO ---
             let synopsis = featuredMovie.overview || 'Una breve sinossi accattivante che introduce il film o la serie del momento. Azione, avventura, dramma e tanto altro ti aspettano!';
-            const MAX_HERO_SYNOPSIS_LENGTH = 180; // Definisci un limite di caratteri, puoi adattarlo
+            const MAX_HERO_SYNOPSIS_LENGTH = 180; 
             if (synopsis.length > MAX_HERO_SYNOPSIS_LENGTH) {
                 synopsis = synopsis.substring(0, MAX_HERO_SYNOPSIS_LENGTH) + '...';
             }
             heroSinopsis.textContent = synopsis;
-            // --- FINE MODIFICA ---
 
-            // Aggiorna i link dei bottoni
             playBtn.onclick = () => window.location.href = `dettagli.html?id=${featuredMovie.id}&type=${featuredMovie.media_type || 'movie'}`;
             infoBtn.onclick = () => window.location.href = `dettagli.html?id=${featuredMovie.id}&type=${featuredMovie.media_type || 'movie'}`;
         } else {
@@ -158,7 +155,6 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
     const series = results.filter(r => r.media_type === 'tv');
 
     const main = document.getElementById('main-content');
-    // Genera la nuova struttura per i risultati di ricerca
     main.innerHTML = `
         <section class="search-results-section relative px-8 pt-24 pb-8">
             <h2 class="text-4xl font-bold mb-8 text-white">🔍 Risultati per "${query}"</h2>
@@ -199,23 +195,21 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
 
 // Funzioni di scroll per i caroselli - CORRETTE per puntare ai carousel-container
 function scrollRight(containerId) {
-    // Cerchiamo direttamente l'elemento che ha overflow-x: scroll, che è .carousel-container
     const carouselContainer = document.getElementById(containerId).closest('.carousel-container');
     if (!carouselContainer) {
         console.error(`Carousel container not found for ID: ${containerId}`);
         return;
     }
-    const scrollAmount = carouselContainer.querySelector(".movie-card")?.offsetWidth * 3 || 600; // Scorre di 3 card alla volta
+    const scrollAmount = carouselContainer.querySelector(".movie-card")?.offsetWidth * 3 || 600; 
     carouselContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
 }
 
 function scrollLeft(containerId) {
-    // Cerchiamo direttamente l'elemento che ha overflow-x: scroll, che è .carousel-container
     const carouselContainer = document.getElementById(containerId).closest('.carousel-container');
     if (!carouselContainer) {
         console.error(`Carousel container not found for ID: ${containerId}`);
         return;
     }
-    const scrollAmount = carouselContainer.querySelector(".movie-card")?.offsetWidth * 3 || 600; // Scorre di 3 card alla volta
+    const scrollAmount = carouselContainer.querySelector(".movie-card")?.offsetWidth * 3 || 600; 
     carouselContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
 }
