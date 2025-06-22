@@ -22,7 +22,7 @@ body {
     color: var(--text-color);
     line-height: 1.6;
     overflow-x: hidden; 
-    overscroll-behavior-y: contain; 
+    overscroll-behavior-y: contain; /* Mantiene lo scroll del body confinato */
     height: 100%; 
     min-height: 100vh; 
 }
@@ -256,17 +256,22 @@ ul {
     color: white;
     text-align: left; 
     padding-left: 0; 
-    position: relative; /* Per lo z-index */
-    z-index: 5; /* Sopra le card */
+    position: relative; 
+    z-index: 5; 
 }
 
 .carousel-container {
     overflow-x: scroll; 
+    overflow-y: hidden; /* Assicura che non ci sia scroll verticale */
     -webkit-overflow-scrolling: touch; 
     scrollbar-width: none; 
     -ms-overflow-style: none;  
     padding-left: 0; 
     padding-right: 0;
+    position: relative;
+    /* --- NUOVE PROPRIETÀ PER OVERSCROLL --- */
+    overscroll-behavior-x: contain; /* Lo scroll orizzontale non influisce sul genitore */
+    overscroll-behavior-y: none;    /* Nessuno scroll verticale all'interno del carosello */
 }
 
 .carousel-container::-webkit-scrollbar {
@@ -288,39 +293,37 @@ ul {
     width: 200px; 
     background-color: var(--card-bg);
     border-radius: 8px;
-    /* Rimosso overflow: hidden qui per permettere al titolo sotto di non essere tagliato */
     cursor: pointer;
     position: relative;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     z-index: 1; 
-    /* Cambiato altezza per adattarsi al contenuto (immagine + titolo) */
     height: auto; 
-    overflow: visible; /* Assicura che l'ingrandimento non sia tagliato dal card stesso */
+    overflow: visible; 
 }
 
 .movie-card img {
     width: 100%;
-    height: 300px; /* Altezza fissa per l'immagine */
+    height: 300px; 
     object-fit: cover;
     display: block;
-    border-radius: 8px 8px 0 0; /* Arrotonda solo sopra */
+    border-radius: 8px 8px 0 0; 
     transition: transform 0.3s ease;
 }
 
-.movie-card-title-section { /* Nuovo stile per la sezione del titolo */
-    padding: 10px 8px; /* Padding per il titolo sotto l'immagine */
-    background-color: var(--card-bg); /* Sfondo per la sezione del titolo */
-    border-radius: 0 0 8px 8px; /* Arrotonda solo sotto */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Ombra per separare */
-    min-height: 40px; /* Altezza minima per titoli brevi */
-    display: flex; /* Per centrare verticalmente il testo se necessario */
+.movie-card-title-section { 
+    padding: 10px 8px; 
+    background-color: var(--card-bg); 
+    border-radius: 0 0 8px 8px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
+    min-height: 40px; 
+    display: flex; 
     align-items: center;
 }
 
 .movie-card h3 {
-    font-size: 1.05em; /* Lievemente ridotto per non essere troppo grande */
-    margin: 0; /* Rimuovi margini predefiniti */
+    font-size: 1.05em; 
+    margin: 0; 
     line-height: 1.3;
 }
 
@@ -329,17 +332,17 @@ ul {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 100%; /* Copre l'intera card quando hover */
-    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 30%, rgba(0,0,0,0) 100%); /* Gradiente più scuro e più esteso */
+    height: 100%; 
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 30%, rgba(0,0,0,0) 100%); 
     padding: 15px;
     color: white;
     opacity: 0; 
-    transform: translateY(100%); /* Parte dal basso */
+    transform: translateY(100%); 
     transition: opacity 0.3s ease, transform 0.3s ease;
-    border-radius: 8px; /* Arrotonda anche card-info */
-    display: flex; /* Per organizzare il contenuto */
-    flex-direction: column; /* Organizza gli elementi in colonna */
-    justify-content: flex-end; /* Allinea il contenuto in basso */
+    border-radius: 8px; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: flex-end; 
 }
 
 .movie-card:hover .card-info {
@@ -557,7 +560,6 @@ footer {
         padding: 10px 20px;
     }
     .content-row h2 {
-        font-size: 1.8em;
         padding-left: 10px; 
     }
     .carousel-track {
