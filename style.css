@@ -47,12 +47,12 @@ ul {
     justify-content: space-between;
     align-items: center;
     padding: 25px 40px; 
-    background-color: var(--primary-bg); /* Sfondo solido e scuro */
+    background-color: var(--primary-bg); 
     position: fixed;
     width: 100%;
     top: 0;
     left: 0;
-    z-index: 1000; /* Z-index elevatissimo */
+    z-index: 1000; 
     transition: background-color 0.3s ease;
     box-shadow: 0 2px 5px rgba(0,0,0,0.5); 
     min-height: 80px; 
@@ -158,20 +158,20 @@ ul {
     position: relative;
     width: 100%;
     height: 80vh; 
-    padding-top: 250px; /* AUMENTATO DRASITCALLY: Spazio da sopra per non compenetrare il titolo e navbar */
+    padding-top: 250px; 
     background-image: url('https://via.placeholder.com/1920x1080/000000/FFFFFF?text=IMMAGINE+EROE'); 
     background-size: cover;
     background-position: center;
     display: flex;
-    align-items: flex-end; /* Allinea il contenuto in basso */
+    align-items: flex-end; 
     padding-left: 60px;
     color: white;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); 
-    padding-bottom: 220px; /* AUMENTATO DRASITCALLY: Spazio sotto il contenuto hero per i bottoni e la sezione successiva */
-    z-index: 10; /* La hero è sotto la navbar ma sopra le sezioni del main all'inizio */
+    padding-bottom: 220px; 
+    z-index: 10; 
 }
 
-.hero-section::before { /* Gradiente overlay */
+.hero-section::before { 
     content: '';
     position: absolute;
     top: 0;
@@ -183,7 +183,7 @@ ul {
 }
 .hero-section .hero-content {
     position: relative;
-    z-index: 2; /* Sopra l'overlay del gradiente */
+    z-index: 2; 
     max-width: 600px;
     text-align: left;
     align-items: flex-start;
@@ -238,8 +238,8 @@ ul {
 .content-wrapper {
     padding-top: 0; 
     position: relative; 
-    z-index: 20; /* Z-index più alto della hero per coprirla durante lo scroll */
-    background-color: var(--primary-bg); /* Sfondo solido per coprire la hero */
+    z-index: 20; 
+    background-color: var(--primary-bg); 
 }
 
 .content-row {
@@ -277,8 +277,8 @@ ul {
     padding-bottom: 20px; 
     padding-left: 0px; 
     padding-right: 0px;
-    padding-top: 20px; 
-    padding-bottom: 20px; 
+    padding-top: 20px; /* Spazio sopra le card per l'ingrandimento */
+    padding-bottom: 20px; /* Spazio sotto le card per l'ingrandimento e scroll */
 }
 
 .movie-card {
@@ -286,20 +286,40 @@ ul {
     width: 200px; 
     background-color: var(--card-bg);
     border-radius: 8px;
-    overflow: hidden;
+    /* Rimosso overflow: hidden qui per permettere al titolo sotto di non essere tagliato */
     cursor: pointer;
     position: relative;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     z-index: 1; 
+    /* Cambiato altezza per adattarsi al contenuto (immagine + titolo) */
+    height: auto; 
+    overflow: visible; /* Assicura che l'ingrandimento non sia tagliato dal card stesso */
 }
 
 .movie-card img {
     width: 100%;
-    height: 300px; 
+    height: 300px; /* Altezza fissa per l'immagine */
     object-fit: cover;
     display: block;
+    border-radius: 8px 8px 0 0; /* Arrotonda solo sopra */
     transition: transform 0.3s ease;
+}
+
+.movie-card-title-section { /* Nuovo stile per la sezione del titolo */
+    padding: 10px 8px; /* Padding per il titolo sotto l'immagine */
+    background-color: var(--card-bg); /* Sfondo per la sezione del titolo */
+    border-radius: 0 0 8px 8px; /* Arrotonda solo sotto */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Ombra per separare */
+    min-height: 40px; /* Altezza minima per titoli brevi */
+    display: flex; /* Per centrare verticalmente il testo se necessario */
+    align-items: center;
+}
+
+.movie-card h3 {
+    font-size: 1.05em; /* Lievemente ridotto per non essere troppo grande */
+    margin: 0; /* Rimuovi margini predefiniti */
+    line-height: 1.3;
 }
 
 .movie-card .card-info {
@@ -307,12 +327,17 @@ ul {
     bottom: 0;
     left: 0;
     width: 100%;
-    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+    height: 100%; /* Copre l'intera card quando hover */
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 30%, rgba(0,0,0,0) 100%); /* Gradiente più scuro e più esteso */
     padding: 15px;
     color: white;
     opacity: 0; 
-    transform: translateY(100%); 
+    transform: translateY(100%); /* Parte dal basso */
     transition: opacity 0.3s ease, transform 0.3s ease;
+    border-radius: 8px; /* Arrotonda anche card-info */
+    display: flex; /* Per organizzare il contenuto */
+    flex-direction: column; /* Organizza gli elementi in colonna */
+    justify-content: flex-end; /* Allinea il contenuto in basso */
 }
 
 .movie-card:hover .card-info {
@@ -321,20 +346,21 @@ ul {
 }
 
 .movie-card:hover {
-    transform: scale(1.05); 
+    transform: scale(1.08); /* Aumentato leggermente l'ingrandimento */
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
     z-index: 10; 
 }
 
-.movie-card h3 {
-    font-size: 1.1em;
+.movie-card .card-info p { /* Stili per testo dentro card-info (voto, overview) */
+    font-size: 0.9em;
+    color: var(--text-color);
     margin-bottom: 5px;
 }
 
-.movie-card p {
-    font-size: 0.9em;
-    color: var(--text-color);
+.movie-card .card-info p:last-of-type { /* Margine per l'ultima p (overview) */
+    margin-bottom: 15px; 
 }
+
 
 /* Scroll Buttons for Carosels */
 .scroll-btn {
@@ -346,13 +372,16 @@ ul {
     font-size: 2.5rem; 
     border: none;
     width: 45px; 
-    height: 100%; 
+    height: calc(100% - 40px); /* Regola altezza per non sovrapporsi al padding del track */
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: background-color 0.3s ease, opacity 0.3s ease;
     z-index: 60; 
+    /* Margine superiore e inferiore per centrare con il padding del track */
+    margin-top: 20px; 
+    margin-bottom: 20px;
 }
 
 .scroll-btn.scroll-right {
@@ -397,7 +426,7 @@ footer {
     }
 }
 
-@media (min-width: 769px) { /* Per desktop e tablet large, assicura che il main content inizi sotto la hero */
+@media (min-width: 769px) { 
     .main-content-sections {
         padding-top: 200px; 
         margin-top: -150px; 
@@ -445,8 +474,8 @@ footer {
         text-align: left; 
         justify-content: flex-start; 
         background-position: center top; 
-        padding-top: 150px; /* AUMENTATO ANCORA per mobile Hero Top */
-        padding-bottom: 150px; /* AUMENTATO ANCORA per mobile Hero Bottom */
+        padding-top: 150px; 
+        padding-bottom: 150px; 
     }
     .hero-section::before {
         background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.9) 100%);
@@ -477,15 +506,15 @@ footer {
         margin-top: 2rem; 
     }
     .content-row h2 {
-        padding-left: 20px; 
+        padding-left: 15px; /* CAMBIATO: Più a sinistra */
     }
     .carousel-container {
         padding-left: 0px; 
         padding-right: 0px;
     }
     .carousel-track {
-        padding-left: 20px; 
-        padding-right: 20px; 
+        padding-left: 15px; /* CAMBIATO: Più a sinistra */
+        padding-right: 15px; 
         padding-top: 15px; 
         padding-bottom: 15px; 
     }
@@ -530,11 +559,11 @@ footer {
     }
     .content-row h2 {
         font-size: 1.8em;
-        padding-left: 15px; 
+        padding-left: 10px; /* CAMBIATO: Ancora più a sinistra */
     }
     .carousel-track {
-        padding-left: 15px; 
-        padding-right: 15px;
+        padding-left: 10px; /* CAMBIATO: Ancora più a sinistra */
+        padding-right: 10px;
         padding-top: 10px; 
         padding-bottom: 10px; 
     }
@@ -550,8 +579,8 @@ footer {
     }
     /* Mobile molto piccolo */
     .hero-section {
-        padding-top: 120px; /* AUMENTATO */
-        padding-bottom: 100px; /* AUMENTATO */
+        padding-top: 120px; 
+        padding-bottom: 100px; 
     }
     .main-content-sections {
         margin-top: -40px; 
