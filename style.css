@@ -17,13 +17,14 @@
 }
 
 body {
-    font-family: 'Poppins', sans-serif; /* Cambiato a Poppins per coerenza */
+    font-family: 'Poppins', sans-serif; 
     background-color: var(--primary-bg);
     color: var(--text-color);
     line-height: 1.6;
     overflow-x: hidden; 
-    overscroll-behavior-y: contain; /* Mantiene lo scroll più controllato */
-    height: 100vh; /* Altezza viewport */
+    overscroll-behavior-y: contain; 
+    height: 100%; /* CAMBIATO: usa 100% per altezza del body e min-height per contenuto */
+    min-height: 100vh; /* Assicura che il body sia alto almeno quanto la viewport */
 }
 
 a {
@@ -46,13 +47,15 @@ ul {
     justify-content: space-between;
     align-items: center;
     padding: 20px 40px;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: var(--primary-bg); /* CAMBIATO: Colore di sfondo solido per non mostrare trasparenze */
+    /* background-color: rgba(0, 0, 0, 0.7); */ /* Vecchio valore */
     position: fixed;
     width: 100%;
     top: 0;
     left: 0;
-    z-index: 1000;
+    z-index: 1000; /* Molto alto per essere sopra tutto */
     transition: background-color 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5); /* Aggiungi un'ombra sottile */
 }
 
 .navbar .logo {
@@ -107,7 +110,7 @@ ul {
     box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.3);
 }
 
-.btn-primary { /* Usato anche per Login/Accedi */
+.btn-primary { 
     background-color: var(--accent-color);
     color: white;
     padding: 8px 15px;
@@ -122,7 +125,7 @@ ul {
     background-color: var(--hover-color);
 }
 
-.btn-secondary { /* Usato per Logout */
+.btn-secondary { 
     background-color: rgba(109, 109, 110, 0.7);
     color: white;
     padding: 8px 15px;
@@ -140,7 +143,7 @@ ul {
     font-size: 1.4em;
     text-decoration: none;
     color: white;
-    background-color: var(--accent-color); /* Per un look più coerente */
+    background-color: var(--accent-color); 
     padding: 8px 12px;
     border-radius: 8px;
     transition: background-color 0.2s ease;
@@ -155,6 +158,7 @@ ul {
     position: relative;
     width: 100%;
     height: 80vh; 
+    padding-top: 80px; /* CAMBIATO: Spazio per la navbar fissa */
     background-image: url('https://via.placeholder.com/1920x1080/000000/FFFFFF?text=IMMAGINE+EROE'); 
     background-size: cover;
     background-position: center;
@@ -164,9 +168,10 @@ ul {
     color: white;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); 
     padding-bottom: 120px; /* AUMENTATO: Spazio sotto il contenuto hero per i bottoni */
+    z-index: 10; /* Per essere sotto la navbar ma sopra le sezioni del main */
 }
 
-.hero-section::before {
+.hero-section::before { /* Gradiente overlay */
     content: '';
     position: absolute;
     top: 0;
@@ -190,12 +195,9 @@ ul {
 
 .hero-content p {
     font-size: 1.2em;
-    margin-bottom: 30px; /* Spazio tra descrizione e bottoni */
+    margin-bottom: 30px; 
     max-width: 500px;
-    /* Opzionale: per forzare una singola riga o numero limitato di righe con ellipsis */
-    /* white-space: nowrap; */
-    /* overflow: hidden; */
-    /* text-overflow: ellipsis; */
+    /* Troncamento descrizione gestito da JS in index.js */
 }
 
 .hero-buttons .btn {
@@ -209,7 +211,7 @@ ul {
     transition: all 0.3s ease;
 }
 
-.btn.play-btn {
+.btn.play-btn { /* per i bottoni della Hero */
     background-color: white;
     color: var(--primary-bg);
 }
@@ -220,7 +222,7 @@ ul {
     box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
 }
 
-.btn.info-btn {
+.btn.info-btn { /* per i bottoni della Hero */
     background-color: rgba(109, 109, 110, 0.7);
     color: white;
 }
@@ -231,16 +233,16 @@ ul {
     box-shadow: 0 0 0 2px rgba(109, 109, 110, 0.3);
 }
 
-/* Content Rows (Carousels) */
+/* Content Wrapper e Rows (Caroselli) */
 .content-wrapper {
-    padding-top: 0; /* Rimosso padding-top qui */
+    padding-top: 0; 
 }
 
 .content-row {
-    padding: 40px 60px; /* Mantieni padding sui lati */
-    margin-top: 2rem; /* CAMBIATO: Margine positivo per separare dalla hero */
+    padding: 40px 60px; /* Padding sui lati */
+    margin-top: 3rem; /* CAMBIATO: Margine positivo per separare dalla Hero */
     position: relative;
-    z-index: 50; 
+    z-index: 20; /* Sotto il main content sections se scrolla */
     overflow: visible; /* Per l'ingrandimento delle card */
 }
 
@@ -277,7 +279,7 @@ ul {
     position: relative;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    z-index: 1; /* Per l'ordinamento in hover */
+    z-index: 1; 
 }
 
 .movie-card img {
@@ -388,6 +390,7 @@ footer {
         flex-direction: column;
         align-items: flex-start;
         padding: 15px 20px;
+        background-color: var(--primary-bg); /* Sfondo solido */
     }
     .navbar nav {
         margin-top: 15px;
@@ -415,7 +418,7 @@ footer {
         text-align: center;
         justify-content: center;
         background-position: center top; 
-        padding-bottom: 80px; /* Adatta per mobile */
+        padding-bottom: 80px; 
     }
     .hero-section::before {
         background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.9) 100%);
@@ -440,7 +443,7 @@ footer {
     }
     .content-row {
         padding: 20px;
-        margin-top: 1.5rem; /* Adatta per mobile */
+        margin-top: 1.5rem; 
     }
     .movie-card {
         width: 150px; 
@@ -449,7 +452,7 @@ footer {
         height: 225px; 
     }
     .scroll-btn {
-        width: 35px; /* Riduci dimensione freccia */
+        width: 35px; 
         font-size: 2rem;
     }
 }
@@ -484,7 +487,7 @@ footer {
         height: 180px;
     }
     .scroll-btn {
-        width: 30px; /* Riduci dimensione freccia */
+        width: 30px; 
         font-size: 1.5rem;
     }
 }
