@@ -22,7 +22,7 @@ body {
     color: var(--text-color);
     line-height: 1.6;
     overflow-x: hidden; 
-    overscroll-behavior-y: contain; /* Mantiene lo scroll del body confinato */
+    overscroll-behavior-y: contain; 
     height: 100%; 
     min-height: 100vh; 
 }
@@ -262,16 +262,15 @@ ul {
 
 .carousel-container {
     overflow-x: scroll; 
-    overflow-y: hidden; /* Assicura che non ci sia scroll verticale */
+    overflow-y: hidden; 
     -webkit-overflow-scrolling: touch; 
     scrollbar-width: none; 
     -ms-overflow-style: none;  
     padding-left: 0; 
     padding-right: 0;
     position: relative;
-    /* --- NUOVE PROPRIETÀ PER OVERSCROLL --- */
-    overscroll-behavior-x: contain; /* Lo scroll orizzontale non influisce sul genitore */
-    overscroll-behavior-y: none;    /* Nessuno scroll verticale all'interno del carosello */
+    overscroll-behavior-x: contain; 
+    overscroll-behavior-y: none;    
 }
 
 .carousel-container::-webkit-scrollbar {
