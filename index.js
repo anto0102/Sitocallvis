@@ -1,10 +1,10 @@
-const API_KEY = '2d082597ab951b3a9596ca23e71413a8'; // La tua chiave TMDb - RICORDATI DI METTERE QUI LA TUA VERA CHIAVE API
+const API_KEY = '2d082597ab951b3a9596ca23e71413a8'; // La tua chiave TMDb
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/';
 
 const categories = [
     { id: 'consigliati', url: '/movie/top_rated', title: '🍿 Consigliati' },
-    { id: 'momento', url: '/trending/movie/week', title: '🔥 Titoli del momento' }, // Cambiato a week per maggiore consistenza
+    { id: 'momento', url: '/trending/movie/week', title: '🔥 Titoli del momento' }, 
     { id: 'drammatici', url: '/discover/movie?with_genres=18', title: '🎭 Drammatici' },
     { id: 'azione', url: '/discover/movie?with_genres=28', title: '💥 Azione' },
     { id: 'commedie', url: '/discover/movie?with_genres=35', title: '😂 Commedie' },
@@ -125,12 +125,13 @@ async function loadMovies() {
             container.innerHTML = '<p class="text-red-500">Errore nel caricamento dei contenuti.</p>';
         }
     }
+    setupCarouselArrowVisibilityListeners(); // <--- CHIAMATA PER INIZIALIZZARE LE FRECCE
 }
 
 document.addEventListener('DOMContentLoaded', loadMovies);
 
 
-// Gestione della ricerca - AGGIORNATA PER NUOVE CLASSI E STRUTTURA
+// Gestione della ricerca
 document.getElementById('search-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const query = document.getElementById('search-input').value.trim();
@@ -163,15 +164,15 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
                     <div class="carousel-container overflow-x-auto scroll-smooth hide-scrollbar pb-6">
                         <div class="carousel-track flex gap-4" id="search-movies"></div>
                     </div>
-                    <button class="scroll-btn scroll-right opacity-0 group-hover:opacity-100 right-0" onclick="scrollRight('search-movies')">❯</button>
-                    <button class="scroll-btn scroll-left opacity-0 group-hover:opacity-100 left-0" onclick="scrollLeft('search-movies')">❮</button>
+                    <button class="scroll-btn scroll-right" onclick="scrollRight('search-movies')">❯</button>
+                    <button class="scroll-btn scroll-left" onclick="scrollLeft('search-movies')">❮</button>
                 </div>
                 <div class="group relative"> <h3 class="text-2xl font-semibold mb-4 text-white">📺 Serie TV</h3>
                     <div class="carousel-container overflow-x-auto scroll-smooth hide-scrollbar pb-6">
                         <div class="carousel-track flex gap-4" id="search-series"></div>
                     </div>
-                    <button class="scroll-btn scroll-right opacity-0 group-hover:opacity-100 right-0" onclick="scrollRight('search-series')">❯</button>
-                    <button class="scroll-btn scroll-left opacity-0 group-hover:opacity-100 left-0" onclick="scrollLeft('search-series')">❮</button>
+                    <button class="scroll-btn scroll-right" onclick="scrollRight('search-series')">❯</button>
+                    <button class="scroll-btn scroll-left" onclick="scrollLeft('search-series')">❮</button>
                 </div>
             </div>
         </section>
@@ -191,9 +192,11 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
     } else {
         series.forEach(serie => seriesContainer.appendChild(createMovieCard(serie)));
     }
+    // Inizializza listener per le frecce dei risultati di ricerca
+    setupCarouselArrowVisibilityListeners(); // <--- CHIAMATA PER INIZIALIZZARE LE FRECCE SUI RISULTATI DI RICERCA
 });
 
-// Funzioni di scroll per i caroselli - CORRETTE per puntare ai carousel-container
+// Funzioni di scroll per i caroselli
 function scrollRight(containerId) {
     const carouselContainer = document.getElementById(containerId).closest('.carousel-container');
     if (!carouselContainer) {
@@ -212,4 +215,72 @@ function scrollLeft(containerId) {
     }
     const scrollAmount = carouselContainer.querySelector(".movie-card")?.offsetWidth * 3 || 600; 
     carouselContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+}
+
+// --- NUOVE FUNZIONI PER GESTIONE VISIBILITÀ FRECCE CAROSELLO ---
+
+// Funzione per aggiornare la visibilità delle frecce (chiamata su scroll e all'inizio)
+function updateCarouselArrowsVisibility(carouselContainer) {
+    const scrollLeftBtn = carouselContainer.querySelector('.scroll-btn.scroll-left');
+    const scrollRightBtn = carouselContainer.querySelector('.scroll-btn.scroll-right');
+
+    if (!scrollLeftBtn || !scrollRightBtn) return;
+
+    const toggleArrows = () => {
+        const tolerance = 5; // Pixels di tolleranza per l'inizio/fine dello scroll
+        const scrollEnd = carouselContainer.scrollWidth - carouselContainer.clientWidth;
+
+        // Freccia sinistra (indietro)
+        if (carouselContainer.scrollLeft > tolerance) {
+            scrollLeftBtn.classList.remove('hide-arrow');
+            scrollLeftBtn.classList.add('show-arrow');
+            scrollLeftBtn.style.pointerEvents = 'auto';
+        } else {
+            scrollLeftBtn.classList.remove('show-arrow');
+            scrollLeftBtn.classList.add('hide-arrow');
+            scrollLeftBtn.style.pointerEvents = 'none';
+        }
+
+        // Freccia destra (avanti)
+        if (carouselContainer.scrollLeft >= scrollEnd - tolerance) {
+            scrollRightBtn.classList.remove('show-arrow');
+            scrollRightBtn.classList.add('hide-arrow');
+            scrollRightBtn.style.pointerEvents = 'none';
+        } else {
+            scrollRightBtn.classList.remove('hide-arrow');
+            scrollRightBtn.classList.add('show-arrow');
+            scrollRightBtn.style.pointerEvents = 'auto';
+        }
+    };
+
+    // Imposta la visibilità iniziale
+    toggleArrows(); 
+
+    // Aggiungi un listener di scroll con debounce
+    let scrollTimeout;
+    carouselContainer.addEventListener('scroll', () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(toggleArrows, 150); 
+    });
+}
+
+// Funzione per inizializzare la visibilità delle frecce per TUTTI i caroselli
+function setupCarouselArrowVisibilityListeners() {
+    // Caroselli delle categorie principali
+    categories.forEach(category => {
+        const carouselContainer = document.getElementById(category.id)?.closest('.carousel-container');
+        if (carouselContainer) {
+            updateCarouselArrowsVisibility(carouselContainer);
+        }
+    });
+
+    // Caroselli dei risultati di ricerca (se presenti)
+    const searchMoviesCarousel = document.getElementById('search-movies')?.closest('.carousel-container');
+    if (searchMoviesCarousel) {
+        updateCarouselArrowsVisibility(searchMoviesCarousel);
+    }
+    const searchSeriesCarousel = document.getElementById('search-series')?.closest('.carousel-container');
+    if (searchSeriesCarousel) {
+        updateCarouselArrowsVisibility(searchSeriesCarousel);
+    }
 }
