@@ -1,5 +1,8 @@
 [build]
-  publish = "."  # oppure "public", se usi una cartella diversa per l'HTML
+  publish = "."
 
 [functions]
   directory = "functions"
+
+[functions."register"]
+  environment = ["MONGO_URI", "DB_NAME"]
