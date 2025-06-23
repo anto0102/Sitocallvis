@@ -7,7 +7,107 @@
     <link rel="stylesheet" href="style.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    </head>
+    <style>
+        /* Questo blocco style è temporaneo per evitare flash di contenuto non stilizzato. 
+           Verrà spostato in style.css nel passaggio successivo. */
+        .login-container {
+            min-height: calc(100vh - 80px); /* Sottrai altezza navbar */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            padding-top: 100px; /* Spazio per la navbar */
+        }
+        .login-form-card {
+            background-color: var(--secondary-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-form-card h2 {
+            font-size: 2.2em;
+            color: var(--text-color);
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-group input[type="text"]:focus,
+        .form-group input[type="password"]:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.3);
+        }
+        .btn-login {
+            width: 100%;
+            padding: 14px 20px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 10px;
+        }
+        .btn-login:hover {
+            background-color: var(--hover-color);
+            transform: translateY(-2px);
+        }
+        .login-form-card .links {
+            margin-top: 25px;
+            font-size: 0.95em;
+        }
+        .login-form-card .links a {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+        .login-form-card .links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive adjustments for login form */
+        @media (max-width: 600px) {
+            .login-form-card {
+                padding: 30px 20px;
+            }
+            .login-form-card h2 {
+                font-size: 2em;
+            }
+            .form-group input {
+                padding: 10px 12px;
+            }
+            .btn-login {
+                padding: 12px 15px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
 
 <body class="bg-primary-bg text-text-color font-poppins">
     <header class="navbar fixed top-0 left-0 w-full z-50 py-4 px-8 flex justify-between items-center bg-black bg-opacity-70 transition-colors duration-300">
