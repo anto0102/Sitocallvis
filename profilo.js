@@ -1,8 +1,9 @@
 // profilo.js
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Verifica se l'utente è loggato
   const userData = localStorage.getItem('user');
+
+  // Se non c'è utente loggato, reindirizza
   if (!userData) {
     window.location.href = 'login.html';
     return;
@@ -10,23 +11,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const user = JSON.parse(userData);
 
-  // Popola le informazioni del profilo
-  const profileUsername = document.getElementById('profile-username');
-  const accountUsername = document.getElementById('account-username');
-  const accountEmail = document.getElementById('account-email');
-  const accountSubscription = document.getElementById('account-subscription');
-  const accountJoinDate = document.getElementById('account-join-date');
+  // Popola i dati nel profilo
+  document.getElementById('profile-username').textContent = user.username || 'Utente';
+  document.getElementById('account-username').textContent = user.username || 'Utente';
+  document.getElementById('account-email').textContent = user.email || 'utente@example.com';
+  document.getElementById('account-subscription').textContent = user.subscription || 'Gratuito';
+  document.getElementById('account-join-date').textContent = user.joinDate || 'Data sconosciuta';
 
-  if (profileUsername) profileUsername.textContent = user.username || "Utente";
-  if (accountUsername) accountUsername.textContent = user.username || "Utente";
-  if (accountEmail) accountEmail.textContent = user.email || "email@example.com";
-  if (accountSubscription) accountSubscription.textContent = user.subscription || "Gratuito";
-  if (accountJoinDate) accountJoinDate.textContent = user.joinDate || "Data sconosciuta";
-
-  // Mostra/nasconde i pulsanti di login/logout
-  const logoutBtn = document.getElementById('logout-btn');
-  const loginBtn = document.getElementById('login-btn');
-
+  // Pulsanti login/logout visibilità
+  const logoutBtn = document.querySelector('.btn-secondary');
+  const loginBtn = document.querySelector('.btn-primary');
+  
   if (logoutBtn) {
     logoutBtn.classList.remove('hidden');
     logoutBtn.addEventListener('click', () => {
@@ -35,5 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (loginBtn) loginBtn.classList.add('hidden');
+  if (loginBtn) {
+    loginBtn.classList.add('hidden');
+  }
 });
