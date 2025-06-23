@@ -1,0 +1,7 @@
+{
+  "name": "sitocallvis",
+  "version": "1.0.0",
+  "dependencies": {
+    "mongodb": "^5.7.0"
+  }
+}
