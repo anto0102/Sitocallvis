@@ -1,4 +1,3 @@
-// login.js
 const { MongoClient } = require("mongodb");
 const bcrypt = require("bcryptjs");
 
@@ -24,11 +23,11 @@ exports.handler = async function(event) {
     }
 
     await client.connect();
-    const db = client.db("sample_mflix"); // Cambia nome se usi un DB diverso
+    const db = client.db("sample_mflix");
     const users = db.collection("users");
 
     const user = await users.findOne({
-      $or: [{ username }, { email: username }],
+      $or: [{ username }, { email: username }]
     });
 
     if (!user) {
@@ -46,15 +45,16 @@ exports.handler = async function(event) {
       };
     }
 
-    // ✅ Restituisce tutti i dati utili al frontend
+    const userData = {
+      username: user.username,
+      email: user.email,
+      subscription: user.subscription || "Gratuito",
+      joinDate: user.joinDate || new Date(user.createdAt || user._id.getTimestamp()).toISOString().split("T")[0]
+    };
+
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        username: user.username,
-        email: user.email,
-        subscription: user.subscription || "Gratuito",
-        joinDate: user.joinDate || "Data sconosciuta",
-      }),
+      body: JSON.stringify({ message: "Login effettuato", user: userData }),
     };
 
   } catch (err) {
