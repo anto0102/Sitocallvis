@@ -1,8 +1,11 @@
 const { MongoClient } = require('mongodb');
 const bcrypt = require('bcryptjs');
 
+// Debug utile: stampa variabili d’ambiente (può essere rimosso in produzione)
+console.log("🌍 ENV:", JSON.stringify(process.env, null, 2));
+
 const MONGO_URI = process.env.MONGO_URI;
-const DB_NAME = process.env.DB_NAME || 'streamverse';
+const DB_NAME = 'sample_mflix'; // ✅ Corretto: il tuo vero nome del DB
 
 let cachedClient = null;
 
@@ -14,13 +17,12 @@ exports.handler = async (event) => {
     };
   }
 
-  // ✅ Log utile per capire se MONGO_URI è definito
-  console.log("MONGO_URI:", MONGO_URI);
+  console.log("✅ MONGO_URI:", MONGO_URI);
 
   if (!MONGO_URI) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: 'Variabile MONGO_URI non definita nell\'ambiente' }),
+      body: JSON.stringify({ message: 'Variabile MONGO_URI non definita' }),
     };
   }
 
@@ -34,7 +36,6 @@ exports.handler = async (event) => {
       };
     }
 
-    // ✅ Connessione a MongoDB
     if (!cachedClient) {
       const client = new MongoClient(MONGO_URI);
       await client.connect();
@@ -44,7 +45,6 @@ exports.handler = async (event) => {
     const db = cachedClient.db(DB_NAME);
     const users = db.collection('users');
 
-    // 🔁 Controlla se l'utente esiste già
     const existing = await users.findOne({ email });
 
     if (existing) {
@@ -54,7 +54,6 @@ exports.handler = async (event) => {
       };
     }
 
-    // 🔐 Hash della password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await users.insertOne({
@@ -69,7 +68,7 @@ exports.handler = async (event) => {
       body: JSON.stringify({ message: 'Registrazione completata' }),
     };
   } catch (err) {
-    console.error('Errore registrazione:', err);
+    console.error('❌ Errore registrazione:', err);
     return {
       statusCode: 500,
       body: JSON.stringify({ message: 'Errore nella registrazione' }),
