@@ -1,9 +1,10 @@
 const { MongoClient } = require("mongodb");
+const bcrypt = require("bcryptjs");
 
-const uri = process.env.MONGODB_URI; // Impostato su Netlify come variabile ambiente
+const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri);
 
-exports.handler = async function(event, context) {
+exports.handler = async function(event) {
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
@@ -22,15 +23,22 @@ exports.handler = async function(event, context) {
     }
 
     await client.connect();
-    const db = client.db("streamverse");
-    const collection = db.collection("utenti");
+    const db = client.db("sample_mflix");
+    const users = db.collection("users");
 
-    // Cerca per username o email
-    const user = await collection.findOne({
-      $or: [{ username }, { email: username }]
+    const user = await users.findOne({
+      $or: [{ username }, { email: username }],
     });
 
-    if (!user || user.password !== password) {
+    if (!user) {
+      return {
+        statusCode: 401,
+        body: JSON.stringify({ message: "Credenziali non valide" }),
+      };
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
       return {
         statusCode: 401,
         body: JSON.stringify({ message: "Credenziali non valide" }),
