@@ -1,6 +1,6 @@
 // profilo.js
 
-// Controlla se c’è un utente loggato
+// Controlla se l'utente è loggato, altrimenti reindirizza
 const userData = localStorage.getItem('user');
 if (!userData) {
   window.location.href = 'login.html';
@@ -8,10 +8,32 @@ if (!userData) {
 
 const user = JSON.parse(userData);
 
-// Ora puoi mostrare i suoi dati nel profilo
-document.getElementById('profile-username').textContent = user.username;
-document.getElementById('account-username').textContent = user.username;
-document.getElementById('account-email').textContent = user.email;
+// Popola le informazioni del profilo
+document.addEventListener('DOMContentLoaded', () => {
+  // Header del profilo
+  const profileUsername = document.getElementById('profile-username');
+  const accountUsername = document.getElementById('account-username');
+  const accountEmail = document.getElementById('account-email');
+  const accountSubscription = document.getElementById('account-subscription');
+  const accountJoinDate = document.getElementById('account-join-date');
 
-// Se hai un'immagine salvata, la imposti automaticamente:
-// document.getElementById('profile-picture').src = user.imageUrl;
+  if (profileUsername) profileUsername.textContent = user.username || "Utente";
+  if (accountUsername) accountUsername.textContent = user.username || "Utente";
+  if (accountEmail) accountEmail.textContent = user.email || "email@example.com";
+  if (accountSubscription) accountSubscription.textContent = user.subscription || "Gratuito";
+  if (accountJoinDate) accountJoinDate.textContent = user.joinDate || "Data sconosciuta";
+
+  // Mostra/nasconde i pulsanti di login/logout
+  const logoutBtn = document.getElementById('logout-btn');
+  const loginBtn = document.getElementById('login-btn');
+
+  if (logoutBtn) {
+    logoutBtn.classList.remove('hidden');
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('user');
+      window.location.href = 'login.html';
+    });
+  }
+
+  if (loginBtn) loginBtn.classList.add('hidden');
+});
