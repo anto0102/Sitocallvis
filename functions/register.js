@@ -1,53 +1,71 @@
-const { MongoClient } = require("mongodb");
+// netlify/functions/register.js
 
-exports.handler = async function (event) {
-  if (event.httpMethod !== "POST") {
+const { MongoClient } = require('mongodb');
+const bcrypt = require('bcryptjs');
+
+const MONGO_URI = process.env.MONGO_URI; // es. mongodb+srv://utente:pass@cluster.mongodb.net/dbname
+const DB_NAME = process.env.DB_NAME || 'streamverse';
+
+let cachedClient = null;
+
+exports.handler = async (event) => {
+  if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
-      body: JSON.stringify({ message: "Metodo non consentito" }),
+      body: JSON.stringify({ message: 'Metodo non consentito' }),
     };
   }
-
-  const { email, password } = JSON.parse(event.body);
-
-  if (!email || !password) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ message: "Email e password sono obbligatori" }),
-    };
-  }
-
-  const uri = process.env.MONGODB_URI;
-  const client = new MongoClient(uri);
 
   try {
-    await client.connect();
-    const db = client.db("streamverse");
-    const users = db.collection("users");
+    const { username, email, password } = JSON.parse(event.body);
 
-    const existingUser = await users.findOne({ email });
-
-    if (existingUser) {
+    if (!username || !email || !password) {
       return {
-        statusCode: 409,
-        body: JSON.stringify({ message: "Email già registrata" }),
+        statusCode: 400,
+        body: JSON.stringify({ message: 'Tutti i campi sono obbligatori' }),
       };
     }
 
-    // Salva password in chiaro (solo per test)
-    await users.insertOne({ email, password });
+    // Connessione MongoDB
+    if (!cachedClient) {
+      const client = new MongoClient(MONGO_URI);
+      await client.connect();
+      cachedClient = client;
+    }
+
+    const db = cachedClient.db(DB_NAME);
+    const users = db.collection('users');
+
+    // Controlla se l'utente esiste già
+    const existing = await users.findOne({ email });
+
+    if (existing) {
+      return {
+        statusCode: 409,
+        body: JSON.stringify({ message: 'Email già registrata' }),
+      };
+    }
+
+    // Crittografa la password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Crea l’utente
+    await users.insertOne({
+      username,
+      email,
+      password: hashedPassword,
+      createdAt: new Date(),
+    });
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: "Registrazione riuscita" }),
+      body: JSON.stringify({ message: 'Registrazione completata' }),
     };
-  } catch (error) {
-    console.error("Errore durante la registrazione:", error);
+  } catch (err) {
+    console.error('Errore registrazione:', err);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Errore interno al server" }),
+      body: JSON.stringify({ message: 'Errore nella registrazione' }),
     };
-  } finally {
-    await client.close();
   }
 };
