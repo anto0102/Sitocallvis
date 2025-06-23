@@ -1,0 +1,5 @@
+[build]
+  publish = "."  # oppure "public", se usi una cartella diversa per l'HTML
+
+[functions]
+  directory = "functions"
