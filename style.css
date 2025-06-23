@@ -371,58 +371,58 @@ ul {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(30, 30, 30, 0.7); 
+    background-color: rgba(30, 30, 30, 0.7); /* Sfondo leggermente più trasparente */
     color: white;
-    font-size: 2rem; 
+    font-size: 2rem; /* Dimensione freccia leggermente più grande */
     border: none;
-    width: 60px;   
+    width: 60px;   /* Larghezza e altezza per un target più grande */
     height: 60px;  
-    border-radius: 50%; 
+    border-radius: 50%; /* Circolare */
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: background-color 0.3s ease, opacity 0.3s ease, transform 0.2s ease; 
     z-index: 60; 
-    opacity: 0; 
-    pointer-events: none; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.6); 
+    opacity: 0; /* Inizialmente nascosta, gestita da JS */
+    pointer-events: none; /* Inizialmente non cliccabile */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.6); /* Ombra più pronunciata */
 }
 
 /* Classi gestite da JavaScript per la visibilità e la cliccabilità */
 .scroll-btn.show-arrow { 
     opacity: 1;
-    pointer-events: auto; 
+    pointer-events: auto; /* CRUCIALE: Rendila cliccabile quando visibile */
 }
 .scroll-btn.hide-arrow { 
     opacity: 0;
-    pointer-events: none; 
+    pointer-events: none; /* Rendila non cliccabile quando nascosta */
 }
 
 .scroll-btn:hover {
-    background-color: rgba(50, 50, 50, 0.9); 
-    transform: translateY(-50%) scale(1.1); 
+    background-color: rgba(50, 50, 50, 0.9); /* Effetto hover più scuro */
+    transform: translateY(-50%) scale(1.1); /* Leggero ingrandimento al hover */
 }
 
 /* Posizionamento frecce */
 .scroll-btn.scroll-right {
-    right: 10px; 
+    right: 10px; /* Più spazio dal bordo */
 }
 
 .scroll-btn.scroll-left {
-    left: 10px; 
+    left: 10px; /* Più spazio dal bordo */
 }
 
 /* Media Queries per la reattività delle frecce */
-@media (max-width: 1024px) { 
+@media (max-width: 1024px) { /* Tablet or smaller desktop */
     .scroll-btn {
-        width: 50px; 
+        width: 50px; /* leggermente più piccole su tablet */
         height: 50px; 
         font-size: 1.8rem;
     }
 }
 
-@media (max-width: 768px) { 
+@media (max-width: 768px) { /* Mobile */
     .scroll-btn {
         width: 45px; 
         height: 45px; 
@@ -430,20 +430,139 @@ ul {
     }
 }
 
-@media (max-width: 480px) { 
+@media (max-width: 480px) { /* Mobile più piccolo */
     .scroll-btn {
         width: 40px; 
         height: 40px; 
         font-size: 1.4rem;
     }
     .scroll-btn.scroll-right {
-        right: 5px; 
+        right: 5px; /* Più vicino al bordo su schermi molto piccoli */
     }
     .scroll-btn.scroll-left {
-        left: 5px; 
+        left: 5px; /* Più vicino al bordo su schermi molto piccoli */
     }
 }
 
+/* --- NUOVI STILI PER PAGINE DI AUTENTICAZIONE (LOGIN/REGISTER) --- */
+.auth-page-container {
+    min-height: 100vh; /* Copre l'intera altezza del viewport */
+    display: flex;
+    flex-direction: column; /* Per allineare footer in basso se contenuto è poco */
+    justify-content: center; /* Centra verticalmente il contenuto */
+    align-items: center; /* Centra orizzontalmente il contenuto */
+    padding: 20px;
+    padding-top: 80px; /* Spazio per la navbar fissa */
+    background-color: var(--primary-bg); /* Assicurati che lo sfondo sia corretto */
+}
+
+.auth-form-card {
+    background-color: var(--secondary-bg);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 450px; /* Larghezza massima per il modulo */
+    text-align: center;
+    margin-top: 20px; /* Spazio extra dalla navbar su schermi più piccoli */
+    margin-bottom: 20px; /* Spazio extra dal footer */
+}
+
+.auth-form-card h2 {
+    font-size: 2.5em;
+    color: var(--text-color);
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-color);
+    font-weight: 600;
+    font-size: 0.95em;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"], /* Aggiunto tipo email per registrazione */
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.3);
+}
+
+.btn-auth-submit { /* Classe generica per i pulsanti di submit di autenticazione */
+    width: 100%;
+    padding: 14px 20px;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 10px;
+}
+
+.btn-auth-submit:hover {
+    background-color: var(--hover-color);
+    transform: translateY(-2px);
+}
+
+.auth-form-card .links {
+    margin-top: 25px;
+    font-size: 0.95em;
+}
+
+.auth-form-card .links a {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+.auth-form-card .links a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive adjustments for auth forms */
+@media (max-width: 600px) {
+    .auth-form-card {
+        padding: 30px 20px;
+        margin-top: 10px; /* Riduci margine superiore */
+        margin-bottom: 10px; /* Riduci margine inferiore */
+    }
+    .auth-form-card h2 {
+        font-size: 2em;
+    }
+    .form-group input {
+        padding: 10px 12px;
+    }
+    .btn-auth-submit {
+        padding: 12px 15px;
+        font-size: 1em;
+    }
+    .auth-page-container {
+        padding-top: 60px; /* Regola padding per navbar mobile */
+    }
+}
 
 /* Footer */
 footer {
@@ -451,7 +570,7 @@ footer {
     padding: 30px 40px;
     background-color: var(--secondary-bg);
     color: var(--text-color);
-    margin-top: 50px;
+    margin-top: auto; /* Spinge il footer in basso nelle pagine di autenticazione */
     font-size: 0.9em;
 }
 
@@ -627,109 +746,3 @@ footer {
         padding-top: 1.5rem;
     }
 }
-
-/* Stili specifici per la pagina di Login/Registrazione (spostati dal login.html) */
-.login-container {
-    min-height: calc(100vh - 80px); /* Sottrai altezza navbar, considera gli 80px di min-height della navbar */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    padding-top: 100px; /* Assicurati che ci sia abbastanza spazio per la navbar fissa */
-}
-
-@media (max-width: 768px) {
-    /* Regola il padding-top per schermi più piccoli, se la navbar è più alta o diversa */
-    .login-container {
-        padding-top: 120px; /* Esempio: se la navbar diventa più alta su mobile */
-    }
-}
-
-.login-form-card {
-    background-color: var(--secondary-bg);
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-}
-.login-form-card h2 {
-    font-size: 2.2em;
-    color: var(--text-color);
-    margin-bottom: 30px;
-    font-weight: 700;
-}
-.form-group {
-    margin-bottom: 20px;
-    text-align: left;
-}
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    color: var(--text-color);
-    font-weight: 600;
-    font-size: 0.95em;
-}
-.form-group input[type="text"],
-.form-group input[type="password"] {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background-color: var(--primary-bg);
-    color: var(--text-color);
-    font-size: 1em;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-.form-group input[type="text"]:focus,
-.form-group input[type="password"]:focus {
-    outline: none;
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.3);
-}
-.btn-login {
-    width: 100%;
-    padding: 14px 20px;
-    background-color: var(--accent-color);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1em;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-top: 10px;
-}
-.btn-login:hover {
-    background-color: var(--hover-color);
-    transform: translateY(-2px);
-}
-.login-form-card .links {
-    margin-top: 25px;
-    font-size: 0.95em;
-}
-.login-form-card .links a {
-    color: var(--accent-color);
-    font-weight: 600;
-}
-.login-form-card .links a:hover {
-    text-decoration: underline;
-}
-
-/* Responsive adjustments for login form */
-@media (max-width: 600px) {
-    .login-form-card {
-        padding: 30px 20px;
-    }
-    .login-form-card h2 {
-        font-size: 2em;
-    }
-    .form-group input {
-        padding: 10px 12px;
-    }
-    .btn-login {
-        padding: 12px 15px;
-        font-size: 1em;
-    }
-    }
