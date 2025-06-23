@@ -1,11 +1,9 @@
 const { MongoClient } = require('mongodb');
 const bcrypt = require('bcryptjs');
 
-// Debug utile: stampa variabili d’ambiente (può essere rimosso in produzione)
-console.log("🌍 ENV:", JSON.stringify(process.env, null, 2));
-
-const MONGO_URI = process.env.MONGO_URI;
-const DB_NAME = 'sample_mflix'; // ✅ Corretto: il tuo vero nome del DB
+// ✅ Qui ora usa la variabile giusta
+const MONGO_URI = process.env.MONGODB_URI;
+const DB_NAME = 'sample_mflix';
 
 let cachedClient = null;
 
@@ -22,7 +20,7 @@ exports.handler = async (event) => {
   if (!MONGO_URI) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: 'Variabile MONGO_URI non definita' }),
+      body: JSON.stringify({ message: 'Variabile MONGODB_URI non definita' }),
     };
   }
 
