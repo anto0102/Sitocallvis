@@ -162,7 +162,7 @@ document.getElementById('login-form').addEventListener('submit', async function(
 
     const data = await res.json();
     if (res.ok) {
-        alert('Benvenuto ' + data.user + '!');
+        alert('Benvenuto ' + data.username + '!');
         window.location.href = 'index.html';
     } else {
         alert(data.message || 'Errore di login');
