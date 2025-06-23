@@ -635,13 +635,14 @@ footer {
     justify-content: center;
     align-items: center;
     padding: 20px;
-    padding-top: 100px; /* Assicurati che ci sia abbastanza spazio per la navbar fissa */
+    /* Spazio sufficiente per la navbar fissa */
+    padding-top: 100px; 
 }
 
 @media (max-width: 768px) {
-    /* Regola il padding-top per schermi più piccoli, se la navbar è più alta o diversa */
+    /* Regola il padding-top per schermi più piccoli, se la navbar è più alta o diversa (es. quando diventa a colonna) */
     .login-container {
-        padding-top: 120px; /* Esempio: se la navbar diventa più alta su mobile */
+        padding-top: 180px; /* Aumentato per mobile, perché la navbar si espande verticalmente */
     }
 }
 
