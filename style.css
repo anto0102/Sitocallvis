@@ -444,6 +444,125 @@ ul {
     }
 }
 
+/* --- NUOVI STILI PER PAGINE DI AUTENTICAZIONE (LOGIN/REGISTER) --- */
+.auth-page-container {
+    min-height: 100vh; /* Copre l'intera altezza del viewport */
+    display: flex;
+    flex-direction: column; /* Per allineare footer in basso se contenuto è poco */
+    justify-content: center; /* Centra verticalmente il contenuto */
+    align-items: center; /* Centra orizzontalmente il contenuto */
+    padding: 20px;
+    padding-top: 80px; /* Spazio per la navbar fissa */
+    background-color: var(--primary-bg); /* Assicurati che lo sfondo sia corretto */
+}
+
+.auth-form-card {
+    background-color: var(--secondary-bg);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 450px; /* Larghezza massima per il modulo */
+    text-align: center;
+    margin-top: 20px; /* Spazio extra dalla navbar su schermi più piccoli */
+    margin-bottom: 20px; /* Spazio extra dal footer */
+}
+
+.auth-form-card h2 {
+    font-size: 2.5em;
+    color: var(--text-color);
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-color);
+    font-weight: 600;
+    font-size: 0.95em;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"], /* Aggiunto tipo email per registrazione */
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.3);
+}
+
+.btn-auth-submit { /* Classe generica per i pulsanti di submit di autenticazione */
+    width: 100%;
+    padding: 14px 20px;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 10px;
+}
+
+.btn-auth-submit:hover {
+    background-color: var(--hover-color);
+    transform: translateY(-2px);
+}
+
+.auth-form-card .links {
+    margin-top: 25px;
+    font-size: 0.95em;
+}
+
+.auth-form-card .links a {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+.auth-form-card .links a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive adjustments for auth forms */
+@media (max-width: 600px) {
+    .auth-form-card {
+        padding: 30px 20px;
+        margin-top: 10px; /* Riduci margine superiore */
+        margin-bottom: 10px; /* Riduci margine inferiore */
+    }
+    .auth-form-card h2 {
+        font-size: 2em;
+    }
+    .form-group input {
+        padding: 10px 12px;
+    }
+    .btn-auth-submit {
+        padding: 12px 15px;
+        font-size: 1em;
+    }
+    .auth-page-container {
+        padding-top: 60px; /* Regola padding per navbar mobile */
+    }
+}
 
 /* Footer */
 footer {
@@ -451,7 +570,7 @@ footer {
     padding: 30px 40px;
     background-color: var(--secondary-bg);
     color: var(--text-color);
-    margin-top: 50px;
+    margin-top: auto; /* Spinge il footer in basso nelle pagine di autenticazione */
     font-size: 0.9em;
 }
 
