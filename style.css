@@ -371,58 +371,58 @@ ul {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(30, 30, 30, 0.7); /* Sfondo leggermente più trasparente */
+    background-color: rgba(30, 30, 30, 0.7); 
     color: white;
-    font-size: 2rem; /* Dimensione freccia leggermente più grande */
+    font-size: 2rem; 
     border: none;
-    width: 60px;   /* Larghezza e altezza per un target più grande */
+    width: 60px;   
     height: 60px;  
-    border-radius: 50%; /* Circolare */
+    border-radius: 50%; 
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: background-color 0.3s ease, opacity 0.3s ease, transform 0.2s ease; 
     z-index: 60; 
-    opacity: 0; /* Inizialmente nascosta, gestita da JS */
-    pointer-events: none; /* Inizialmente non cliccabile */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.6); /* Ombra più pronunciata */
+    opacity: 0; 
+    pointer-events: none; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.6); 
 }
 
 /* Classi gestite da JavaScript per la visibilità e la cliccabilità */
 .scroll-btn.show-arrow { 
     opacity: 1;
-    pointer-events: auto; /* CRUCIALE: Rendila cliccabile quando visibile */
+    pointer-events: auto; 
 }
 .scroll-btn.hide-arrow { 
     opacity: 0;
-    pointer-events: none; /* Rendila non cliccabile quando nascosta */
+    pointer-events: none; 
 }
 
 .scroll-btn:hover {
-    background-color: rgba(50, 50, 50, 0.9); /* Effetto hover più scuro */
-    transform: translateY(-50%) scale(1.1); /* Leggero ingrandimento al hover */
+    background-color: rgba(50, 50, 50, 0.9); 
+    transform: translateY(-50%) scale(1.1); 
 }
 
 /* Posizionamento frecce */
 .scroll-btn.scroll-right {
-    right: 10px; /* Più spazio dal bordo */
+    right: 10px; 
 }
 
 .scroll-btn.scroll-left {
-    left: 10px; /* Più spazio dal bordo */
+    left: 10px; 
 }
 
 /* Media Queries per la reattività delle frecce */
-@media (max-width: 1024px) { /* Tablet or smaller desktop */
+@media (max-width: 1024px) { 
     .scroll-btn {
-        width: 50px; /* leggermente più piccole su tablet */
+        width: 50px; 
         height: 50px; 
         font-size: 1.8rem;
     }
 }
 
-@media (max-width: 768px) { /* Mobile */
+@media (max-width: 768px) { 
     .scroll-btn {
         width: 45px; 
         height: 45px; 
@@ -430,139 +430,20 @@ ul {
     }
 }
 
-@media (max-width: 480px) { /* Mobile più piccolo */
+@media (max-width: 480px) { 
     .scroll-btn {
         width: 40px; 
         height: 40px; 
         font-size: 1.4rem;
     }
     .scroll-btn.scroll-right {
-        right: 5px; /* Più vicino al bordo su schermi molto piccoli */
+        right: 5px; 
     }
     .scroll-btn.scroll-left {
-        left: 5px; /* Più vicino al bordo su schermi molto piccoli */
+        left: 5px; 
     }
 }
 
-/* --- NUOVI STILI PER PAGINE DI AUTENTICAZIONE (LOGIN/REGISTER) --- */
-.auth-page-container {
-    min-height: 100vh; /* Copre l'intera altezza del viewport */
-    display: flex;
-    flex-direction: column; /* Per allineare footer in basso se contenuto è poco */
-    justify-content: center; /* Centra verticalmente il contenuto */
-    align-items: center; /* Centra orizzontalmente il contenuto */
-    padding: 20px;
-    padding-top: 80px; /* Spazio per la navbar fissa */
-    background-color: var(--primary-bg); /* Assicurati che lo sfondo sia corretto */
-}
-
-.auth-form-card {
-    background-color: var(--secondary-bg);
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    width: 100%;
-    max-width: 450px; /* Larghezza massima per il modulo */
-    text-align: center;
-    margin-top: 20px; /* Spazio extra dalla navbar su schermi più piccoli */
-    margin-bottom: 20px; /* Spazio extra dal footer */
-}
-
-.auth-form-card h2 {
-    font-size: 2.5em;
-    color: var(--text-color);
-    margin-bottom: 30px;
-    font-weight: 700;
-}
-
-.form-group {
-    margin-bottom: 20px;
-    text-align: left;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    color: var(--text-color);
-    font-weight: 600;
-    font-size: 0.95em;
-}
-
-.form-group input[type="text"],
-.form-group input[type="email"], /* Aggiunto tipo email per registrazione */
-.form-group input[type="password"] {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background-color: var(--primary-bg);
-    color: var(--text-color);
-    font-size: 1em;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.form-group input[type="text"]:focus,
-.form-group input[type="email"]:focus,
-.form-group input[type="password"]:focus {
-    outline: none;
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.3);
-}
-
-.btn-auth-submit { /* Classe generica per i pulsanti di submit di autenticazione */
-    width: 100%;
-    padding: 14px 20px;
-    background-color: var(--accent-color);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1em;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-top: 10px;
-}
-
-.btn-auth-submit:hover {
-    background-color: var(--hover-color);
-    transform: translateY(-2px);
-}
-
-.auth-form-card .links {
-    margin-top: 25px;
-    font-size: 0.95em;
-}
-
-.auth-form-card .links a {
-    color: var(--accent-color);
-    font-weight: 600;
-}
-
-.auth-form-card .links a:hover {
-    text-decoration: underline;
-}
-
-/* Responsive adjustments for auth forms */
-@media (max-width: 600px) {
-    .auth-form-card {
-        padding: 30px 20px;
-        margin-top: 10px; /* Riduci margine superiore */
-        margin-bottom: 10px; /* Riduci margine inferiore */
-    }
-    .auth-form-card h2 {
-        font-size: 2em;
-    }
-    .form-group input {
-        padding: 10px 12px;
-    }
-    .btn-auth-submit {
-        padding: 12px 15px;
-        font-size: 1em;
-    }
-    .auth-page-container {
-        padding-top: 60px; /* Regola padding per navbar mobile */
-    }
-}
 
 /* Footer */
 footer {
@@ -570,7 +451,7 @@ footer {
     padding: 30px 40px;
     background-color: var(--secondary-bg);
     color: var(--text-color);
-    margin-top: auto; /* Spinge il footer in basso nelle pagine di autenticazione */
+    margin-top: 50px;
     font-size: 0.9em;
 }
 
