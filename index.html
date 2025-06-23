@@ -11,7 +11,7 @@
 </head>
 
 <body class="bg-primary-bg text-text-color font-poppins">
-    <header class="navbar fixed top-0 left-0 w-full z-50 py-4 px-8 flex justify-between items-center bg-black bg-opacity-70 transition-colors duration-300">
+    <header class="navbar fixed top-0 left-0 w-full z-50 py-4 px-8 flex justify-between items-center transition-colors duration-300">
         <div class="logo text-accent-color text-3xl font-bold">StreamVerse</div>
         <nav class="hidden md:block">
             <ul class="flex gap-8">
@@ -27,7 +27,7 @@
                 <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 text-text-color hover:text-accent-color transition-colors duration-200">🔍</button>
             </form>
             <div id="auth-area" class="flex gap-2">
-                <button id="login-btn" class="btn-primary">Accedi</button>
+                <button id="login-btn" class="btn-primary" onclick="window.location.href='login.html'">Accedi</button>
                 <button id="logout-btn" class="btn-secondary hidden">Logout</button>
                 <a href="profilo.html" class="profile-icon hidden" id="profile-link" title="Il mio profilo">👤</a>
             </div>
@@ -60,80 +60,80 @@
                 <div class="carousel-container overflow-x-auto scroll-smooth hide-scrollbar pb-6">
                     <div class="carousel-track flex gap-4" id="consigliati"></div>
                 </div>
-                <button class="scroll-btn scroll-right opacity-0 group-hover:opacity-100 right-0" onclick="scrollRight('consigliati')">❯</button>
-                <button class="scroll-btn scroll-left opacity-0 group-hover:opacity-100 left-0" onclick="scrollLeft('consigliati')">❮</button>
+                <button class="scroll-btn scroll-right" onclick="scrollRight('consigliati')">❯</button>
+                <button class="scroll-btn scroll-left" onclick="scrollLeft('consigliati')">❮</button>
             </section>
             <section class="content-row group relative mb-12">
                 <h2 class="text-3xl font-bold mb-6 text-white">🔥 Titoli del momento</h2>
                 <div class="carousel-container overflow-x-auto scroll-smooth hide-scrollbar pb-6">
                     <div class="carousel-track flex gap-4" id="momento"></div>
                 </div>
-                <button class="scroll-btn scroll-right opacity-0 group-hover:opacity-100 right-0" onclick="scrollRight('momento')">❯</button>
-                <button class="scroll-btn scroll-left opacity-0 group-hover:opacity-100 left-0" onclick="scrollLeft('momento')">❮</button>
+                <button class="scroll-btn scroll-right" onclick="scrollRight('momento')">❯</button>
+                <button class="scroll-btn scroll-left" onclick="scrollLeft('momento')">❮</button>
             </section>
             <section class="content-row group relative mb-12">
                 <h2 class="text-3xl font-bold mb-6 text-white">🎭 Drammatici</h2>
                 <div class="carousel-container overflow-x-auto scroll-smooth hide-scrollbar pb-6">
                     <div class="carousel-track flex gap-4" id="drammatici"></div>
                 </div>
-                <button class="scroll-btn scroll-right opacity-0 group-hover:opacity-100 right-0" onclick="scrollRight('drammatici')">❯</button>
-                <button class="scroll-btn scroll-left opacity-0 group-hover:opacity-100 left-0" onclick="scrollLeft('drammatici')">❮</button>
+                <button class="scroll-btn scroll-right" onclick="scrollRight('drammatici')">❯</button>
+                <button class="scroll-btn scroll-left" onclick="scrollLeft('drammatici')">❮</button>
             </section>
             <section class="content-row group relative mb-12">
                 <h2 class="text-3xl font-bold mb-6 text-white">💥 Azione</h2>
                 <div class="carousel-container overflow-x-auto scroll-smooth hide-scrollbar pb-6">
                     <div class="carousel-track flex gap-4" id="azione"></div>
                 </div>
-                <button class="scroll-btn scroll-right opacity-0 group-hover:opacity-100 right-0" onclick="scrollRight('azione')">❯</button>
-                <button class="scroll-btn scroll-left opacity-0 group-hover:opacity-100 left-0" onclick="scrollLeft('azione')">❮</button>
+                <button class="scroll-btn scroll-right" onclick="scrollRight('azione')">❯</button>
+                <button class="scroll-btn scroll-left" onclick="scrollLeft('azione')">❮</button>
             </section>
             <section class="content-row group relative mb-12">
                 <h2 class="text-3xl font-bold mb-6 text-white">😂 Commedie</h2>
                 <div class="carousel-container overflow-x-auto scroll-smooth hide-scrollbar pb-6">
                     <div class="carousel-track flex gap-4" id="commedie"></div>
                 </div>
-                <button class="scroll-btn scroll-right opacity-0 group-hover:opacity-100 right-0" onclick="scrollRight('commedie')">❯</button>
-                <button class="scroll-btn scroll-left opacity-0 group-hover:opacity-100 left-0" onclick="scrollLeft('commedie')">❮</button>
+                <button class="scroll-btn scroll-right" onclick="scrollRight('commedie')">❯</button>
+                <button class="scroll-btn scroll-left" onclick="scrollLeft('commedie')">❮</button>
             </section>
             <section class="content-row group relative mb-12">
                 <h2 class="text-3xl font-bold mb-6 text-white">👻 Horror</h2>
                 <div class="carousel-container overflow-x-auto scroll-smooth hide-scrollbar pb-6">
                     <div class="carousel-track flex gap-4" id="horror"></div>
                 </div>
-                <button class="scroll-btn scroll-right opacity-0 group-hover:opacity-100 right-0" onclick="scrollRight('horror')">❯</button>
-                <button class="scroll-btn scroll-left opacity-0 group-hover:opacity-100 left-0" onclick="scrollLeft('horror')">❮</button>
+                <button class="scroll-btn scroll-right" onclick="scrollRight('horror')">❯</button>
+                <button class="scroll-btn scroll-left" onclick="scrollLeft('horror')">❮</button>
             </section>
             <section class="content-row group relative mb-12">
                 <h2 class="text-3xl font-bold mb-6 text-white">👨‍👩‍👧 Famiglia</h2>
                 <div class="carousel-container overflow-x-auto scroll-smooth hide-scrollbar pb-6">
                     <div class="carousel-track flex gap-4" id="famiglia"></div>
                 </div>
-                <button class="scroll-btn scroll-right opacity-0 group-hover:opacity-100 right-0" onclick="scrollRight('famiglia')">❯</button>
-                <button class="scroll-btn scroll-left opacity-0 group-hover:opacity-100 left-0" onclick="scrollLeft('famiglia')">❮</button>
+                <button class="scroll-btn scroll-right" onclick="scrollRight('famiglia')">❯</button>
+                <button class="scroll-btn scroll-left" onclick="scrollLeft('famiglia')">❮</button>
             </section>
             <section class="content-row group relative mb-12">
                 <h2 class="text-3xl font-bold mb-6 text-white">🚀 Fantascienza</h2>
                 <div class="carousel-container overflow-x-auto scroll-smooth hide-scrollbar pb-6">
                     <div class="carousel-track flex gap-4" id="fantascienza"></div>
                 </div>
-                <button class="scroll-btn scroll-right opacity-0 group-hover:opacity-100 right-0" onclick="scrollRight('fantascienza')">❯</button>
-                <button class="scroll-btn scroll-left opacity-0 group-hover:opacity-100 left-0" onclick="scrollLeft('fantascienza')">❮</button>
+                <button class="scroll-btn scroll-right" onclick="scrollRight('fantascienza')">❯</button>
+                <button class="scroll-btn scroll-left" onclick="scrollLeft('fantascienza')">❮</button>
             </section>
             <section class="content-row group relative mb-12">
                 <h2 class="text-3xl font-bold mb-6 text-white">💖 Romantici</h2>
                 <div class="carousel-container overflow-x-auto scroll-smooth hide-scrollbar pb-6">
                     <div class="carousel-track flex gap-4" id="romantici"></div>
                 </div>
-                <button class="scroll-btn scroll-right opacity-0 group-hover:opacity-100 right-0" onclick="scrollRight('romantici')">❯</button>
-                <button class="scroll-btn scroll-left opacity-0 group-hover:opacity-100 left-0" onclick="scrollLeft('romantici')">❮</button>
+                <button class="scroll-btn scroll-right" onclick="scrollRight('romantici')">❯</button>
+                <button class="scroll-btn scroll-left" onclick="scrollLeft('romantici')">❮</button>
             </section>
             <section class="content-row group relative mb-12">
                 <h2 class="text-3xl font-bold mb-6 text-white">🎬 Documentari</h2>
                 <div class="carousel-container overflow-x-auto scroll-smooth hide-scrollbar pb-6">
                     <div class="carousel-track flex gap-4" id="documentari"></div>
                 </div>
-                <button class="scroll-btn scroll-right opacity-0 group-hover:opacity-100 right-0" onclick="scrollRight('documentari')">❯</button>
-                <button class="scroll-btn scroll-left opacity-0 group-hover:opacity-100 left-0" onclick="scrollLeft('documentari')">❮</button>
+                <button class="scroll-btn scroll-right" onclick="scrollRight('documentari')">❯</button>
+                <button class="scroll-btn scroll-left" onclick="scrollLeft('documentari')">❮</button>
             </section>
         </div>
     </main>
@@ -150,16 +150,16 @@
             const user = await Clerk.user;
             const loginBtn = document.getElementById("login-btn");
             const logoutBtn = document.getElementById("logout-btn");
-            const profileLink = document.getElementById("profile-link"); // Nuovo elemento
+            const profileLink = document.getElementById("profile-link"); 
 
             if (user) {
                 loginBtn.classList.add("hidden");
                 logoutBtn.classList.remove("hidden");
-                profileLink.classList.remove("hidden"); // Mostra l'icona del profilo
+                profileLink.classList.remove("hidden"); 
             } else {
                 loginBtn.classList.remove("hidden");
                 logoutBtn.classList.add("hidden");
-                profileLink.classList.add("hidden"); // Nascondi l'icona del profilo
+                profileLink.classList.add("hidden"); 
             }
 
             logoutBtn.addEventListener("click", async () => {
@@ -167,21 +167,6 @@
                 window.location.reload();
             });
         });
-
-        // Funzioni di scroll spostate qui per coerenza, o in index.js se preferisci
-        function scrollRight(containerId) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            const scrollAmount = container.querySelector(".movie-card")?.offsetWidth || 200; // Aumentato per coerenza
-            container.scrollBy({ left: scrollAmount * 3, behavior: 'smooth' });
-        }
-
-        function scrollLeft(containerId) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            const scrollAmount = container.querySelector(".movie-card")?.offsetWidth || 200; // Aumentato per coerenza
-            container.scrollBy({ left: -scrollAmount * 3, behavior: 'smooth' });
-        }
     </script>
     <script src="index.js"></script>
 </body>
