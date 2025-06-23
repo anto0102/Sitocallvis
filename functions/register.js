@@ -1,9 +1,7 @@
-// netlify/functions/register.js
-
 const { MongoClient } = require('mongodb');
 const bcrypt = require('bcryptjs');
 
-const MONGO_URI = process.env.MONGO_URI; // es. mongodb+srv://utente:pass@cluster.mongodb.net/dbname
+const MONGO_URI = process.env.MONGO_URI;
 const DB_NAME = process.env.DB_NAME || 'streamverse';
 
 let cachedClient = null;
@@ -13,6 +11,16 @@ exports.handler = async (event) => {
     return {
       statusCode: 405,
       body: JSON.stringify({ message: 'Metodo non consentito' }),
+    };
+  }
+
+  // ✅ Log utile per capire se MONGO_URI è definito
+  console.log("MONGO_URI:", MONGO_URI);
+
+  if (!MONGO_URI) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: 'Variabile MONGO_URI non definita nell\'ambiente' }),
     };
   }
 
@@ -26,7 +34,7 @@ exports.handler = async (event) => {
       };
     }
 
-    // Connessione MongoDB
+    // ✅ Connessione a MongoDB
     if (!cachedClient) {
       const client = new MongoClient(MONGO_URI);
       await client.connect();
@@ -36,7 +44,7 @@ exports.handler = async (event) => {
     const db = cachedClient.db(DB_NAME);
     const users = db.collection('users');
 
-    // Controlla se l'utente esiste già
+    // 🔁 Controlla se l'utente esiste già
     const existing = await users.findOne({ email });
 
     if (existing) {
@@ -46,10 +54,9 @@ exports.handler = async (event) => {
       };
     }
 
-    // Crittografa la password
+    // 🔐 Hash della password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Crea l’utente
     await users.insertOne({
       username,
       email,
