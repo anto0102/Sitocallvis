@@ -1,16 +1,16 @@
 // profilo.js
 
-// Controlla se l'utente è loggato, altrimenti reindirizza
-const userData = localStorage.getItem('user');
-if (!userData) {
-  window.location.href = 'login.html';
-}
-
-const user = JSON.parse(userData);
-
-// Popola le informazioni del profilo
 document.addEventListener('DOMContentLoaded', () => {
-  // Header del profilo
+  // Verifica se l'utente è loggato
+  const userData = localStorage.getItem('user');
+  if (!userData) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  const user = JSON.parse(userData);
+
+  // Popola le informazioni del profilo
   const profileUsername = document.getElementById('profile-username');
   const accountUsername = document.getElementById('account-username');
   const accountEmail = document.getElementById('account-email');
