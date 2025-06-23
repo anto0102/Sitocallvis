@@ -2,7 +2,7 @@
   "name": "sitocallvis",
   "version": "1.0.0",
   "dependencies": {
-    "mongodb": "^5.7.0"
+    "mongodb": "^5.7.0",
     "bcryptjs": "^2.4.3"
   }
 }
