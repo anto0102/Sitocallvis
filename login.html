@@ -8,15 +8,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Questo blocco style è temporaneo per evitare flash di contenuto non stilizzato. 
-           Verrà spostato in style.css nel passaggio successivo. */
         .login-container {
-            min-height: calc(100vh - 80px); /* Sottrai altezza navbar */
+            min-height: calc(100vh - 80px);
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            padding-top: 100px; /* Spazio per la navbar */
+            padding-top: 100px;
         }
         .login-form-card {
             background-color: var(--secondary-bg);
@@ -89,8 +87,6 @@
         .login-form-card .links a:hover {
             text-decoration: underline;
         }
-
-        /* Responsive adjustments for login form */
         @media (max-width: 600px) {
             .login-form-card {
                 padding: 30px 20px;
@@ -150,24 +146,38 @@
     </footer>
 
     <script>
-document.getElementById('login-form').addEventListener('submit', async function(event) {
-    event.preventDefault();
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    document.getElementById('login-form').addEventListener('submit', async function(event) {
+        event.preventDefault();
 
-    const res = await fetch('/.netlify/functions/login', {
-        method: 'POST',
-        body: JSON.stringify({ username, password }),
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        try {
+            const res = await fetch('/.netlify/functions/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                const user = data.user || username;
+
+                // Salvo i dati in localStorage
+                localStorage.setItem('loggedIn', 'true');
+                localStorage.setItem('username', user);
+
+                alert('Benvenuto ' + user + '!');
+                window.location.href = 'index.html';
+            } else {
+                alert(data.message || 'Errore durante il login');
+            }
+        } catch (error) {
+            console.error('Errore nella richiesta:', error);
+            alert('Errore di connessione al server');
+        }
     });
-
-    const data = await res.json();
-    if (res.ok) {
-        alert('Benvenuto ' + data.user + '!');
-        window.location.href = 'index.html';
-    } else {
-        alert(data.message || 'Errore di login');
-    }
-});
     </script>
 </body>
 </html>
