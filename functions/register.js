@@ -9,6 +9,14 @@ exports.handler = async function (event) {
   }
 
   const { email, password } = JSON.parse(event.body);
+
+  if (!email || !password) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ message: "Email e password sono obbligatori" }),
+    };
+  }
+
   const uri = process.env.MONGODB_URI;
   const client = new MongoClient(uri);
 
@@ -17,23 +25,27 @@ exports.handler = async function (event) {
     const db = client.db("streamverse");
     const users = db.collection("users");
 
-    const user = await users.findOne({ email });
-    if (user) {
+    const existingUser = await users.findOne({ email });
+
+    if (existingUser) {
       return {
         statusCode: 409,
         body: JSON.stringify({ message: "Email già registrata" }),
       };
     }
 
+    // Salva password in chiaro (solo per test)
     await users.insertOne({ email, password });
+
     return {
       statusCode: 200,
       body: JSON.stringify({ message: "Registrazione riuscita" }),
     };
   } catch (error) {
+    console.error("Errore durante la registrazione:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Errore interno" }),
+      body: JSON.stringify({ error: "Errore interno al server" }),
     };
   } finally {
     await client.close();
