@@ -1,748 +1,204 @@
-/* Stili Globali e Reset */
-:root {
-    --primary-bg: #141414;
-    --secondary-bg: #222222;
-    --text-color: #e0e0e0;
-    --accent-color: #e50914; /* Tipico rosso Netflix */
-    --hover-color: #f40612;
-    --card-bg: #1c1c1c;
-    --border-color: #333;
-    --hero-backdrop-transition: all 0.3s ease-in-out;
-}
-
-* {
+/* Importa un font che richiama Netflix (Netflix Sans è proprietario, ma possiamo emularlo) */
+body {
+    font-family: 'Netflix Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #141414; /* Sfondo scuro tipico di Netflix */
+    color: #E5E5E5; /* Testo chiaro */
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Poppins', sans-serif; 
-    background-color: var(--primary-bg);
-    color: var(--text-color);
-    line-height: 1.6;
-    overflow-x: hidden; 
-    overscroll-behavior-y: contain; 
-    height: 100%; 
-    min-height: 100vh; 
-}
-
-a {
-    color: var(--text-color);
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-a:hover {
-    color: var(--accent-color);
-}
-
-ul {
-    list-style: none;
-}
-
-/* Navbar */
-.navbar {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 25px 40px; 
-    background-color: var(--primary-bg); 
-    position: fixed;
+    flex-direction: column;
+    min-height: 100vh;
+    align-items: center; /* Centra il contenuto orizzontalmente */
+}
+
+/* Header Netflix */
+.netflix-header {
     width: 100%;
+    padding: 20px 50px;
+    background: linear-gradient(180deg, rgba(0,0,0,.7) 10%, transparent); /* Sfumatura in alto */
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    position: absolute; /* Posiziona l'header in alto */
     top: 0;
     left: 0;
-    z-index: 1000; 
-    transition: background-color 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.5); 
-    min-height: 80px; 
+    z-index: 10;
 }
 
-.navbar .logo {
-    font-size: 2em;
-    font-weight: 700;
-    color: var(--accent-color);
+.netflix-logo img {
+    height: 45px; /* Dimensione logo Netflix */
 }
 
-.navbar nav ul {
-    display: flex;
-}
-
-.navbar nav ul li {
-    margin-right: 30px;
-}
-
-.navbar nav ul li a {
-    font-weight: 600;
-    font-size: 1.1em;
-    padding: 5px 0;
-    position: relative;
-}
-
-.navbar nav ul li a.active::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background-color: var(--accent-color);
-}
-
-.user-actions {
-    display: flex;
-    align-items: center;
-}
-
-.user-actions input {
-    padding: 8px 15px;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    background-color: var(--secondary-bg);
-    color: var(--text-color);
-    margin-right: 15px;
-    transition: all 0.3s ease;
-}
-
-.user-actions input:focus {
-    outline: none;
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.3);
-}
-
-.btn-primary { 
-    background-color: var(--accent-color);
-    color: white;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.3s ease;
-}
-
-.btn-primary:hover {
-    background-color: var(--hover-color);
-}
-
-.btn-secondary { 
-    background-color: rgba(109, 109, 110, 0.7);
-    color: white;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.3s ease;
-}
-.btn-secondary:hover {
-    background-color: rgba(109, 109, 110, 0.9);
-}
-
-.profile-icon {
-    font-size: 1.4em;
-    text-decoration: none;
-    color: white;
-    background-color: var(--accent-color); 
-    padding: 8px 12px;
+/* Contenitore principale del profilo */
+.profile-container {
+    background-color: #1a1a1a;
     border-radius: 8px;
-    transition: background-color 0.2s ease;
-}
-.profile-icon:hover {
-    background-color: var(--hover-color);
-}
-
-
-/* Hero Section */
-.hero-section {
-    position: relative;
-    width: 100%;
-    height: 80vh; 
-    padding-top: 250px; 
-    background-image: url('https://via.placeholder.com/1920x1080/000000/FFFFFF?text=IMMAGINE+EROE'); 
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: flex-end; 
-    padding-left: 60px;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); 
-    padding-bottom: 220px; 
-    z-index: 10; 
-}
-
-.hero-section::before { 
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%);
-    z-index: 1;
-}
-.hero-section .hero-content {
-    position: relative;
-    z-index: 2; 
-    max-width: 600px;
-    text-align: left;
-    align-items: flex-start;
-}
-
-.hero-content h1 {
-    font-size: 3.5em;
-    margin-bottom: 20px;
-    line-height: 1.2;
-}
-
-.hero-content p {
-    font-size: 1.2em;
-    margin-bottom: 30px; 
-    max-width: 500px;
-}
-
-.hero-buttons .btn {
-    padding: 12px 25px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.1em;
-    font-weight: 600;
-    cursor: pointer;
-    margin-right: 15px;
-    transition: all 0.3s ease;
-}
-
-.btn.play-btn { 
-    background-color: white;
-    color: var(--primary-bg);
-}
-
-.btn.play-btn:hover {
-    background-color: rgba(255, 255, 255, 0.8);
-    transform: scale(1.05);
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
-}
-
-.btn.info-btn { 
-    background-color: rgba(109, 109, 110, 0.7);
-    color: white;
-}
-
-.btn.info-btn:hover {
-    background-color: rgba(109, 109, 110, 0.9);
-    transform: scale(1.05);
-    box-shadow: 0 0 0 2px rgba(109, 109, 110, 0.3);
-}
-
-/* Content Wrapper e Rows (Caroselli) */
-.content-wrapper {
-    padding-top: 0; 
-    position: relative; 
-    z-index: 20; 
-    background-color: var(--primary-bg); 
-}
-
-.content-row {
-    padding: 40px 60px; /* Desktop */
-    margin-top: 0px; 
-    position: relative;
-    z-index: 1; 
-    overflow: visible; 
-}
-
-.content-row h2 {
-    font-size: 2em;
-    margin-bottom: 25px;
-    color: white;
-    text-align: left; 
-    padding-left: 0; 
-    position: relative; 
-    z-index: 5; 
-}
-
-.carousel-container {
-    overflow-x: scroll; 
-    overflow-y: hidden; 
-    -webkit-overflow-scrolling: touch; 
-    scrollbar-width: none; 
-    -ms-overflow-style: none;  
-    padding-left: 0; 
-    padding-right: 0;
-    position: relative;
-    overscroll-behavior-x: contain; 
-    overscroll-behavior-y: none;    
-}
-
-.carousel-container::-webkit-scrollbar {
-    display: none; 
-}
-
-.carousel-track {
-    display: flex;
-    gap: 15px; 
-    padding-bottom: 20px; 
-    padding-left: 0px; 
-    padding-right: 0px;
-    padding-top: 20px; 
-    padding-bottom: 20px; 
-}
-
-.movie-card {
-    flex-shrink: 0; 
-    width: 200px; 
-    background-color: var(--card-bg);
-    border-radius: 8px;
-    cursor: pointer;
-    position: relative;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    z-index: 1; 
-    height: auto; 
-    overflow: visible; 
-}
-
-.movie-card img {
-    width: 100%;
-    height: 300px; 
-    object-fit: cover;
-    display: block;
-    border-radius: 8px 8px 0 0; 
-    transition: transform 0.3s ease;
-}
-
-.movie-card-title-section { 
-    padding: 10px 8px; 
-    background-color: var(--card-bg); 
-    border-radius: 0 0 8px 8px; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
-    min-height: 40px; 
-    display: flex; 
-    align-items: center;
-}
-
-.movie-card h3 {
-    font-size: 1.05em; 
-    margin: 0; 
-    line-height: 1.3;
-}
-
-.movie-card .card-info {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%; 
-    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 30%, rgba(0,0,0,0) 100%); 
-    padding: 15px;
-    color: white;
-    opacity: 0; 
-    transform: translateY(100%); 
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    border-radius: 8px; 
-    display: flex; 
-    flex-direction: column; 
-    justify-content: flex-end; 
-}
-
-.movie-card:hover .card-info {
-    opacity: 1; 
-    transform: translateY(0); 
-}
-
-.movie-card:hover {
-    transform: scale(1.08); 
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
-    z-index: 10; 
-}
-
-.movie-card .card-info p { 
-    font-size: 0.9em;
-    color: var(--text-color);
-    margin-bottom: 5px;
-}
-
-.movie-card .card-info p:last-of-type { 
-    margin-bottom: 15px; 
-}
-
-
-/* Scroll Buttons for Carosels - DESIGN E FUNZIONALITA' RAFFINATA */
-.scroll-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(30, 30, 30, 0.7); /* Sfondo leggermente più trasparente */
-    color: white;
-    font-size: 2rem; /* Dimensione freccia leggermente più grande */
-    border: none;
-    width: 60px;   /* Larghezza e altezza per un target più grande */
-    height: 60px;  
-    border-radius: 50%; /* Circolare */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background-color 0.3s ease, opacity 0.3s ease, transform 0.2s ease; 
-    z-index: 60; 
-    opacity: 0; /* Inizialmente nascosta, gestita da JS */
-    pointer-events: none; /* Inizialmente non cliccabile */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.6); /* Ombra più pronunciata */
-}
-
-/* Classi gestite da JavaScript per la visibilità e la cliccabilità */
-.scroll-btn.show-arrow { 
-    opacity: 1;
-    pointer-events: auto; /* CRUCIALE: Rendila cliccabile quando visibile */
-}
-.scroll-btn.hide-arrow { 
-    opacity: 0;
-    pointer-events: none; /* Rendila non cliccabile quando nascosta */
-}
-
-.scroll-btn:hover {
-    background-color: rgba(50, 50, 50, 0.9); /* Effetto hover più scuro */
-    transform: translateY(-50%) scale(1.1); /* Leggero ingrandimento al hover */
-}
-
-/* Posizionamento frecce */
-.scroll-btn.scroll-right {
-    right: 10px; /* Più spazio dal bordo */
-}
-
-.scroll-btn.scroll-left {
-    left: 10px; /* Più spazio dal bordo */
-}
-
-/* Media Queries per la reattività delle frecce */
-@media (max-width: 1024px) { /* Tablet or smaller desktop */
-    .scroll-btn {
-        width: 50px; /* leggermente più piccole su tablet */
-        height: 50px; 
-        font-size: 1.8rem;
-    }
-}
-
-@media (max-width: 768px) { /* Mobile */
-    .scroll-btn {
-        width: 45px; 
-        height: 45px; 
-        font-size: 1.6rem;
-    }
-}
-
-@media (max-width: 480px) { /* Mobile più piccolo */
-    .scroll-btn {
-        width: 40px; 
-        height: 40px; 
-        font-size: 1.4rem;
-    }
-    .scroll-btn.scroll-right {
-        right: 5px; /* Più vicino al bordo su schermi molto piccoli */
-    }
-    .scroll-btn.scroll-left {
-        left: 5px; /* Più vicino al bordo su schermi molto piccoli */
-    }
-}
-
-/* --- NUOVI STILI PER PAGINE DI AUTENTICAZIONE (LOGIN/REGISTER) --- */
-.auth-page-container {
-    min-height: 100vh; /* Copre l'intera altezza del viewport */
-    display: flex;
-    flex-direction: column; /* Per allineare footer in basso se contenuto è poco */
-    justify-content: center; /* Centra verticalmente il contenuto */
-    align-items: center; /* Centra orizzontalmente il contenuto */
-    padding: 20px;
-    padding-top: 80px; /* Spazio per la navbar fissa */
-    background-color: var(--primary-bg); /* Assicurati che lo sfondo sia corretto */
-}
-
-.auth-form-card {
-    background-color: var(--secondary-bg);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    margin-top: 100px; /* Spazio sotto l'header */
     width: 100%;
-    max-width: 450px; /* Larghezza massima per il modulo */
+    max-width: 800px; /* Larghezza massima del contenitore */
     text-align: center;
-    margin-top: 20px; /* Spazio extra dalla navbar su schermi più piccoli */
-    margin-bottom: 20px; /* Spazio extra dal footer */
 }
 
-.auth-form-card h2 {
-    font-size: 2.5em;
-    color: var(--text-color);
-    margin-bottom: 30px;
+.profile-header h1 {
+    font-size: 3em;
+    color: #E5E5E5;
+    margin-bottom: 40px;
     font-weight: 700;
 }
 
-.form-group {
-    margin-bottom: 20px;
-    text-align: left;
+/* Card del profilo in visualizzazione */
+.profile-card {
+    display: flex;
+    flex-direction: column; /* Impilato su mobile */
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 50px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #333; /* Separatore */
 }
 
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    color: var(--text-color);
-    font-weight: 600;
-    font-size: 0.95em;
+@media (min-width: 768px) {
+    .profile-card {
+        flex-direction: row; /* Fianco a fianco su desktop */
+        justify-content: center;
+    }
 }
 
-.form-group input[type="text"],
-.form-group input[type="email"], /* Aggiunto tipo email per registrazione */
-.form-group input[type="password"] {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background-color: var(--primary-bg);
-    color: var(--text-color);
-    font-size: 1em;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+.profile-avatar {
+    width: 180px;
+    height: 180px;
+    border-radius: 8px; /* Bordi arrotondati come i profili Netflix */
+    object-fit: cover;
+    border: 3px solid #E50914; /* Bordo rosso come accento Netflix */
+    box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
 }
 
-.form-group input[type="text"]:focus,
-.form-group input[type="email"]:focus,
-.form-group input[type="password"]:focus {
-    outline: none;
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.3);
+.profile-details {
+    text-align: center;
+    flex-grow: 1; /* Permette ai dettagli di occupare spazio */
 }
 
-.btn-auth-submit { /* Classe generica per i pulsanti di submit di autenticazione */
-    width: 100%;
-    padding: 14px 20px;
-    background-color: var(--accent-color);
+@media (min-width: 768px) {
+    .profile-details {
+        text-align: left; /* Allinea a sinistra su desktop */
+    }
+}
+
+.profile-details h2 {
+    font-size: 2.2em;
+    color: #FFFFFF;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.profile-bio-text {
+    font-size: 1.1em;
+    color: #B3B3B3;
+    line-height: 1.6;
+    max-width: 500px; /* Limita larghezza per leggibilità */
+    margin: 0 auto 20px auto; /* Centra la bio su mobile */
+}
+
+@media (min-width: 768px) {
+    .profile-bio-text {
+        margin: 0 0 20px 0; /* Allinea a sinistra su desktop */
+    }
+}
+
+/* Bottoni */
+.edit-button, .save-button, .cancel-button {
+    background-color: #E50914; /* Rosso Netflix */
     color: white;
     border: none;
-    border-radius: 8px;
+    padding: 12px 25px;
     font-size: 1.1em;
     font-weight: 700;
+    border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-top: 10px;
+    margin: 5px;
 }
 
-.btn-auth-submit:hover {
-    background-color: var(--hover-color);
+.edit-button:hover, .save-button:hover {
+    background-color: #F40612; /* Rosso leggermente più chiaro */
     transform: translateY(-2px);
 }
 
-.auth-form-card .links {
-    margin-top: 25px;
-    font-size: 0.95em;
+.cancel-button {
+    background-color: #555;
 }
 
-.auth-form-card .links a {
-    color: var(--accent-color);
+.cancel-button:hover {
+    background-color: #666;
+    transform: translateY(-2px);
+}
+
+/* Sezione Modifica Profilo (inizialmente nascosta) */
+.profile-edit-section {
+    background-color: #2a2a2a;
+    padding: 30px;
+    border-radius: 8px;
+    margin-top: 40px;
+    text-align: left; /* Allinea il testo del form a sinistra */
+    display: none; /* Nascosto di default */
+}
+
+.profile-edit-section h2 {
+    font-size: 1.8em;
+    color: #E5E5E5;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.edit-form .form-group {
+    margin-bottom: 20px;
+}
+
+.edit-form label {
+    display: block;
+    font-size: 1.0em;
+    color: #B3B3B3;
+    margin-bottom: 8px;
     font-weight: 600;
 }
 
-.auth-form-card .links a:hover {
-    text-decoration: underline;
+.edit-form .form-input,
+.edit-form .form-textarea,
+.edit-form .form-input-file {
+    width: calc(100% - 20px); /* Togli padding per larghezza 100% */
+    padding: 12px;
+    border: 1px solid #444;
+    border-radius: 4px;
+    background-color: #333;
+    color: #E5E5E5;
+    font-size: 1em;
+    box-sizing: border-box; /* Include padding e border nella larghezza */
 }
 
-/* Responsive adjustments for auth forms */
-@media (max-width: 600px) {
-    .auth-form-card {
-        padding: 30px 20px;
-        margin-top: 10px; /* Riduci margine superiore */
-        margin-bottom: 10px; /* Riduci margine inferiore */
-    }
-    .auth-form-card h2 {
-        font-size: 2em;
-    }
-    .form-group input {
-        padding: 10px 12px;
-    }
-    .btn-auth-submit {
-        padding: 12px 15px;
-        font-size: 1em;
-    }
-    .auth-page-container {
-        padding-top: 60px; /* Regola padding per navbar mobile */
-    }
+.edit-form .form-textarea {
+    resize: vertical; /* Permette il ridimensionamento solo verticale */
 }
 
-/* Footer */
-footer {
+.edit-form .form-input:focus,
+.edit-form .form-textarea:focus {
+    border-color: #E50914; /* Bordo rosso al focus */
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.3);
+}
+
+.image-preview {
+    max-width: 150px;
+    max-height: 150px;
+    border-radius: 4px;
+    margin-top: 15px;
+    border: 1px solid #444;
+    display: block; /* Per assicurare che stia sulla sua linea */
+}
+
+.form-actions {
     text-align: center;
-    padding: 30px 40px;
-    background-color: var(--secondary-bg);
-    color: var(--text-color);
-    margin-top: auto; /* Spinge il footer in basso nelle pagine di autenticazione */
-    font-size: 0.9em;
-}
-
-/* Media Queries generali */
-@media (max-width: 1024px) {
-    .hero-content h1 {
-        font-size: 2.8em;
-    }
-    .hero-content p {
-        font-size: 1.1em;
-    }
-    .navbar {
-        padding: 15px 30px;
-    }
-    .content-row {
-        padding: 30px;
-    }
-}
-
-@media (min-width: 769px) { 
-    .main-content-sections {
-        padding-top: 200px; 
-        margin-top: -150px; 
-        border-top-left-radius: 30px;
-        border-top-right-radius: 30px;
-        box-shadow: 0 -10px 40px rgba(0,0,0,0.7);
-    }
-    .content-row {
-        margin-top: 3rem; 
-    }
-}
-
-
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 15px 20px;
-        background-color: var(--primary-bg); 
-        min-height: auto; 
-    }
-    .navbar nav {
-        margin-top: 15px;
-        width: 100%;
-    }
-    .navbar nav ul {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    .navbar nav ul li {
-        margin: 5px 15px;
-    }
-    .user-actions {
-        width: 100%;
-        justify-content: center;
-        margin-top: 15px;
-    }
-    .user-actions input {
-        width: 60%;
-        margin-right: 10px;
-    }
-    .hero-section {
-        height: 60vh;
-        padding-left: 20px;
-        text-align: left; 
-        justify-content: flex-start; 
-        background-position: center top; 
-        padding-top: 150px; 
-        padding-bottom: 150px; 
-    }
-    .hero-section::before {
-        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.9) 100%);
-    }
-    .hero-content {
-        max-width: 90%;
-        text-align: left; 
-        align-items: flex-start; 
-    }
-    .hero-content h1 {
-        font-size: 2.2em;
-    }
-    .hero-content p {
-        font-size: 1em;
-    }
-    .hero-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        align-items: flex-start; 
-    }
-    .hero-buttons .btn {
-        width: 100%;
-        margin-right: 0;
-    }
-    .content-row {
-        padding: 20px 0px; 
-        margin-top: 2rem; 
-    }
-    .content-row h2 {
-        padding-left: 15px; 
-    }
-    .carousel-container {
-        padding-left: 0px; 
-        padding-right: 0px;
-    }
-    .carousel-track {
-        padding-left: 15px; 
-        padding-right: 15px; 
-        padding-top: 15px; 
-        padding-bottom: 15px; 
-    }
-    .movie-card {
-        width: 150px; 
-    }
-    .movie-card img {
-        height: 225px; 
-    }
-    /* .scroll-btn è gestito dalle sue classi principali e media query specifiche */
-    /* Nessun override qui per i pulsanti di scorrimento */
-    /* Mobile specific adjustment for main content */
-    .main-content-sections {
-        margin-top: -80px; 
-        padding-top: 2rem; 
-        border-top-left-radius: 20px; 
-        border-top-right-radius: 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    .navbar .logo {
-        font-size: 1.8em;
-    }
-    .navbar nav ul li a {
-        font-size: 0.9em;
-    }
-    .user-actions input {
-        font-size: 0.9em;
-    }
-    .hero-content h1 {
-        font-size: 1.8em;
-    }
-    .hero-content p {
-        font-size: 0.9em;
-    }
-    .hero-buttons .btn {
-        font-size: 1em;
-        padding: 10px 20px;
-    }
-    .content-row h2 {
-        padding-left: 10px; 
-    }
-    .carousel-track {
-        padding-left: 10px; 
-        padding-right: 10px;
-        padding-top: 10px; 
-        padding-bottom: 10px; 
-    }
-    .movie-card {
-        width: 120px;
-    }
-    .movie-card img {
-        height: 180px;
-    }
-    /* .scroll-btn è gestito dalle sue classi principali e media query specifiche */
-    /* Nessun override qui per i pulsanti di scorrimento */
-    /* Mobile molto piccolo */
-    .hero-section {
-        padding-top: 120px; 
-        padding-bottom: 100px; 
-    }
-    .main-content-sections {
-        margin-top: -40px; 
-        padding-top: 1.5rem;
-    }
+    margin-top: 30px;
 }
