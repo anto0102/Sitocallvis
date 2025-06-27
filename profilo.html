@@ -1,100 +1,66 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>StreamVerse - Il mio Profilo</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-</head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Mio Profilo Netflix-style</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Netflix+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css"> </head>
+<body>
+    <header class="netflix-header">
+        <a href="#" class="netflix-logo">
+            <img src="https://www.netflix.com/dist/carbyne/img/netflix-logo.png" alt="Netflix Logo">
+        </a>
+    </header>
 
-<body class="bg-primary-bg text-text-color font-poppins">
-  <header class="navbar fixed top-0 left-0 w-full z-50 py-4 px-8 flex justify-between items-center transition-colors duration-300">
-    <div class="logo text-accent-color text-3xl font-bold">StreamVerse</div>
-    <nav class="hidden md:block">
-      <ul class="flex gap-8">
-        <li><a href="index.html" class="nav-link">Home</a></li>
-        <li><a href="#" class="nav-link">Film</a></li>
-        <li><a href="#" class="nav-link">Serie TV</a></li>
-        <li><a href="profilo.html" class="nav-link active">La mia lista</a></li>
-      </ul>
-    </nav>
-    <div class="user-actions flex items-center gap-4">
-      <form id="search-form" class="relative">
-        <input type="text" placeholder="Cerca..." class="search-input bg-secondary-bg text-text-color border border-border-color rounded-full py-2 pl-4 pr-10 focus:outline-none focus:ring-2 focus:ring-accent-color transition-all duration-300">
-        <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 text-text-color hover:text-accent-color transition-colors duration-200">🔍</button>
-      </form>
-      <div id="auth-area" class="flex gap-2">
-        <button id="login-btn" class="btn-primary">Accedi</button>
-        <button id="logout-btn" class="btn-secondary hidden">Logout</button>
-        <a href="profilo.html" class="profile-icon" title="Il mio profilo">👤</a>
-      </div>
+    <div class="profile-container">
+        <div class="profile-header">
+            <h1>Gestisci Profili</h1>
+        </div>
+
+        <div class="profile-card">
+            <img id="profile-image-display" src="https://via.placeholder.com/200x200?text=Carica+Immagine" alt="Immagine Profilo" class="profile-avatar">
+            <div class="profile-details">
+                <h2 id="profile-name">Caricamento...</h2>
+                <p id="profile-bio" class="profile-bio-text"></p>
+                <button class="edit-button" id="editProfileButton">Modifica Profilo</button>
+            </div>
+        </div>
+
+        <div class="profile-edit-section" id="profileEditSection">
+            <h2>Modifica Dettagli Profilo</h2>
+            <form id="profile-form" class="edit-form">
+                <div class="form-group">
+                    <label for="name">Nome:</label>
+                    <input type="text" id="name" name="name" required class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="surname">Cognome:</label>
+                    <input type="text" id="surname" name="surname" required class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="bio">Biografia:</label>
+                    <textarea id="bio" name="bio" rows="4" class="form-textarea"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="profileImage">Cambia Immagine:</label>
+                    <input type="file" id="profileImage" name="profileImage" accept="image/*" class="form-input-file">
+                    <img id="image-preview" src="" alt="Anteprima Nuova Immagine" class="image-preview">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="save-button">Salva Modifiche</button>
+                    <button type="button" class="cancel-button" id="cancelEditButton">Annulla</button>
+                </div>
+            </form>
+        </div>
     </div>
-  </header>
 
-  <main class="relative z-20 pt-24 md:pt-32 pb-12 px-8 lg:px-16 bg-primary-bg">
-
-    <section class="text-center mb-12 p-6 md:p-8 bg-secondary-bg rounded-lg shadow-xl">
-      <img id="profileImagePreview" src="https://via.placeholder.com/150x150/555555/e0e0e0?text=👤" alt="Foto Profilo" class="mx-auto mb-4 border-4 border-accent-color rounded-full w-36 h-36 object-cover">
-      
-      <input type="file" id="profileImageInput" accept="image/*" class="block mx-auto mb-4 text-sm text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-accent-color file:text-white hover:file:bg-accent-color-dark" />
-
-      <button id="saveProfileImage" class="btn-primary mb-6">Salva Immagine Profilo</button>
-
-      <div class="max-w-xl mx-auto">
-        <div class="mb-4">
-          <label for="username" class="block text-left text-white mb-1 font-semibold">Username</label>
-          <input type="text" id="username" class="w-full px-4 py-2 rounded-md bg-primary-bg border border-border-color text-white focus:outline-none focus:ring-2 focus:ring-accent-color">
-        </div>
-        <div class="mb-4">
-          <label for="email" class="block text-left text-white mb-1 font-semibold">Email</label>
-          <input type="email" id="email" class="w-full px-4 py-2 rounded-md bg-primary-bg border border-border-color text-white focus:outline-none focus:ring-2 focus:ring-accent-color">
-        </div>
-        <button id="saveProfile" class="btn-primary w-full py-3 rounded-full text-lg">Salva Profilo</button>
-      </div>
-    </section>
-
-    <!-- Resto delle sezioni (come la mia lista e dettagli account) rimangono inalterate -->
-    <!-- ... -->
-    
-  </main>
-
-  <footer class="text-center py-8 px-4 bg-secondary-bg text-text-color mt-12">
-    <p>&copy; 2025 StreamVerse. Tutti i diritti riservati.</p>
-  </footer>
-
-  <!-- Script per immagine profilo -->
-  <script>
-    const imageInput = document.getElementById('profileImageInput');
-    const imagePreview = document.getElementById('profileImagePreview');
-    const saveImageButton = document.getElementById('saveProfileImage');
-
-    // Mostra l'immagine già salvata su localStorage
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedImage = localStorage.getItem("profileImage");
-      if (savedImage) {
-        imagePreview.src = savedImage;
-      }
-    });
-
-    // Salva immagine su localStorage
-    saveImageButton.addEventListener('click', () => {
-      const file = imageInput.files[0];
-      if (!file) {
-        alert("Seleziona prima un'immagine.");
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        const imageBase64 = e.target.result;
-        localStorage.setItem("profileImage", imageBase64);
-        imagePreview.src = imageBase64;
-        alert("Immagine salvata correttamente!");
-      };
-      reader.readAsDataURL(file);
-    });
-  </script>
+    <script src="script.js"></script>
 </body>
 </html>
