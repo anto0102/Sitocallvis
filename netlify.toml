@@ -7,25 +7,19 @@
 [functions."register"]
   environment = ["MONGO_URI", "DB_NAME"]
 
-# --- INIZIO SEZIONE DI PROTEZIONE ---
-# Questa regola reindirizza /dash.html a /index.html (login)
-# se il cookie 'streamverse_auth=true' NON è presente.
+# --- NUOVA REGOLA DI TEST (TEMPORANEA) ---
+# Questa regola dovrebbe reindirizzare SEMPRE dash.html a index.html
+# per vedere se il reindirizzamento base funziona.
 [[redirects]]
-  from = "dash.html"  # La pagina che vuoi proteggere
-  to = "index.html"   # La tua pagina di login
-  status = 302         # Reindirizzamento temporaneo
-  force = true         # Forza il reindirizzamento
+  from = "/dash.html"
+  to = "/index.html"
+  status = 302
+  force = true
 
-  # La condizione che verifica la presenza del cookie
-  # Il nome del cookie e il valore devono corrispondere esattamente alla funzione!
-  conditions = {Cookie = ["!streamverse_auth=true"]}
-
-# Puoi aggiungere altre pagine protette qui, se necessario:
+# Rimuovi o commenta la tua vecchia regola:
 # [[redirects]]
-#   from = "/altra-pagina.html"
+#   from = "/dash.html"
 #   to = "/index.html"
 #   status = 302
 #   force = true
 #   conditions = {Cookie = ["!streamverse_auth=true"]}
-
-# --- FINE SEZIONE DI PROTEZIONE ---
