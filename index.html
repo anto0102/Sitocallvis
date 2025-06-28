@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* Stili CSS - RIMANGONO INALTERATI */
+        /* Stili CSS - La maggior parte rimangono inalterati */
         body {
             margin: 0;
             font-family: 'Inter', sans-serif;
@@ -96,6 +96,59 @@
         #site-content {
             display: none;
         }
+
+        /* --- NUOVI STILI PER IL POPUP --- */
+        .info-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            text-align: center;
+            opacity: 0; /* Inizialmente invisibile */
+            visibility: hidden; /* Inizialmente nascosto */
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+            max-width: 400px;
+            border: 1px solid #e50914; /* Bordo rosso */
+        }
+
+        .info-popup.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .info-popup h2 {
+            color: #e50914;
+            margin-top: 0;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .info-popup p {
+            font-size: 1.1em;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .info-popup button {
+            background-color: #e50914;
+            color: #fff;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .info-popup button:hover {
+            background-color: #f40612;
+        }
     </style>
 </head>
 <body>
@@ -111,20 +164,51 @@
         </form>
     </div>
 
-    <div id="site-content">
+    <div id="site-content" style="display: none;">
         <h2>Benvenuto su StreamVerse!</h2>
         <p>Se vedi questa pagina, c'è stato un errore di reindirizzamento. Dovresti essere su dash.html.</p>
     </div>
 
+    <div id="infoPopup" class="info-popup">
+        <h2>Benvenuto su StreamVerse!</h2>
+        <p>Ti informiamo che questo sito è ancora in fase beta. Potresti trovare contenuti in sviluppo o funzionalità non ancora complete. Grazie per la tua pazienza e il tuo supporto!</p>
+        <button id="closePopup">Continua</button>
+    </div>
     <script>
         const loginForm = document.getElementById('login-form');
         const passwordInput = document.getElementById('password-input');
         const errorMessage = document.getElementById('error-message');
 
+        // --- NUOVE VARIABILI PER IL POPUP ---
+        const infoPopup = document.getElementById('infoPopup');
+        const closePopupButton = document.getElementById('closePopup');
+
+        // Funzione per mostrare il popup
+        function showPopup() {
+            infoPopup.classList.add('show');
+        }
+
+        // Funzione per nascondere il popup e reindirizzare
+        function hidePopupAndRedirect() {
+            infoPopup.classList.remove('show');
+            // Reindirizza alla tua pagina principale dash.html DOPO che il popup è stato chiuso
+            window.location.href = '/dash.html'; 
+        }
+
+        // Event listener per chiudere il popup
+        closePopupButton.addEventListener('click', hidePopupAndRedirect);
+
+
         // Non abbiamo più bisogno di controllare localStorage qui,
         // perché il reindirizzamento è gestito dal netlify.toml
         // Se l'utente ha il cookie, Netlify lo lascerà passare a dash.html.
         // Se non ha il cookie, Netlify lo reindirizzerà a index.html (questa pagina).
+
+        // Quando la pagina di login carica, nascondi il popup se è visibile (nel caso di ricaricamento)
+        document.addEventListener('DOMContentLoaded', () => {
+            infoPopup.classList.remove('show');
+        });
+
 
         loginForm.addEventListener('submit', async (event) => {
             event.preventDefault(); // Previeni il ricaricamento della pagina
@@ -142,17 +226,14 @@
                     body: JSON.stringify({ password: password })
                 });
 
-                // Non è necessario leggere il body della risposta qui,
-                // perché la Netlify Function imposterà direttamente il cookie.
-                // Ci basta sapere se la richiesta è andata a buon fine.
-
                 if (response.ok) {
                     // Password corretta! La funzione ha impostato il cookie.
-                    // Ora reindirizziamo l'utente alla pagina protetta.
-                    window.location.href = '/dash.html'; 
+                    // Mostra il popup di informazione
+                    showPopup(); ciao 
+                    // Il reindirizzamento avverrà quando l'utente clicca su "Continua" nel popup
                 } else {
                     // Password errata o altro errore dalla funzione
-                    const data = await response.json(); // Leggi il messaggio di errore dalla funzione
+                    const data = await response.json(); 
                     errorMessage.textContent = data.message || 'Password errata. Riprova.';
                     errorMessage.style.display = 'block';
                     passwordInput.value = ''; // Pulisci il campo password
