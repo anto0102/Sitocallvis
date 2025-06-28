@@ -6,17 +6,3 @@
 
 [functions."register"]
   environment = ["MONGO_URI", "DB_NAME"]
-
-# --- Inizio della configurazione per la protezione con password ---
-
-[[redirects]]
-  from = "/*"              # Applica questa regola a tutte le pagine del tuo sito
-  to = "/index.html"       # Reindirizza alla tua pagina principale (solitamente index.html)
-  status = 200             # Imposta lo stato HTTP a 200 (OK) per servire il contenuto
-  force = true             # Forzare il reindirizzamento anche se esiste un file corrispondente
-  
-  # Aggiungi questa sezione per la Basic Authentication
-  [redirects.context]
-    basicAuth = "antonio:omg" # <-- Cambia questi valori!
-
-# --- Fine della configurazione per la protezione con password ---
