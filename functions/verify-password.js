@@ -29,20 +29,18 @@ exports.handler = async function(event, context) {
     }
 
     if (password === correctPassword) {
-        // *** AGGIUNTA QUI: Imposta il cookie di autenticazione ***
-        // Max-Age: Durata del cookie in secondi (es. 1 ora = 3600, 1 giorno = 86400)
+        // *** IMPORTANTE: Imposta il cookie di autenticazione esattamente come specificato nel netlify.toml ***
+        // Max-Age: Durata del cookie in secondi (es. 7 giorni = 604800)
         // Path: Il percorso per cui il cookie è valido. '/' lo rende valido per tutto il sito.
-        // HttpOnly: Imposta a true per maggiore sicurezza (non accessibile da JavaScript client-side).
-        //           Tuttavia, per la verifica lato client nel nostro caso, lo lasciamo false.
-        // Secure: Imposta a true se il tuo sito usa HTTPS (raccomandato per Netlify).
+        // Secure: Imposta a true se il tuo sito usa HTTPS (Netlify lo fa di default).
         // SameSite: 'Lax' o 'Strict' per prevenire attacchi CSRF.
-        const cookieHeader = `streamverse_auth=true; Max-Age=${86400 * 7}; Path=/; Secure; SameSite=Lax`; // Cookie valido per 7 giorni
+        const cookieHeader = `streamverse_auth=true; Max-Age=604800; Path=/; Secure; SameSite=Lax`; 
 
         return {
             statusCode: 200,
             headers: {
                 'Set-Cookie': cookieHeader,
-                'Content-Type': 'application/json' // Assicurati che questo sia presente
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({ success: true, message: 'Accesso riuscito!' })
         };
