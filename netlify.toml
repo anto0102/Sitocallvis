@@ -11,8 +11,8 @@
 # Questa regola reindirizza /dash.html a /index.html (login)
 # se il cookie 'streamverse_auth=true' NON è presente.
 [[redirects]]
-  from = "/dash.html"  # La pagina che vuoi proteggere
-  to = "/index.html"   # La tua pagina di login
+  from = "dash.html"  # La pagina che vuoi proteggere
+  to = "index.html"   # La tua pagina di login
   status = 302         # Reindirizzamento temporaneo
   force = true         # Forza il reindirizzamento
 
