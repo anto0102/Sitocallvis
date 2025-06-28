@@ -7,24 +7,25 @@
 [functions."register"]
   environment = ["MONGO_URI", "DB_NAME"]
 
-# --- NUOVA SEZIONE PER LA PROTEZIONE ---
+# --- INIZIO SEZIONE DI PROTEZIONE ---
+# Questa regola reindirizza /dash.html a /index.html (login)
+# se il cookie 'streamverse_auth=true' NON è presente.
 [[redirects]]
-  from = "/dash.html" # La pagina che vuoi proteggere
-  to = "/index.html"  # La tua pagina di login
-  status = 302        # Reindirizzamento temporaneo (puoi usare 301 per permanente)
-  force = true        # Forza il reindirizzamento
+  from = "/dash.html"  # La pagina che vuoi proteggere
+  to = "/index.html"   # La tua pagina di login
+  status = 302         # Reindirizzamento temporaneo
+  force = true         # Forza il reindirizzamento
 
-  # Questa è la condizione: reindirizza solo se il cookie 'streamverse_auth' NON è presente
-  # o se il suo valore non è 'true'.
-  # Il nome del cookie deve corrispondere a quello che imposterai nella Netlify Function.
+  # La condizione che verifica la presenza del cookie
+  # Il nome del cookie e il valore devono corrispondere esattamente alla funzione!
   conditions = {Cookie = ["!streamverse_auth=true"]}
 
-# Puoi aggiungere altre pagine protette così:
+# Puoi aggiungere altre pagine protette qui, se necessario:
 # [[redirects]]
-#   from = "/altra-pagina-protetta.html"
+#   from = "/altra-pagina.html"
 #   to = "/index.html"
 #   status = 302
 #   force = true
 #   conditions = {Cookie = ["!streamverse_auth=true"]}
 
-# --- FINE NUOVA SEZIONE ---
+# --- FINE SEZIONE DI PROTEZIONE ---
