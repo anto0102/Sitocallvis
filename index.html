@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* Stili CSS */
+        /* Stili CSS - RIMANGONO INALTERATI */
         body {
             margin: 0;
             font-family: 'Inter', sans-serif;
@@ -23,7 +23,6 @@
             position: relative;
         }
 
-        /* Effetto sfondo sfumato (opzionale, per un tocco in più) */
         body::before {
             content: '';
             position: absolute;
@@ -36,7 +35,7 @@
         }
 
         .login-container {
-            background-color: rgba(0, 0, 0, 0.75); /* Sfondo del form leggermente trasparente */
+            background-color: rgba(0, 0, 0, 0.75);
             padding: 60px 68px;
             border-radius: 4px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -52,20 +51,15 @@
             text-align: left;
         }
 
-        .form-group {
-            margin-bottom: 16px;
-            text-align: left;
-        }
-
         .form-group input[type="password"] {
             width: 100%;
             padding: 16px 20px;
             border: none;
             border-radius: 4px;
-            background-color: #333; /* Campo input scuro */
+            background-color: #333;
             color: #fff;
             font-size: 1em;
-            box-sizing: border-box; /* Include padding nel calcolo della larghezza */
+            box-sizing: border-box;
         }
 
         .form-group input[type="password"]:focus {
@@ -76,7 +70,7 @@
         .login-button {
             width: 100%;
             padding: 16px;
-            background-color: #e50914; /* Rosso Netflix */
+            background-color: #e50914;
             color: #fff;
             border: none;
             border-radius: 4px;
@@ -88,41 +82,19 @@
         }
 
         .login-button:hover {
-            background-color: #f40612; /* Rosso più brillante al hover */
+            background-color: #f40612;
         }
 
         .error-message {
-            color: #e50914; /* Rosso per messaggi di errore */
+            color: #e50914;
             margin-top: 15px;
             font-size: 0.9em;
-            display: none; /* Nascosto di default */
+            display: none;
         }
 
-        /* Stili per il contenuto protetto, inizialmente nascosto */
+        /* Il div #site-content non sarà più usato per mostrare il contenuto, ma solo come segnaposto */
         #site-content {
-            display: none; /* Nascosto di default */
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #141414;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            padding: 20px;
-            box-sizing: border-box;
-            text-align: center;
-        }
-        #site-content h2 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-        }
-        #site-content p {
-            font-size: 1.2em;
-            max-width: 800px;
-            line-height: 1.6;
+            display: none;
         }
     </style>
 </head>
@@ -141,42 +113,18 @@
 
     <div id="site-content">
         <h2>Benvenuto su StreamVerse!</h2>
-        <p>Questo è il contenuto protetto del tuo sito. Qui puoi inserire tutte le tue pagine, video, o qualsiasi altro elemento che desideri rendere accessibile solo dopo l'inserimento della password.</p>
-        <p>Ora che hai effettuato l'accesso, puoi navigare liberamente.</p>
-        <a href="#" style="color: #e50914; text-decoration: none; margin-top: 20px; display: inline-block;">Esplora il sito</a>
+        <p>Se vedi questa pagina, c'è stato un errore di reindirizzamento. Dovresti essere su dash.html.</p>
     </div>
 
     <script>
-        const loginOverlay = document.getElementById('login-overlay');
-        const siteContent = document.getElementById('site-content'); 
         const loginForm = document.getElementById('login-form');
         const passwordInput = document.getElementById('password-input');
         const errorMessage = document.getElementById('error-message');
 
-        // Funzione per mostrare il contenuto del sito e nascondere l'overlay
-        function showSiteContent() {
-            // *** MODIFICA EFFETTUATA QUI: Reindirizza alla tua pagina principale dash.html ***
-            window.location.href = '/dash.html'; 
-            
-            // Le righe seguenti sono commentate perché non servono con il reindirizzamento
-            // loginOverlay.style.display = 'none';
-            // siteContent.style.display = 'flex'; 
-        }
-
-        // Funzione per nascondere il contenuto del sito e mostrare l'overlay (per il logout o al primo accesso)
-        function showLoginOverlay() {
-            loginOverlay.style.display = 'block';
-            siteContent.style.display = 'none'; 
-        }
-
-        // Controlla se l'utente è già autenticato (es. tramite un token nel localStorage)
-        const isAuthenticated = localStorage.getItem('streamverse_authenticated') === 'true';
-
-        if (isAuthenticated) {
-            showSiteContent(); // Se autenticato, reindirizza
-        } else {
-            showLoginOverlay(); // Altrimenti, mostra l'overlay di login
-        }
+        // Non abbiamo più bisogno di controllare localStorage qui,
+        // perché il reindirizzamento è gestito dal netlify.toml
+        // Se l'utente ha il cookie, Netlify lo lascerà passare a dash.html.
+        // Se non ha il cookie, Netlify lo reindirizzerà a index.html (questa pagina).
 
         loginForm.addEventListener('submit', async (event) => {
             event.preventDefault(); // Previeni il ricaricamento della pagina
@@ -194,14 +142,17 @@
                     body: JSON.stringify({ password: password })
                 });
 
-                const data = await response.json();
+                // Non è necessario leggere il body della risposta qui,
+                // perché la Netlify Function imposterà direttamente il cookie.
+                // Ci basta sapere se la richiesta è andata a buon fine.
 
-                if (response.ok && data.success) {
-                    // Password corretta!
-                    localStorage.setItem('streamverse_authenticated', 'true'); // Salva lo stato di autenticazione
-                    showSiteContent(); // Chiama la funzione per reindirizzare
+                if (response.ok) {
+                    // Password corretta! La funzione ha impostato il cookie.
+                    // Ora reindirizziamo l'utente alla pagina protetta.
+                    window.location.href = '/dash.html'; 
                 } else {
-                    // Password errata
+                    // Password errata o altro errore dalla funzione
+                    const data = await response.json(); // Leggi il messaggio di errore dalla funzione
                     errorMessage.textContent = data.message || 'Password errata. Riprova.';
                     errorMessage.style.display = 'block';
                     passwordInput.value = ''; // Pulisci il campo password
