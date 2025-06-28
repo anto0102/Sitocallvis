@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
         /* Stili CSS */
         body {
@@ -54,13 +55,6 @@
         .form-group {
             margin-bottom: 16px;
             text-align: left;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 0.9em;
-            color: #b3b3b3;
         }
 
         .form-group input[type="password"] {
@@ -133,7 +127,8 @@
     </style>
 </head>
 <body>
-    <div id="login-overlay" class="login-container">
+    
+<div id="login-overlay" class="login-container">
         <h1>Accedi</h1>
         <form id="login-form">
             <div class="form-group">
@@ -153,31 +148,34 @@
 
     <script>
         const loginOverlay = document.getElementById('login-overlay');
-        const siteContent = document.getElementById('site-content');
+        const siteContent = document.getElementById('site-content'); 
         const loginForm = document.getElementById('login-form');
         const passwordInput = document.getElementById('password-input');
         const errorMessage = document.getElementById('error-message');
 
         // Funzione per mostrare il contenuto del sito e nascondere l'overlay
         function showSiteContent() {
-            loginOverlay.style.display = 'none';
-            siteContent.style.display = 'flex'; // Usiamo flex per centrare il contenuto
+            // *** MODIFICA EFFETTUATA QUI: Reindirizza alla tua pagina principale dash.html ***
+            window.location.href = '/dash.html'; 
+            
+            // Le righe seguenti sono commentate perché non servono con il reindirizzamento
+            // loginOverlay.style.display = 'none';
+            // siteContent.style.display = 'flex'; 
         }
 
         // Funzione per nascondere il contenuto del sito e mostrare l'overlay (per il logout o al primo accesso)
         function showLoginOverlay() {
             loginOverlay.style.display = 'block';
-            siteContent.style.display = 'none';
+            siteContent.style.display = 'none'; 
         }
 
         // Controlla se l'utente è già autenticato (es. tramite un token nel localStorage)
-        // Questo è un esempio semplice. Per una vera sicurezza, dovresti validare il token lato server.
         const isAuthenticated = localStorage.getItem('streamverse_authenticated') === 'true';
 
         if (isAuthenticated) {
-            showSiteContent();
+            showSiteContent(); // Se autenticato, reindirizza
         } else {
-            showLoginOverlay();
+            showLoginOverlay(); // Altrimenti, mostra l'overlay di login
         }
 
         loginForm.addEventListener('submit', async (event) => {
@@ -201,7 +199,7 @@
                 if (response.ok && data.success) {
                     // Password corretta!
                     localStorage.setItem('streamverse_authenticated', 'true'); // Salva lo stato di autenticazione
-                    showSiteContent();
+                    showSiteContent(); // Chiama la funzione per reindirizzare
                 } else {
                     // Password errata
                     errorMessage.textContent = data.message || 'Password errata. Riprova.';
