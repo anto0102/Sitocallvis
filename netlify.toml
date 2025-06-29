@@ -7,19 +7,14 @@
 [functions."register"]
   environment = ["MONGO_URI", "DB_NAME"]
 
-# --- NUOVA REGOLA DI TEST (TEMPORANEA) ---
-# Questa regola dovrebbe reindirizzare SEMPRE dash.html a index.html
-# per vedere se il reindirizzamento base funziona.
+# --- SEZIONE DI PROTEZIONE (QUELLA COMPLETA) ---
 [[redirects]]
-  from = "/dash.html"
-  to = "/index.html"
-  status = 302
-  force = true
+  from = "/dash.html"  # La pagina che vuoi proteggere
+  to = "/index.html"   # La tua pagina di login
+  status = 302         # Reindirizzamento temporaneo
+  force = true         # Forza il reindirizzamento
 
-# Rimuovi o commenta la tua vecchia regola:
-# [[redirects]]
-#   from = "/dash.html"
-#   to = "/index.html"
-#   status = 302
-#   force = true
-#   conditions = {Cookie = ["!streamverse_auth=true"]}
+  # Questa è la condizione che deve funzionare!
+  conditions = {Cookie = ["!streamverse_auth=true"]}
+
+# Puoi aggiungere altre pagine protette qui, se necessario.
