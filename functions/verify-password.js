@@ -1,22 +1,6 @@
 // functions/verify-password.js
 exports.handler = async function(event, context) {
-    if (event.httpMethod !== 'POST') {
-        return {
-            statusCode: 405,
-            body: JSON.stringify({ message: 'Metodo non consentito' })
-        };
-    }
-
-    let password;
-    try {
-        const body = JSON.parse(event.body);
-        password = body.password;
-    } catch (error) {
-        return {
-            statusCode: 400,
-            body: JSON.stringify({ message: 'Richiesta non valida' })
-        };
-    }
+    // ... (parte iniziale del codice rimane invariata) ...
 
     const correctPassword = process.env.SITE_LOGIN_PASSWORD;
 
@@ -29,11 +13,9 @@ exports.handler = async function(event, context) {
     }
 
     if (password === correctPassword) {
-        // *** IMPORTANTE: Imposta il cookie di autenticazione esattamente come specificato nel netlify.toml ***
-        // Max-Age: Durata del cookie in secondi (es. 7 giorni = 604800)
-        // Path: Il percorso per cui il cookie è valido. '/' lo rende valido per tutto il sito.
-        // Secure: Imposta a true se il tuo sito usa HTTPS (Netlify lo fa di default).
-        // SameSite: 'Lax' o 'Strict' per prevenire attacchi CSRF.
+        // *** Rivedi attentamente questa riga! ***
+        // Assicurati che il nome 'streamverse_auth' e il valore 'true' siano ESATTI.
+        // Path=/ è fondamentale. Secure per HTTPS (Netlify). Max-Age per la durata.
         const cookieHeader = `streamverse_auth=true; Max-Age=604800; Path=/; Secure; SameSite=Lax`; 
 
         return {
@@ -45,9 +27,6 @@ exports.handler = async function(event, context) {
             body: JSON.stringify({ success: true, message: 'Accesso riuscito!' })
         };
     } else {
-        return {
-            statusCode: 401,
-            body: JSON.stringify({ success: false, message: 'Password errata.' })
-        };
+        // ... (parte per password errata rimane invariata) ...
     }
 };
