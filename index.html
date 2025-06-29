@@ -175,10 +175,7 @@
         <button id="closePopup">Continua</button>
     </div>
     <script>
-    console.log("SCRIPT CARICATO E IN ESECUZIONE!"); // <<< AGGIUNGI QUESTA RIGA
-    const loginForm = document.getElementById('login-form');
-    const passwordInput = document.getElementById('password-input');
-    const errorMessage = document.getElementById('error-message');
+        console.log("SCRIPT CARICATO E IN ESECUZIONE!"); // Debug log
         const loginForm = document.getElementById('login-form');
         const passwordInput = document.getElementById('password-input');
         const errorMessage = document.getElementById('error-message');
@@ -202,17 +199,10 @@
         // Event listener per chiudere il popup
         closePopupButton.addEventListener('click', hidePopupAndRedirect);
 
-
-        // Non abbiamo più bisogno di controllare localStorage qui,
-        // perché il reindirizzamento è gestito dal netlify.toml
-        // Se l'utente ha il cookie, Netlify lo lascerà passare a dash.html.
-        // Se non ha il cookie, Netlify lo reindirizzerà a index.html (questa pagina).
-
         // Quando la pagina di login carica, nascondi il popup se è visibile (nel caso di ricaricamento)
         document.addEventListener('DOMContentLoaded', () => {
             infoPopup.classList.remove('show');
         });
-
 
         loginForm.addEventListener('submit', async (event) => {
             event.preventDefault(); // Previeni il ricaricamento della pagina
