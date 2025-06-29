@@ -1,6 +1,37 @@
 // functions/verify-password.js
 exports.handler = async function(event, context) {
-    // ... (parte iniziale del codice rimane invariata) ...
+    if (event.httpMethod !== 'POST') {
+        return {
+            statusCode: 405,
+            body: JSON.stringify({ message: 'Metodo non consentito' })
+        };
+    }
+
+    let password = null; // <<< MODIFICA QUI: Inizializza 'password' a null
+    try {
+        console.log("Raw event body:", event.body); // Per debug, puoi rimuovere dopo
+        const body = JSON.parse(event.body);
+        console.log("Parsed body:", body); // Per debug, puoi rimuovere dopo
+        
+        // Verifica se 'body' esiste e ha la proprietà 'password'
+        if (body && typeof body.password === 'string') {
+            password = body.password;
+        } else {
+            // Se 'body' non è valido o manca la proprietà password, gestisci l'errore
+            console.error("Il body della richiesta non contiene una proprietà 'password' valida.");
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ success: false, message: 'Richiesta non valida: password mancante.' })
+            };
+        }
+    } catch (error) {
+        // Questo errore si verifica se il body della richiesta non è un JSON valido
+        console.error("Errore nel parsing del body della richiesta:", error);
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ success: false, message: 'Richiesta non valida: formato JSON non corretto.' })
+        };
+    }
 
     const correctPassword = process.env.SITE_LOGIN_PASSWORD;
 
@@ -12,10 +43,8 @@ exports.handler = async function(event, context) {
         };
     }
 
+    // Ora 'password' è garantita essere una stringa (o null se c'è stato un errore prima)
     if (password === correctPassword) {
-        // *** Rivedi attentamente questa riga! ***
-        // Assicurati che il nome 'streamverse_auth' e il valore 'true' siano ESATTI.
-        // Path=/ è fondamentale. Secure per HTTPS (Netlify). Max-Age per la durata.
         const cookieHeader = `streamverse_auth=true; Max-Age=604800; Path=/; Secure; SameSite=Lax`; 
 
         return {
@@ -27,6 +56,9 @@ exports.handler = async function(event, context) {
             body: JSON.stringify({ success: true, message: 'Accesso riuscito!' })
         };
     } else {
-        // ... (parte per password errata rimane invariata) ...
+        return {
+            statusCode: 401,
+            body: JSON.stringify({ success: false, message: 'Password errata.' })
+        };
     }
 };
