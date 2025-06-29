@@ -213,10 +213,12 @@
         loginForm.addEventListener('submit', async (event) => {
             event.preventDefault(); // Previeni il ricaricamento della pagina
 
+            console.log("Submit del form intercettato."); // Debug log
             const password = passwordInput.value;
             errorMessage.style.display = 'none'; // Nascondi eventuali messaggi di errore precedenti
 
             try {
+                console.log("Tentativo di inviare la richiesta a verify-password..."); // Debug log
                 // Invia la password alla Netlify Function
                 const response = await fetch('/.netlify/functions/verify-password', {
                     method: 'POST',
@@ -226,12 +228,16 @@
                     body: JSON.stringify({ password: password })
                 });
 
+                console.log("Risposta dalla funzione ricevuta:", response); // Debug log
+
                 if (response.ok) {
+                    console.log("Login riuscito. Mostro popup."); // Debug log
                     // Password corretta! La funzione ha impostato il cookie.
                     // Mostra il popup di informazione
                     showPopup(); 
                     // Il reindirizzamento avverrà quando l'utente clicca su "Continua" nel popup
                 } else {
+                    console.log("Login fallito. Gestisco errore."); // Debug log
                     // Password errata o altro errore dalla funzione
                     const data = await response.json(); 
                     errorMessage.textContent = data.message || 'Password errata. Riprova.';
@@ -240,47 +246,9 @@
                     passwordInput.focus(); // Rimetti il focus
                 }
             } catch (error) {
-                console.error('Errore durante la richiesta:', error);
+                console.error('Errore durante la richiesta fetch:', error); // Debug log
                 errorMessage.textContent = 'Si è verificato un errore. Riprova più tardi.';
                 errorMessage.style.display = 'block';
-                // index.html - all'interno dello script
-loginForm.addEventListener('submit', async (event) => {
-    event.preventDefault(); // Previeni il ricaricamento della pagina
-
-    console.log("Submit del form intercettato."); // <<< AGGIUNGI QUESTO
-    const password = passwordInput.value;
-    errorMessage.style.display = 'none'; // Nascondi eventuali messaggi di errore precedenti
-
-    try {
-        console.log("Tentativo di inviare la richiesta a verify-password..."); // <<< AGGIUNGI QUESTO
-        const response = await fetch('/.netlify/functions/verify-password', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ password: password })
-        });
-
-        console.log("Risposta dalla funzione ricevuta:", response); // <<< AGGIUNGI QUESTO
-
-        if (response.ok) {
-            console.log("Login riuscito. Mostro popup."); // <<< AGGIUNGI QUESTO
-            showPopup(); 
-        } else {
-            console.log("Login fallito. Gestisco errore."); // <<< AGGIUNGI QUESTO
-            const data = await response.json(); 
-            errorMessage.textContent = data.message || 'Password errata. Riprova.';
-            errorMessage.style.display = 'block';
-            passwordInput.value = ''; // Pulisci il campo password
-            passwordInput.focus(); // Rimetti il focus
-        }
-    } catch (error) {
-        console.error('Errore durante la richiesta fetch:', error); // <<< MODIFICA/AGGIUNGI QUESTO
-        errorMessage.textContent = 'Si è verificato un errore. Riprova più tardi.';
-        errorMessage.style.display = 'block';
-    }
-});
-                
             }
         });
     </script>
